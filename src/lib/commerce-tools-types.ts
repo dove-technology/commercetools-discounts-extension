@@ -9,7 +9,14 @@ export interface CommerceToolsLineItem {
   id: string;
   productId: string;
   quantity: number;
-  totalPrice: CommerceToolsMoney;
+  // totalPrice: CommerceToolsMoney;
+  price: CommerceToolsPrice;
+}
+
+export interface CommerceToolsPrice {
+  id: string;
+  value: CommerceToolsMoney;
+  country: string;
 }
 
 export interface CommerceToolsMoney {

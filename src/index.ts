@@ -7,15 +7,13 @@ app.use(bodyParser.json());
 const port = 3000;
 
 app.post("/", (req: Request, res: Response) => {
-  // var cart = req.body.resource.obj;
+  var cart = req.body.resource.obj;
 
   // not sure about async in Express v4 at the moment
-  var actions = proxy(req.body).then((actions) => {
-    return actions;
-  });
-
-  res.status(200).json({
-    actions,
+  proxy(cart).then((actions) => {
+    res.status(200).json({
+      actions: actions,
+    });
   });
 });
 
