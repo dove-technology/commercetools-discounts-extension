@@ -1,6 +1,9 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import { proxy } from "./lib/commerce-tools-dovetech-proxy";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());

@@ -43,4 +43,46 @@ export enum DoveTechDiscountsDataInstance {
   Staging = "Staging",
 }
 
-export interface DoveTechDiscountsResponse {}
+export interface DoveTechDiscountsResponse {
+  actions: DoveTechDiscountsResponseAction[];
+  basket: DoveTechDiscountsResponseBasket | null;
+  commitId: string | null;
+  aggregates: DoveTechDiscountsAggregates;
+  costs: DoveTechDiscountsResponseCost[];
+}
+
+export interface DoveTechDiscountsResponseBasket
+  extends DoveTechDiscountsBasket {
+  total: number;
+  totalAmountOff: number;
+  lineItems: DoveTechDiscountsResponseLineItem[];
+}
+
+export interface DoveTechDiscountsResponseLineItem {
+  total: number;
+  totalAmountOff: number;
+  actions: DoveTechDiscountsResponseLineItemAction[];
+}
+
+export interface DoveTechDiscountsResponseLineItemAction {
+  id: string;
+  subItemId: number;
+  amountOff: number;
+}
+
+export interface DoveTechDiscountsResponseAction {
+  type: string;
+  id: string;
+}
+
+export interface DoveTechDiscountsAggregates {
+  total: number;
+  totalAmountOff: number;
+}
+
+export interface DoveTechDiscountsResponseCost {
+  name: string;
+  value: number;
+  totalAmountOff: number;
+  // actions: DoveTechDiscountsResponseAction[];
+}
