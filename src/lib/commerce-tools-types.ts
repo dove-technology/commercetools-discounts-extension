@@ -19,6 +19,22 @@ export interface CommerceToolsPrice {
   country: string;
 }
 
+export interface CommerceToolsAction {
+  action: string;
+  [key: string]: any;
+}
+
+export interface SetLineItemTotalPriceAction extends CommerceToolsAction {
+  action: "setLineItemTotalPrice";
+  lineItemId: string;
+  externalTotalPrice: ExternalLineItemTotalPrice;
+}
+
+export interface ExternalLineItemTotalPrice {
+  price: Money;
+  totalPrice: Money;
+}
+
 export interface CommerceToolsMoney {
   type: string;
   currencyCode: string;
@@ -26,7 +42,7 @@ export interface CommerceToolsMoney {
   fractionDigits: number;
 }
 
-export interface CommerceToolsAction {
-  action: string;
-  [key: string]: any;
+export interface Money {
+  currencyCode: string;
+  centAmount: number;
 }

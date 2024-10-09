@@ -51,11 +51,10 @@ export interface DoveTechDiscountsResponse {
   costs: DoveTechDiscountsResponseCost[];
 }
 
-export interface DoveTechDiscountsResponseBasket
-  extends DoveTechDiscountsBasket {
+export interface DoveTechDiscountsResponseBasket {
   total: number;
   totalAmountOff: number;
-  lineItems: DoveTechDiscountsResponseLineItem[];
+  items: DoveTechDiscountsResponseLineItem[];
 }
 
 export interface DoveTechDiscountsResponseLineItem {
