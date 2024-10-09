@@ -1,9 +1,13 @@
 import {
   CommerceToolsAction,
   CommerceToolsCart,
+  CommerceToolsLineItem,
   SetLineItemTotalPriceAction,
 } from "./commerce-tools-types";
-import { DoveTechDiscountsResponse } from "./dovetech-types";
+import {
+  DoveTechDiscountsResponse,
+  DoveTechDiscountsResponseLineItem,
+} from "./dovetech-types";
 
 export default (
   dtResponse: DoveTechDiscountsResponse,
@@ -11,30 +15,33 @@ export default (
 ): CommerceToolsAction[] => {
   const currencyCode = commerceToolsCart.totalPrice.currencyCode;
 
-  let ctActions: CommerceToolsAction[] = [];
+  const dtBasketItems = dtResponse.basket?.items ?? [];
 
-  for (let i = 0; i < (dtResponse.basket?.items.length ?? 0); i++) {
-    if (dtResponse.basket?.items[i].totalAmountOff) {
-      const ctLineItem = commerceToolsCart.lineItems[i];
+  return dtBasketItems
+    .filter((item) => item.totalAmountOff)
+    .map((item, index) => {
+      const ctLineItem = commerceToolsCart.lineItems[index];
+      return buildSetLineItemTotalPriceAction(item, ctLineItem, currencyCode);
+    });
+};
 
-      const setLineItemTotalPriceAction: SetLineItemTotalPriceAction = {
-        action: "setLineItemTotalPrice",
-        lineItemId: ctLineItem.id,
-        externalTotalPrice: {
-          price: {
-            currencyCode,
-            centAmount: ctLineItem.price.value.centAmount,
-          },
-          totalPrice: {
-            currencyCode,
-            centAmount: dtResponse.basket.items[i].total * 100,
-          },
-        },
-      };
-
-      ctActions.push(setLineItemTotalPriceAction);
-    }
-  }
-
-  return ctActions;
+const buildSetLineItemTotalPriceAction = (
+  dtLineItem: DoveTechDiscountsResponseLineItem,
+  ctLineItem: CommerceToolsLineItem,
+  currencyCode: string
+): SetLineItemTotalPriceAction => {
+  return {
+    action: "setLineItemTotalPrice",
+    lineItemId: ctLineItem.id,
+    externalTotalPrice: {
+      price: {
+        currencyCode,
+        centAmount: ctLineItem.price.value.centAmount,
+      },
+      totalPrice: {
+        currencyCode,
+        centAmount: dtLineItem.total * 100,
+      },
+    },
+  };
 };
