@@ -6,6 +6,7 @@ import type {
   DoveTechDiscountsResponseLineItem,
 } from "./dovetech-types";
 import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
+import CommerceToolsLineItemBuilder from "./test-helpers/commerce-tools-line-item-builder";
 
 it("should return an no actions if there are no items in the DoveTech response", () => {
   const ctCart = new CommerceToolsCartBuilder("USD").build();
@@ -23,8 +24,14 @@ it("should return an no actions if there are no items in the DoveTech response",
 });
 
 it("should map DoveTech response items to CommerceTools actions", () => {
+  const originalLineItemCentAmount = 40000;
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    "USD"
+  ).build();
+
   const ctCart = new CommerceToolsCartBuilder("USD")
-    .addBasicLineItem(40000)
+    .addLineItem(lineItem)
     .build();
 
   const dtResponse: DoveTechDiscountsResponse = {
@@ -46,11 +53,11 @@ it("should map DoveTech response items to CommerceTools actions", () => {
 
   const expectedAction: SetLineItemTotalPriceAction = {
     action: "setLineItemTotalPrice",
-    lineItemId: "74b79e43-ec38-4a99-88a5-e2f6cec9d749",
+    lineItemId: lineItem.id,
     externalTotalPrice: {
       price: {
         currencyCode: "USD",
-        centAmount: 40000,
+        centAmount: originalLineItemCentAmount,
       },
       totalPrice: {
         currencyCode: "USD",

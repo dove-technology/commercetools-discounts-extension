@@ -11,34 +11,19 @@ export default class CommerceToolsCartBuilder {
     private readonly fractionDigits: number = 2
   ) {}
 
-  addBasicLineItem(centAmount: number, quantity: number = 1): this {
-    this.lineItems.push({
-      id: "74b79e43-ec38-4a99-88a5-e2f6cec9d749",
-      productId: "a926d9c8-6250-46a4-8e50-5336f8debd17",
-      productKey: "product1",
-      quantity,
-      name: {
-        en: "Product 1",
-      },
-      productSlug: {
-        en: "product-1",
-      },
-      variant: {
-        sku: "variant-1",
-      },
-      price: {
-        value: {
-          centAmount,
-          currencyCode: "GBP",
-          fractionDigits: 2,
-          type: "centPrecision",
-        },
-      },
-    });
-    return this;
-  }
-
   addLineItem(lineItem: CommerceToolsLineItem): this {
+    if (lineItem.price.value.currencyCode !== this.currencyCode) {
+      throw new Error(
+        `Currency code of line item price ${lineItem.price.value.currencyCode} does not match the currency code of the cart ${this.currencyCode}`
+      );
+    }
+
+    if (lineItem.price.value.fractionDigits !== this.fractionDigits) {
+      throw new Error(
+        `Fraction digits of line item price ${lineItem.price.value.fractionDigits} does not match the fraction digits of the cart ${this.fractionDigits}`
+      );
+    }
+
     this.lineItems.push(lineItem);
     return this;
   }
