@@ -1,0 +1,238 @@
+{
+  "type": "Cart",
+  "id": "1ef6d536-d5bf-401c-9e4b-59a06097388f",
+  "version": 4,
+  "versionModifiedAt": "2024-10-09T08:33:10.060Z",
+  "lastMessageSequenceNumber": 1,
+  "createdAt": "2024-10-09T08:33:10.060Z",
+  "lastModifiedAt": "2024-10-09T08:33:10.060Z",
+  "lastModifiedBy": {
+    "clientId": "d7lbseVjXS6hyBFgODXS0zUE",
+    "isPlatformClient": false,
+    "anonymousId": "1bd24148-fbff-4c36-968f-a919928ddb5f"
+  },
+  "createdBy": {
+    "clientId": "d7lbseVjXS6hyBFgODXS0zUE",
+    "isPlatformClient": false,
+    "anonymousId": "1bd24148-fbff-4c36-968f-a919928ddb5f"
+  },
+  "anonymousId": "1bd24148-fbff-4c36-968f-a919928ddb5f",
+  "lineItems": [
+    {
+      "id": "0ca43fc9-b5c6-49da-abe0-48d0ea834a67",
+      "productId": "e98c8715-66f4-4ad8-a2ab-194c675e7ec0",
+      "productKey": "pink-abstract-painting",
+      "name": {
+        "en-GB": "Pink Abstract Painting",
+        "de-DE": "Abstrakte Rosa Malerei",
+        "en-US": "Pink Abstract Painting"
+      },
+      "productType": {
+        "typeId": "product-type",
+        "id": "bb9d08ce-9142-42e5-b04f-92a54f222fab",
+        "version": 1
+      },
+      "productSlug": {
+        "en-GB": "pink-abstract-painting",
+        "de-DE": "rosa-abstrakte-malerei",
+        "en-US": "pink-abstract-painting"
+      },
+      "variant": {
+        "id": 1,
+        "sku": "PAP-01",
+        "prices": [
+          {
+            "id": "5b6c4753-f7d8-4140-a150-80f2e2cdaac4",
+            "value": {
+              "type": "centPrecision",
+              "currencyCode": "EUR",
+              "centAmount": 5999,
+              "fractionDigits": 2
+            },
+            "country": "DE"
+          },
+          {
+            "id": "9437f2b4-7f8a-4dd6-86e2-f76847161be8",
+            "value": {
+              "type": "centPrecision",
+              "currencyCode": "GBP",
+              "centAmount": 5999,
+              "fractionDigits": 2
+            },
+            "country": "GB"
+          },
+          {
+            "id": "6a3b37ba-1ae8-438f-b941-541a4827e7fc",
+            "value": {
+              "type": "centPrecision",
+              "currencyCode": "USD",
+              "centAmount": 5999,
+              "fractionDigits": 2
+            },
+            "country": "US"
+          }
+        ],
+        "images": [
+          {
+            "url": "https://storage.googleapis.com/merchant-center-europe/sample-data/b2c-lifestyle/Pink_Abstract_Painting-1.1.jpeg",
+            "dimensions": { "w": 3873, "h": 3873 }
+          }
+        ],
+        "attributes": [
+          {
+            "name": "productspec",
+            "value": {
+              "en-GB": "- Acrylic on canvas\n- 2ft by 2ft",
+              "de-DE": "- Acryl auf Leinwand\n- 2 Fuß mal 2 Fuß",
+              "en-US": "- Acrylic on canvas\n- 2ft by 2ft"
+            }
+          },
+          {
+            "name": "color",
+            "value": {
+              "en-GB": "Pink:#FFC0CB",
+              "de-DE": "Rosa:#FFC0CB",
+              "en-US": "Pink:#FFC0CB"
+            }
+          }
+        ],
+        "assets": [],
+        "availability": {
+          "isOnStock": true,
+          "availableQuantity": 95,
+          "version": 1,
+          "id": "8d614370-0231-4004-917f-ceb89ffa6a25"
+        }
+      },
+      "price": {
+        "id": "5b6c4753-f7d8-4140-a150-80f2e2cdaac4",
+        "value": {
+          "type": "centPrecision",
+          "currencyCode": "EUR",
+          "centAmount": 5999,
+          "fractionDigits": 2
+        },
+        "country": "DE"
+      },
+      "quantity": 1,
+      "discountedPricePerQuantity": [],
+      "taxRate": {
+        "name": "Standard VAT for Germany",
+        "amount": 0.19,
+        "includedInPrice": true,
+        "country": "DE",
+        "id": "ZY0LaL72",
+        "key": "vat-standard-de",
+        "subRates": []
+      },
+      "perMethodTaxRate": [],
+      "addedAt": "2024-10-09T08:33:10.182Z",
+      "lastModifiedAt": "2024-10-09T08:33:10.182Z",
+      "state": [
+        {
+          "quantity": 1,
+          "state": {
+            "typeId": "state",
+            "id": "4dc9254c-63f1-438d-933a-3390f58e7451"
+          }
+        }
+      ],
+      "priceMode": "Platform",
+      "lineItemMode": "Standard",
+      "totalPrice": {
+        "type": "centPrecision",
+        "currencyCode": "EUR",
+        "centAmount": 5999,
+        "fractionDigits": 2
+      },
+      "taxedPrice": {
+        "totalNet": {
+          "type": "centPrecision",
+          "currencyCode": "EUR",
+          "centAmount": 5041,
+          "fractionDigits": 2
+        },
+        "totalGross": {
+          "type": "centPrecision",
+          "currencyCode": "EUR",
+          "centAmount": 5999,
+          "fractionDigits": 2
+        },
+        "taxPortions": [
+          {
+            "rate": 0.19,
+            "amount": {
+              "type": "centPrecision",
+              "currencyCode": "EUR",
+              "centAmount": 958,
+              "fractionDigits": 2
+            },
+            "name": "Standard VAT for Germany"
+          }
+        ],
+        "totalTax": {
+          "type": "centPrecision",
+          "currencyCode": "EUR",
+          "centAmount": 958,
+          "fractionDigits": 2
+        }
+      },
+      "taxedPricePortions": []
+    }
+  ],
+  "cartState": "Active",
+  "totalPrice": {
+    "type": "centPrecision",
+    "currencyCode": "EUR",
+    "centAmount": 5999,
+    "fractionDigits": 2
+  },
+  "taxedPrice": {
+    "totalNet": {
+      "type": "centPrecision",
+      "currencyCode": "EUR",
+      "centAmount": 5041,
+      "fractionDigits": 2
+    },
+    "totalGross": {
+      "type": "centPrecision",
+      "currencyCode": "EUR",
+      "centAmount": 5999,
+      "fractionDigits": 2
+    },
+    "taxPortions": [
+      {
+        "rate": 0.19,
+        "amount": {
+          "type": "centPrecision",
+          "currencyCode": "EUR",
+          "centAmount": 958,
+          "fractionDigits": 2
+        },
+        "name": "Standard VAT for Germany"
+      }
+    ],
+    "totalTax": {
+      "type": "centPrecision",
+      "currencyCode": "EUR",
+      "centAmount": 958,
+      "fractionDigits": 2
+    }
+  },
+  "country": "DE",
+  "shippingMode": "Single",
+  "shippingAddress": { "country": "DE" },
+  "shipping": [],
+  "customLineItems": [],
+  "discountCodes": [],
+  "directDiscounts": [],
+  "inventoryMode": "None",
+  "taxMode": "Platform",
+  "taxRoundingMode": "HalfEven",
+  "taxCalculationMode": "LineItemLevel",
+  "deleteDaysAfterLastModification": 90,
+  "refusedGifts": [],
+  "origin": "Customer",
+  "itemShippingAddresses": [],
+  "totalLineItemQuantity": 1
+}
