@@ -36,6 +36,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
     .addLineItem(lineItem)
     .build();
 
+  // these amounts cause issues when multiplying in Vanilla JavaScript, so using them in the test here
   const dtResponse: DoveTechDiscountsResponse = {
     basket: {
       totalAmountOff: 2.2,
