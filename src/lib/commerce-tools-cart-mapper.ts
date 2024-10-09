@@ -1,6 +1,9 @@
 // map commerce tools cart to dovetech request
 
-import { CommerceToolsCart } from "./commerce-tools-types";
+import {
+  CommerceToolsCart,
+  CommerceToolsLineItem,
+} from "./commerce-tools-types";
 import {
   DoveTechDiscountsBasket,
   DoveTechDiscountsCost,
@@ -18,7 +21,7 @@ export default (
   const basket: DoveTechDiscountsBasket = {
     items: commerceToolsCart.lineItems.map((lineItem) => ({
       quantity: lineItem.quantity,
-      price: lineItem.price.value.centAmount / 100, // todo: handle fractionDigits
+      price: getLineItemPrice(lineItem),
     })),
   };
 
@@ -42,4 +45,13 @@ export default (
     context,
     settings,
   };
+};
+
+const getLineItemPrice = (lineItem: CommerceToolsLineItem) => {
+  const centAmount =
+    lineItem.price.discounted?.value?.centAmount !== undefined
+      ? lineItem.price.discounted.value.centAmount
+      : lineItem.price.value.centAmount;
+
+  return centAmount / 100;
 };

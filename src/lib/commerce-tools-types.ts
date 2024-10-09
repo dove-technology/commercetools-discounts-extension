@@ -49,7 +49,7 @@ export interface Money {
 
 export interface Price {
   value: CentPrecisionMoney; // Should be TypedMoney
-  discounted: DiscountedPrice | undefined;
+  discounted?: DiscountedPrice;
 }
 
 export interface DiscountedPrice {
