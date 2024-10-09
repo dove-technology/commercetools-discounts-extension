@@ -2,7 +2,7 @@ export interface CommerceToolsCart {
   id: string;
   version: number;
   lineItems: CommerceToolsLineItem[];
-  totalPrice: CommerceToolsMoney;
+  totalPrice: CentPrecisionMoney;
 }
 
 export interface CommerceToolsLineItem {
@@ -10,12 +10,12 @@ export interface CommerceToolsLineItem {
   productId: string;
   quantity: number;
   // totalPrice: CommerceToolsMoney;
-  price: CommerceToolsPrice;
+  price: Price;
 }
 
 export interface CommerceToolsPrice {
   id: string;
-  value: CommerceToolsMoney;
+  value: CentPrecisionMoney;
   country: string;
 }
 
@@ -35,7 +35,7 @@ export interface ExternalLineItemTotalPrice {
   totalPrice: Money;
 }
 
-export interface CommerceToolsMoney {
+export interface CentPrecisionMoney {
   type: string;
   currencyCode: string;
   centAmount: number;
@@ -45,4 +45,13 @@ export interface CommerceToolsMoney {
 export interface Money {
   currencyCode: string;
   centAmount: number;
+}
+
+export interface Price {
+  value: CentPrecisionMoney; // Should be TypedMoney
+  discounted: DiscountedPrice | undefined;
+}
+
+export interface DiscountedPrice {
+  value: CentPrecisionMoney; // Should be TypedMoney
 }
