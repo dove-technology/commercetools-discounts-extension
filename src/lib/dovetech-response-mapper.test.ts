@@ -1,27 +1,14 @@
 import { it, expect } from "vitest";
 import map from "./dovetech-response-mapper";
-import type {
-  CommerceToolsCart,
-  CommerceToolsLineItem,
-  SetLineItemTotalPriceAction,
-} from "./commerce-tools-types";
+import type { SetLineItemTotalPriceAction } from "./commerce-tools-types";
 import type {
   DoveTechDiscountsResponse,
   DoveTechDiscountsResponseLineItem,
 } from "./dovetech-types";
+import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
 
 it("should return an no actions if there are no items in the DoveTech response", () => {
-  const commerceToolsCart: CommerceToolsCart = {
-    id: "71574d33-b6a5-4b15-8160-ed1a9e18003a",
-    version: 1,
-    totalPrice: {
-      currencyCode: "USD",
-      centAmount: 0,
-      fractionDigits: 2,
-      type: "centPrecision",
-    },
-    lineItems: [],
-  };
+  const ctCart = new CommerceToolsCartBuilder("USD").build();
 
   const dtResponse: DoveTechDiscountsResponse = {
     basket: { items: [], total: 0, totalAmountOff: 0 },
@@ -31,28 +18,14 @@ it("should return an no actions if there are no items in the DoveTech response",
     costs: [],
   };
 
-  const result = map(dtResponse, commerceToolsCart);
+  const result = map(dtResponse, ctCart);
   expect(result).toEqual([]);
 });
 
 it("should map DoveTech response items to CommerceTools actions", () => {
-  const commerceToolsCart: CommerceToolsCart = {
-    id: "71574d33-b6a5-4b15-8160-ed1a9e18003a",
-    version: 1,
-    totalPrice: {
-      currencyCode: "USD",
-      centAmount: 40000,
-      fractionDigits: 2,
-      type: "centPrecision",
-    },
-    lineItems: [
-      {
-        id: "lineItem1",
-        price: { value: { centAmount: 40000 } },
-        quantity: 1,
-      } as CommerceToolsLineItem,
-    ],
-  };
+  const ctCart = new CommerceToolsCartBuilder("USD")
+    .addBasicLineItem(40000)
+    .build();
 
   const dtResponse: DoveTechDiscountsResponse = {
     basket: {
@@ -73,7 +46,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
 
   const expectedAction: SetLineItemTotalPriceAction = {
     action: "setLineItemTotalPrice",
-    lineItemId: "lineItem1",
+    lineItemId: "74b79e43-ec38-4a99-88a5-e2f6cec9d749",
     externalTotalPrice: {
       price: {
         currencyCode: "USD",
@@ -86,7 +59,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
     },
   };
 
-  const result = map(dtResponse, commerceToolsCart);
+  const result = map(dtResponse, ctCart);
   expect(result).toEqual([expectedAction]);
 });
 
