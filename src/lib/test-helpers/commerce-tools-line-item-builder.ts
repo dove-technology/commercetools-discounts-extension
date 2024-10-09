@@ -1,5 +1,6 @@
 import {
   CommerceToolsLineItem,
+  DiscountedPrice,
   LocalizedString,
 } from "../commerce-tools-types";
 import crypto from "crypto";
@@ -12,6 +13,7 @@ export default class CommerceToolsLineItemBuilder {
   private name: LocalizedString = { en: "Product 1" };
   private productSlug: LocalizedString = { en: "product-1" };
   private sku: string = "variant-1";
+  private discountedPrice?: DiscountedPrice;
 
   constructor(
     private readonly centAmount: number,
@@ -54,6 +56,18 @@ export default class CommerceToolsLineItemBuilder {
     return this;
   }
 
+  setDiscountedPrice(centAmount: number): this {
+    this.discountedPrice = {
+      value: {
+        centAmount,
+        currencyCode: this.currencyCode,
+        fractionDigits: this.fractionDigits,
+        type: "centPrecision",
+      },
+    };
+    return this;
+  }
+
   build(): CommerceToolsLineItem {
     return {
       id: this.id,
@@ -72,6 +86,7 @@ export default class CommerceToolsLineItemBuilder {
           fractionDigits: this.fractionDigits,
           type: "centPrecision",
         },
+        discounted: this.discountedPrice,
       },
     };
   }

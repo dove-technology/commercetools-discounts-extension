@@ -1,61 +1,32 @@
 import { test, expect } from "vitest";
 import cartMapper from "./commerce-tools-cart-mapper";
-import { CommerceToolsCart } from "./commerce-tools-types";
 import { DoveTechDiscountsDataInstance } from "./dovetech-types";
+import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
+import CommerceToolsLineItemBuilder from "./test-helpers/commerce-tools-line-item-builder";
 
 test("single line item mapped correctly", async () => {
   const currencyCode = "USD";
-  const productId = "3e468095-1b3d-4ef1-99d5-827dc025a662";
+  const originalLineItemCentAmount = 5000;
 
-  const cartId = "36a9ece3-7fed-4eed-90d6-dce8c7eed5a4";
-  const lineItemId = "26cd7f70-f0ae-46a6-9704-8fce5a05b529";
-  const productKey = "product-key";
-  const productNameLocalisedString = { en: "Product Name" };
-  const productSlug = { en: "product-slug" };
-  const variant = { sku: "variant-sku" };
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    currencyCode
+  )
+    .setQuantity(2)
+    .build();
 
-  const commerceToolsCart: CommerceToolsCart = {
-    id: cartId,
-    version: 0,
-    lineItems: [
-      {
-        id: lineItemId,
-        productId: productId,
-        productKey: productKey,
-        name: productNameLocalisedString,
-        productSlug: productSlug,
-        variant,
-        quantity: 2,
-        price: {
-          value: {
-            centAmount: 5000,
-            currencyCode,
-            fractionDigits: 2,
-            type: "centPrecision",
-          },
-        },
-      },
-    ],
-    totalPrice: {
-      currencyCode,
-      centAmount: 10000,
-      fractionDigits: 2,
-      type: "centPrecision",
-    },
-  };
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addLineItem(lineItem)
+    .build();
 
-  const result = cartMapper(
-    commerceToolsCart,
-    DoveTechDiscountsDataInstance.Live,
-    false
-  );
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
 
   expect(result.basket.items).toHaveLength(1);
   const mappedLineItem = result.basket.items[0];
   expect(mappedLineItem.quantity).toBe(2);
   expect(mappedLineItem.price).toBe(50);
-  expect(mappedLineItem.productId).toBe(productId);
-  expect(mappedLineItem.productKey).toBe(productKey);
+  expect(mappedLineItem.productId).toBe(lineItem.productId);
+  expect(mappedLineItem.productKey).toBe(lineItem.productKey);
 
   expect(result.context?.currencyCode).toBe(currencyCode);
   expect(result.settings.commit).toBe(false);
@@ -63,50 +34,21 @@ test("single line item mapped correctly", async () => {
 
 test("line item with discounted price mapped correctly", async () => {
   const currencyCode = "USD";
+  const originalLineItemCentAmount = 5000;
 
-  const commerceToolsCart: CommerceToolsCart = {
-    id: "36a9ece3-7fed-4eed-90d6-dce8c7eed5a4",
-    version: 1,
-    lineItems: [
-      {
-        id: "26cd7f70-f0ae-46a6-9704-8fce5a05b529",
-        productId: "3e468095-1b3d-4ef1-99d5-827dc025a662",
-        productKey: "product-key",
-        name: { en: "Product Name" },
-        productSlug: { en: "product-slug" },
-        variant: { sku: "variant-sku" },
-        quantity: 2,
-        price: {
-          value: {
-            centAmount: 5000,
-            currencyCode,
-            fractionDigits: 2,
-            type: "centPrecision",
-          },
-          discounted: {
-            value: {
-              centAmount: 4000,
-              currencyCode,
-              fractionDigits: 2,
-              type: "centPrecision",
-            },
-          },
-        },
-      },
-    ],
-    totalPrice: {
-      currencyCode,
-      centAmount: 8000,
-      fractionDigits: 2,
-      type: "centPrecision",
-    },
-  };
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    currencyCode
+  )
+    .setDiscountedPrice(4000)
+    .setQuantity(2)
+    .build();
 
-  const result = cartMapper(
-    commerceToolsCart,
-    DoveTechDiscountsDataInstance.Live,
-    false
-  );
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addLineItem(lineItem)
+    .build();
+
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
 
   expect(result.basket.items).toHaveLength(1);
   expect(result.basket.items[0].quantity).toBe(2);
@@ -118,23 +60,9 @@ test("line item with discounted price mapped correctly", async () => {
 test("empty cart mapped correctly", async () => {
   const currencyCode = "USD";
 
-  const commerceToolsCart: CommerceToolsCart = {
-    id: "36a9ece3-7fed-4eed-90d6-dce8c7eed5a4",
-    version: 0,
-    lineItems: [],
-    totalPrice: {
-      currencyCode,
-      centAmount: 0,
-      fractionDigits: 2,
-      type: "centPrecision",
-    },
-  };
+  const ctCart = new CommerceToolsCartBuilder(currencyCode).build();
 
-  const result = cartMapper(
-    commerceToolsCart,
-    DoveTechDiscountsDataInstance.Live,
-    false
-  );
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
 
   expect(result.basket.items).toHaveLength(0);
   expect(result.context?.currencyCode).toBe(currencyCode);
