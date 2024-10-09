@@ -15,8 +15,8 @@ export const proxy = async (
     DoveTechDiscountsDataInstance.Live,
     false
   );
-  // console.log("######### commerceToolsCart:");
-  // console.log(JSON.stringify(commerceToolsCart));
+  console.log("######### commerceToolsCart:");
+  console.log(JSON.stringify(commerceToolsCart));
 
   // need to handle non successful responses and map to errors
   var dovetechResponse = await evaluate(doveTechRequest);

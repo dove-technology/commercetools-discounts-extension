@@ -32,8 +32,6 @@ export default (
         },
       };
 
-      console.log(setLineItemTotalPriceAction);
-
       ctActions.push(setLineItemTotalPriceAction);
     }
   }
