@@ -21,7 +21,14 @@ export const proxy = async (
   // need to handle non successful responses and map to errors
   var dovetechResponse = await evaluate(doveTechRequest);
 
+  console.log("######### dovetechResponse:");
+  console.log(JSON.stringify(dovetechResponse));
+
+  const actions = responseMapper(dovetechResponse, commerceToolsCart);
   // console.log(JSON.stringify(dovetechResponse));
 
-  return responseMapper(dovetechResponse, commerceToolsCart);
+  console.log("######### actions:");
+  console.log(JSON.stringify(actions));
+
+  return actions;
 };

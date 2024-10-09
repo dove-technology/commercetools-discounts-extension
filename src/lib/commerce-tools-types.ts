@@ -8,9 +8,13 @@ export interface CommerceToolsCart {
 export interface CommerceToolsLineItem {
   id: string;
   productId: string;
+  productKey: string;
   quantity: number;
-  // totalPrice: CommerceToolsMoney;
+  name: LocalizedString;
+  productSlug: LocalizedString;
+  variant: ProductVariant;
   price: Price;
+  // CustomFields
 }
 
 export interface CommerceToolsPrice {
@@ -54,4 +58,13 @@ export interface Price {
 
 export interface DiscountedPrice {
   value: CentPrecisionMoney; // Should be TypedMoney
+}
+
+export interface LocalizedString {
+  [key: string]: string;
+}
+
+export interface ProductVariant {
+  sku: string;
+  // attributes
 }

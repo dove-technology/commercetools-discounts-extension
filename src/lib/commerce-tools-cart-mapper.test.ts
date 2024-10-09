@@ -5,14 +5,26 @@ import { DoveTechDiscountsDataInstance } from "./dovetech-types";
 
 test("single line item mapped correctly", async () => {
   const currencyCode = "USD";
+  const productId = "3e468095-1b3d-4ef1-99d5-827dc025a662";
+
+  const cartId = "36a9ece3-7fed-4eed-90d6-dce8c7eed5a4";
+  const lineItemId = "26cd7f70-f0ae-46a6-9704-8fce5a05b529";
+  const productKey = "product-key";
+  const productNameLocalisedString = { en: "Product Name" };
+  const productSlug = { en: "product-slug" };
+  const variant = { sku: "variant-sku" };
 
   const commerceToolsCart: CommerceToolsCart = {
-    id: "36a9ece3-7fed-4eed-90d6-dce8c7eed5a4",
+    id: cartId,
     version: 0,
     lineItems: [
       {
-        id: "26cd7f70-f0ae-46a6-9704-8fce5a05b529",
-        productId: "3e468095-1b3d-4ef1-99d5-827dc025a662",
+        id: lineItemId,
+        productId: productId,
+        productKey: productKey,
+        name: productNameLocalisedString,
+        productSlug: productSlug,
+        variant,
         quantity: 2,
         price: {
           value: {
@@ -39,8 +51,12 @@ test("single line item mapped correctly", async () => {
   );
 
   expect(result.basket.items).toHaveLength(1);
-  expect(result.basket.items[0].quantity).toBe(2);
-  expect(result.basket.items[0].price).toBe(50);
+  const mappedLineItem = result.basket.items[0];
+  expect(mappedLineItem.quantity).toBe(2);
+  expect(mappedLineItem.price).toBe(50);
+  expect(mappedLineItem.productId).toBe(productId);
+  expect(mappedLineItem.productKey).toBe(productKey);
+
   expect(result.context?.currencyCode).toBe(currencyCode);
   expect(result.settings.commit).toBe(false);
 });
@@ -55,6 +71,10 @@ test("line item with discounted price mapped correctly", async () => {
       {
         id: "26cd7f70-f0ae-46a6-9704-8fce5a05b529",
         productId: "3e468095-1b3d-4ef1-99d5-827dc025a662",
+        productKey: "product-key",
+        name: { en: "Product Name" },
+        productSlug: { en: "product-slug" },
+        variant: { sku: "variant-sku" },
         quantity: 2,
         price: {
           value: {

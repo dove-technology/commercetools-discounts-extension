@@ -22,6 +22,8 @@ export default (
     items: commerceToolsCart.lineItems.map((lineItem) => ({
       quantity: lineItem.quantity,
       price: getLineItemPrice(lineItem),
+      productId: lineItem.productId,
+      productKey: lineItem.productKey,
     })),
   };
 
