@@ -24,13 +24,15 @@ it("should return an no actions if there are no items in the DoveTech response",
 });
 
 it("should map DoveTech response items to CommerceTools actions", () => {
+  const currencyCode = "USD";
   const originalLineItemCentAmount = 40000;
+
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    "USD"
+    currencyCode
   ).build();
 
-  const ctCart = new CommerceToolsCartBuilder("USD")
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
     .addLineItem(lineItem)
     .build();
 
@@ -56,11 +58,11 @@ it("should map DoveTech response items to CommerceTools actions", () => {
     lineItemId: lineItem.id,
     externalTotalPrice: {
       price: {
-        currencyCode: "USD",
+        currencyCode,
         centAmount: originalLineItemCentAmount,
       },
       totalPrice: {
-        currencyCode: "USD",
+        currencyCode,
         centAmount: 3780,
       },
     },

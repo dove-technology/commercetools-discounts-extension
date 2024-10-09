@@ -2,10 +2,11 @@ import {
   CommerceToolsLineItem,
   LocalizedString,
 } from "../commerce-tools-types";
+import crypto from "crypto";
 
 export default class CommerceToolsLineItemBuilder {
-  private id: string = "74b79e43-ec38-4a99-88a5-e2f6cec9d749";
-  private productId: string = "a926d9c8-6250-46a4-8e50-5336f8debd17";
+  private id: string = crypto.randomUUID();
+  private productId: string = crypto.randomUUID();
   private productKey: string = "product1";
   private quantity: number = 1;
   private name: LocalizedString = { en: "Product 1" };

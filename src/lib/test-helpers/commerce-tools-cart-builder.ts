@@ -2,6 +2,7 @@ import {
   CommerceToolsCart,
   CommerceToolsLineItem,
 } from "../commerce-tools-types";
+import crypto from "crypto";
 
 export default class CommerceToolsCartBuilder {
   private lineItems: CommerceToolsLineItem[] = [];
@@ -30,7 +31,7 @@ export default class CommerceToolsCartBuilder {
 
   build(): CommerceToolsCart {
     return {
-      id: "25427c1a-7148-4f56-a5b5-c7552d0223d5",
+      id: crypto.randomUUID(),
       version: 1,
       totalPrice: {
         currencyCode: this.currencyCode,
