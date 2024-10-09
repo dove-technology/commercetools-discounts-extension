@@ -8,6 +8,7 @@ import {
   DoveTechDiscountsResponse,
   DoveTechDiscountsResponseLineItem,
 } from "./dovetech-types";
+import Decimal from "decimal.js";
 
 export default (
   dtResponse: DoveTechDiscountsResponse,
@@ -30,6 +31,8 @@ const buildSetLineItemTotalPriceAction = (
   ctLineItem: CommerceToolsLineItem,
   currencyCode: string
 ): SetLineItemTotalPriceAction => {
+  const total = new Decimal(dtLineItem.total);
+
   return {
     action: "setLineItemTotalPrice",
     lineItemId: ctLineItem.id,
@@ -40,7 +43,7 @@ const buildSetLineItemTotalPriceAction = (
       },
       totalPrice: {
         currencyCode,
-        centAmount: dtLineItem.total * 100,
+        centAmount: total.times(100).toNumber(),
       },
     },
   };

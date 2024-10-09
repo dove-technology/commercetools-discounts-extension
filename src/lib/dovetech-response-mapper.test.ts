@@ -41,14 +41,14 @@ it("should map DoveTech response items to CommerceTools actions", () => {
     version: 1,
     totalPrice: {
       currencyCode: "USD",
-      centAmount: 1000,
+      centAmount: 40000,
       fractionDigits: 2,
       type: "centPrecision",
     },
     lineItems: [
       {
         id: "lineItem1",
-        price: { value: { centAmount: 1000 } },
+        price: { value: { centAmount: 40000 } },
         quantity: 1,
       } as CommerceToolsLineItem,
     ],
@@ -56,18 +56,18 @@ it("should map DoveTech response items to CommerceTools actions", () => {
 
   const dtResponse: DoveTechDiscountsResponse = {
     basket: {
-      total: 8.0,
-      totalAmountOff: 2.0,
+      totalAmountOff: 2.2,
+      total: 37.8,
       items: [
         {
-          totalAmountOff: 2.0,
-          total: 8.0,
+          totalAmountOff: 2.2,
+          total: 37.8,
         } as DoveTechDiscountsResponseLineItem,
       ],
     },
     actions: [], // TODO: should be set
     commitId: null,
-    aggregates: { total: 8.0, totalAmountOff: 2.0 },
+    aggregates: { total: 37.8, totalAmountOff: 2.2 },
     costs: [],
   };
 
@@ -77,11 +77,11 @@ it("should map DoveTech response items to CommerceTools actions", () => {
     externalTotalPrice: {
       price: {
         currencyCode: "USD",
-        centAmount: 1000,
+        centAmount: 40000,
       },
       totalPrice: {
         currencyCode: "USD",
-        centAmount: 800,
+        centAmount: 3780,
       },
     },
   };
