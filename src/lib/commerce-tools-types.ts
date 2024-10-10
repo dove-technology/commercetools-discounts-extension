@@ -3,6 +3,7 @@ export interface CommerceToolsCart {
   version: number;
   lineItems: CommerceToolsLineItem[];
   totalPrice: CentPrecisionMoney;
+  custom?: any;
 }
 
 export interface CommerceToolsLineItem {

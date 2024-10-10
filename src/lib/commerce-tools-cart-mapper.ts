@@ -4,6 +4,7 @@ import {
   CommerceToolsCart,
   CommerceToolsLineItem,
 } from "./commerce-tools-types";
+import { CouponCode } from "./custom-commerce-tools-types";
 import {
   DoveTechDiscountsBasket,
   DoveTechDiscountsCost,
@@ -33,6 +34,18 @@ export default (
   const context = {
     currencyCode: commerceToolsCart.totalPrice.currencyCode,
   };
+
+  const serialisedCouponCodes =
+    commerceToolsCart.custom?.fields["dovetech-couponCodes"];
+
+  if (serialisedCouponCodes) {
+    const ctCouponCodes = JSON.parse(serialisedCouponCodes) as CouponCode[];
+
+    couponCodes.push(...ctCouponCodes);
+  }
+
+  if (commerceToolsCart.custom?.fields) {
+  }
 
   const settings: DoveTechDiscountsSettings = {
     dataInstance,

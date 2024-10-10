@@ -69,4 +69,20 @@ test("empty cart mapped correctly", async () => {
   expect(result.settings.commit).toBe(false);
 });
 
+test("new coupon code mapped correctly", async () => {
+  const currencyCode = "USD";
+
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addCouponCode({ code: "TESTCODE" })
+    .build();
+
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+
+  expect(result.couponCodes).toHaveLength(1);
+});
+
+// test("existing coupon codes mapped correctly", async () => {
+
+// });
+
 // TODO: review tax, shipping, line item totals, different currencies, etc.
