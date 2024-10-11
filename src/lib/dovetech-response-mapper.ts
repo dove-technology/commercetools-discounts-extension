@@ -1,9 +1,11 @@
+import { CART_METADATA } from "./cart-constants";
 import {
   CommerceToolsAction,
   CommerceToolsCart,
   CommerceToolsLineItem,
   SetLineItemTotalPriceAction,
 } from "./commerce-tools-types";
+import { CouponCode } from "./custom-commerce-tools-types";
 import {
   DoveTechDiscountsResponse,
   DoveTechDiscountsResponseLineItem,
@@ -19,7 +21,7 @@ export default (
 
   const dtBasketItems = dtResponse.basket?.items ?? [];
 
-  return dtBasketItems
+  let actions: CommerceToolsAction[] = dtBasketItems
     .filter((item) => item.totalAmountOff)
     .map((item, index) => {
       const ctLineItem = commerceToolsCart.lineItems[index];
@@ -30,6 +32,33 @@ export default (
         fractionDigits
       );
     });
+
+  const couponCodeAcceptedActions = dtResponse.actions.filter(
+    (a) => a.type === "CouponCodeAccepted"
+  );
+
+  if (couponCodeAcceptedActions.length > 0) {
+    const couponCodes: CouponCode[] = couponCodeAcceptedActions.map((a) => ({
+      code: a.code,
+    }));
+    const serialisedCouponCodes = JSON.stringify(couponCodes);
+
+    const setCustomTypeAction = {
+      action: "setCustomType",
+      type: {
+        key: CART_METADATA,
+        typeId: "type",
+      },
+      fields: {
+        // Note. We're removing the "dovetech-cartAction" field by not setting it
+        "dovetech-couponCodes": serialisedCouponCodes,
+      },
+    };
+
+    actions.push(setCustomTypeAction);
+  }
+
+  return actions;
 };
 
 const buildSetLineItemTotalPriceAction = (

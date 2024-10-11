@@ -44,7 +44,7 @@ export enum DoveTechDiscountsDataInstance {
 }
 
 export interface DoveTechDiscountsResponse {
-  actions: DoveTechDiscountsResponseAction[];
+  actions: any[];
   basket: DoveTechDiscountsResponseBasket | null;
   commitId: string | null;
   aggregates: DoveTechDiscountsAggregates;

@@ -30,20 +30,6 @@ export const proxy = async (
 
   const actions = responseMapper(dovetechResponse, commerceToolsCart);
 
-  let serialisedValue = JSON.stringify(["coupon1", "coupon2"]);
-
-  actions.push({
-    action: "setCustomType",
-    type: {
-      key: "dovetech-cartMetadata",
-      typeId: "type",
-    },
-    fields: {
-      // we're removing the "dovetech-cartAction" field by not setting it
-      "dovetech-couponCodes": JSON.stringify(serialisedValue),
-    },
-  });
-
   console.log("######### actions:");
   console.log(JSON.stringify(actions));
 

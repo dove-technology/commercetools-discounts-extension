@@ -7,6 +7,10 @@ import type {
 } from "./dovetech-types";
 import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
 import CommerceToolsLineItemBuilder from "./test-helpers/commerce-tools-line-item-builder";
+import {
+  AddCouponCodeCartAction,
+  CartActionType,
+} from "./custom-commerce-tools-types";
 
 it("should return an no actions if there are no items in the DoveTech response", () => {
   const ctCart = new CommerceToolsCartBuilder("USD").build();
@@ -71,6 +75,49 @@ it("should map DoveTech response items to CommerceTools actions", () => {
 
   const result = map(dtResponse, ctCart);
   expect(result).toEqual([expectedAction]);
+});
+
+it("should map CouponCodeAccepted actions correctly", () => {
+  const couponCode = "TEST_COUPON";
+  const addCouponCodeAction: AddCouponCodeCartAction = {
+    type: CartActionType.AddCouponCode,
+    code: couponCode,
+  };
+
+  const ctCart = new CommerceToolsCartBuilder("USD")
+    .addCartAction(addCouponCodeAction)
+    .build();
+
+  const dtResponse: DoveTechDiscountsResponse = {
+    basket: { items: [], total: 0, totalAmountOff: 0 },
+    actions: [
+      {
+        type: "CouponCodeAccepted",
+        id: "404bea14-94ca-401e-8958-bf9ce0b88748",
+        code: couponCode,
+      },
+    ],
+    commitId: null,
+    aggregates: { total: 0, totalAmountOff: 0 },
+    costs: [],
+  };
+
+  const result = map(dtResponse, ctCart);
+  expect(result).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        action: "setCustomType",
+        type: {
+          key: "dovetech-cartMetadata",
+          typeId: "type",
+        },
+        // fields: {
+        //   // we're removing the "dovetech-cartAction" field by not setting it
+        //   "dovetech-couponCodes": JSON.stringify([ code: couponCode ]),
+        // },
+      }),
+    ])
+  );
 });
 
 //   it("should filter out items with no totalAmountOff", () => {
