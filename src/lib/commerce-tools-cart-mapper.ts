@@ -1,5 +1,6 @@
 // map commerce tools cart to dovetech request
 
+import { CART_ACTION, COUPON_CODES } from "./cart-constants";
 import {
   CommerceToolsCart,
   CommerceToolsLineItem,
@@ -39,8 +40,7 @@ export default (
     currencyCode: commerceToolsCart.totalPrice.currencyCode,
   };
 
-  const serialisedCartAction =
-    commerceToolsCart.custom?.fields["dovetech-cartAction"];
+  const serialisedCartAction = commerceToolsCart.custom?.fields[CART_ACTION];
 
   if (serialisedCartAction) {
     const cartAction: CartAction = JSON.parse(serialisedCartAction);
@@ -51,6 +51,13 @@ export default (
         code: addCouponCodeAction.code,
       });
     }
+  }
+
+  const serialisedCouponCodes = commerceToolsCart.custom?.fields[COUPON_CODES];
+
+  if (serialisedCouponCodes) {
+    const couponCodesFromCart = JSON.parse(serialisedCouponCodes);
+    couponCodes.push(...couponCodesFromCart);
   }
 
   const settings: DoveTechDiscountsSettings = {

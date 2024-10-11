@@ -90,8 +90,25 @@ test("new coupon code mapped correctly", async () => {
   expect(result.couponCodes![0].code).toBe("TEST_COUPON");
 });
 
-// test("existing coupon codes mapped correctly", async () => {
+test("existing coupon codes mapped correctly", async () => {
+  const currencyCode = "USD";
 
-// });
+  const addCouponCodeAction: AddCouponCodeCartAction = {
+    type: CartActionType.AddCouponCode,
+    code: "NEW_COUPON",
+  };
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addCartAction(addCouponCodeAction)
+    .addCouponCode({ code: "EXISTING_COUPON" })
+    .build();
 
-// TODO: review tax, shipping, line item totals, different currencies, etc.
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+
+  expect(result.couponCodes).toHaveLength(2);
+  expect(result.couponCodes).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ code: "NEW_COUPON" }),
+      expect.objectContaining({ code: "EXISTING_COUPON" }),
+    ])
+  );
+});
