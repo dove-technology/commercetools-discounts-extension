@@ -3,6 +3,10 @@ import cartMapper from "./commerce-tools-cart-mapper";
 import { DoveTechDiscountsDataInstance } from "./dovetech-types";
 import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
 import CommerceToolsLineItemBuilder from "./test-helpers/commerce-tools-line-item-builder";
+import {
+  AddCouponCodeCartAction,
+  CartActionType,
+} from "./custom-commerce-tools-types";
 
 test("single line item mapped correctly", async () => {
   const currencyCode = "USD";
@@ -72,13 +76,18 @@ test("empty cart mapped correctly", async () => {
 test("new coupon code mapped correctly", async () => {
   const currencyCode = "USD";
 
+  const addCouponCodeAction: AddCouponCodeCartAction = {
+    type: CartActionType.AddCouponCode,
+    code: "TEST_COUPON",
+  };
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
-    .addCouponCode({ code: "TESTCODE" })
+    .addCartAction(addCouponCodeAction)
     .build();
 
   const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
 
   expect(result.couponCodes).toHaveLength(1);
+  expect(result.couponCodes![0].code).toBe("TEST_COUPON");
 });
 
 // test("existing coupon codes mapped correctly", async () => {

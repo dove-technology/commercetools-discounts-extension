@@ -3,11 +3,12 @@ import {
   CommerceToolsLineItem,
 } from "../commerce-tools-types";
 import crypto from "crypto";
-import type { CouponCode } from "../custom-commerce-tools-types";
+import type { CartAction, CouponCode } from "../custom-commerce-tools-types";
 
 export default class CommerceToolsCartBuilder {
   private lineItems: CommerceToolsLineItem[] = [];
   private couponCodes: CouponCode[] = [];
+  private cartAction?: CartAction;
 
   constructor(
     private readonly currencyCode: string,
@@ -36,6 +37,11 @@ export default class CommerceToolsCartBuilder {
     return this;
   }
 
+  addCartAction(cartAction: CartAction): this {
+    this.cartAction = cartAction;
+    return this;
+  }
+
   build(): CommerceToolsCart {
     return {
       id: crypto.randomUUID(),
@@ -53,7 +59,10 @@ export default class CommerceToolsCartBuilder {
       lineItems: this.lineItems,
       custom: {
         type: { typeId: "type", id: crypto.randomUUID() },
-        fields: { "dovetech-couponCodes": JSON.stringify(this.couponCodes) },
+        fields: {
+          "dovetech-couponCodes": JSON.stringify(this.couponCodes),
+          "dovetech-cartAction": JSON.stringify(this.cartAction),
+        },
       },
     };
   }

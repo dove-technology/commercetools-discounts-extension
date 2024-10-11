@@ -10,13 +10,17 @@ import responseMapper from "./dovetech-response-mapper";
 export const proxy = async (
   commerceToolsCart: CommerceToolsCart
 ): Promise<CommerceToolsAction[]> => {
+  console.log("######### commerceToolsCart:");
+  console.log(JSON.stringify(commerceToolsCart));
+
   const doveTechRequest = map(
     commerceToolsCart,
     DoveTechDiscountsDataInstance.Live,
     false
   );
-  console.log("######### commerceToolsCart:");
-  console.log(JSON.stringify(commerceToolsCart));
+
+  console.log("######### doveTechRequest:");
+  console.log(JSON.stringify(doveTechRequest));
 
   // need to handle non successful responses and map to errors
   var dovetechResponse = await evaluate(doveTechRequest);
@@ -25,7 +29,20 @@ export const proxy = async (
   console.log(JSON.stringify(dovetechResponse));
 
   const actions = responseMapper(dovetechResponse, commerceToolsCart);
-  // console.log(JSON.stringify(dovetechResponse));
+
+  let serialisedValue = JSON.stringify(["coupon1", "coupon2"]);
+
+  actions.push({
+    action: "setCustomType",
+    type: {
+      key: "dovetech-cartMetadata",
+      typeId: "type",
+    },
+    fields: {
+      // we're removing the "dovetech-cartAction" field by not setting it
+      "dovetech-couponCodes": JSON.stringify(serialisedValue),
+    },
+  });
 
   console.log("######### actions:");
   console.log(JSON.stringify(actions));
