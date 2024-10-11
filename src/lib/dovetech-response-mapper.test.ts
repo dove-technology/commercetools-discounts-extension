@@ -103,6 +103,7 @@ it("should map CouponCodeAccepted actions correctly", () => {
   };
 
   const result = map(dtResponse, ctCart);
+
   expect(result).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
@@ -111,10 +112,9 @@ it("should map CouponCodeAccepted actions correctly", () => {
           key: "dovetech-cartMetadata",
           typeId: "type",
         },
-        // fields: {
-        //   // we're removing the "dovetech-cartAction" field by not setting it
-        //   "dovetech-couponCodes": JSON.stringify([ code: couponCode ]),
-        // },
+        fields: {
+          "dovetech-couponCodes": '[{"code":"TEST_COUPON"}]',
+        },
       }),
     ])
   );
