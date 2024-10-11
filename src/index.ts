@@ -13,10 +13,15 @@ app.post("/", (req: Request, res: Response) => {
   var cart = req.body.resource.obj;
 
   // not sure about async in Express v4 at the moment
-  proxy(cart).then((actions) => {
-    res.status(200).json({
-      actions: actions,
-    });
+  proxy(cart).then((response) => {
+    if (Array.isArray(response)) {
+      res.status(200).json({
+        actions: response,
+      });
+      return;
+    }
+
+    res.status(400).json(response);
   });
 });
 

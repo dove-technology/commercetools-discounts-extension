@@ -29,6 +29,15 @@ export interface CommerceToolsAction {
   [key: string]: any;
 }
 
+export interface ValidationFailure {
+  errors: Error[];
+}
+
+export interface Error {
+  code: string;
+  message: string;
+}
+
 export interface SetLineItemTotalPriceAction extends CommerceToolsAction {
   action: "setLineItemTotalPrice";
   lineItemId: string;

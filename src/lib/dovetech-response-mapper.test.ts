@@ -120,6 +120,83 @@ it("should map CouponCodeAccepted actions correctly", () => {
   );
 });
 
+it("CouponCodeRejected action for new coupon code should return error", () => {
+  const couponCode = "INVALID_COUPON";
+  const addCouponCodeAction: AddCouponCodeCartAction = {
+    type: CartActionType.AddCouponCode,
+    code: couponCode,
+  };
+
+  const ctCart = new CommerceToolsCartBuilder("USD")
+    .addCartAction(addCouponCodeAction)
+    .build();
+
+  const dtResponse: DoveTechDiscountsResponse = {
+    basket: { items: [], total: 0, totalAmountOff: 0 },
+    actions: [
+      {
+        type: "CouponCodeRejected",
+        id: "404bea14-94ca-401e-8958-bf9ce0b88748",
+        code: couponCode,
+        reason: "Coupon code not valid",
+      },
+    ],
+    commitId: null,
+    aggregates: { total: 0, totalAmountOff: 0 },
+    costs: [],
+  };
+
+  const result = map(dtResponse, ctCart);
+  expect(result).toEqual({
+    errors: [
+      {
+        code: "InvalidInput",
+        message: "Discount code is not applicable",
+      },
+    ],
+  });
+});
+
+it("CouponCodeRejected action for existing coupon code should remove coupon code", () => {
+  const existingCouponCode = "EXISTING_COUPON";
+
+  const ctCart = new CommerceToolsCartBuilder("USD")
+    .addCouponCode({ code: existingCouponCode })
+    .build();
+
+  const dtResponse: DoveTechDiscountsResponse = {
+    basket: { items: [], total: 0, totalAmountOff: 0 },
+    actions: [
+      {
+        type: "CouponCodeRejected",
+        id: "404bea14-94ca-401e-8958-bf9ce0b88748",
+        code: existingCouponCode,
+        reason: "Coupon code not valid",
+      },
+    ],
+    commitId: null,
+    aggregates: { total: 0, totalAmountOff: 0 },
+    costs: [],
+  };
+
+  const result = map(dtResponse, ctCart);
+
+  expect(result).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        action: "setCustomType",
+        type: {
+          key: "dovetech-cartMetadata",
+          typeId: "type",
+        },
+        fields: {
+          "dovetech-couponCodes": "[]",
+        },
+      }),
+    ])
+  );
+});
+
 //   it("should filter out items with no totalAmountOff", () => {
 //     const dtResponse: DoveTechDiscountsResponse = {
 //       basket: {

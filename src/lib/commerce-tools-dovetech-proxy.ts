@@ -1,6 +1,7 @@
 import type {
   CommerceToolsCart,
   CommerceToolsAction,
+  ValidationFailure,
 } from "./commerce-tools-types";
 import map from "./commerce-tools-cart-mapper";
 import { DoveTechDiscountsDataInstance } from "./dovetech-types";
@@ -9,7 +10,7 @@ import responseMapper from "./dovetech-response-mapper";
 
 export const proxy = async (
   commerceToolsCart: CommerceToolsCart
-): Promise<CommerceToolsAction[]> => {
+): Promise<CommerceToolsAction[] | ValidationFailure> => {
   console.log("######### commerceToolsCart:");
   console.log(JSON.stringify(commerceToolsCart));
 
@@ -28,10 +29,10 @@ export const proxy = async (
   console.log("######### dovetechResponse:");
   console.log(JSON.stringify(dovetechResponse));
 
-  const actions = responseMapper(dovetechResponse, commerceToolsCart);
+  const response = responseMapper(dovetechResponse, commerceToolsCart);
 
-  console.log("######### actions:");
-  console.log(JSON.stringify(actions));
+  console.log("######### response:");
+  console.log(JSON.stringify(response));
 
-  return actions;
+  return response;
 };
