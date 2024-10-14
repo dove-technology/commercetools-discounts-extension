@@ -17,4 +17,6 @@ jobs:
       - name: Unit Test
         run: yarn test:unit
       - name: Prettier
-        run: yarn prettier . --check
+        run: yarn prettier ./src --check
+      - name: Lint
+        run: yarn eslint ./src
