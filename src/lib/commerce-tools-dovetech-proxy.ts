@@ -1,15 +1,15 @@
 import type {
-  CommerceToolsCart,
   CommerceToolsAction,
   ValidationFailure,
 } from "./commerce-tools-types";
+import type { Cart } from "@commercetools/platform-sdk";
 import map from "./commerce-tools-cart-mapper";
 import { DoveTechDiscountsDataInstance } from "./dovetech-types";
 import { evaluate } from "./dovetech-discounts-service";
 import responseMapper from "./dovetech-response-mapper";
 
 export const proxy = async (
-  commerceToolsCart: CommerceToolsCart
+  commerceToolsCart: Cart
 ): Promise<CommerceToolsAction[] | ValidationFailure> => {
   console.log("######### commerceToolsCart:");
   console.log(JSON.stringify(commerceToolsCart));

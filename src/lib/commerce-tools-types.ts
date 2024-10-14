@@ -1,29 +1,3 @@
-export interface CommerceToolsCart {
-  id: string;
-  version: number;
-  lineItems: CommerceToolsLineItem[];
-  totalPrice: CentPrecisionMoney;
-  custom?: any;
-}
-
-export interface CommerceToolsLineItem {
-  id: string;
-  productId: string;
-  productKey: string;
-  quantity: number;
-  name: LocalizedString;
-  productSlug: LocalizedString;
-  variant: ProductVariant;
-  price: Price;
-  // CustomFields
-}
-
-export interface CommerceToolsPrice {
-  id: string;
-  value: CentPrecisionMoney;
-  country: string;
-}
-
 export interface CommerceToolsAction {
   action: string;
   [key: string]: any;

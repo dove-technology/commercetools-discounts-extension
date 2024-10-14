@@ -1,11 +1,10 @@
 import { CART_ACTION, CART_METADATA } from "./cart-constants";
 import {
   CommerceToolsAction,
-  CommerceToolsCart,
-  CommerceToolsLineItem,
   SetLineItemTotalPriceAction,
   ValidationFailure,
 } from "./commerce-tools-types";
+import type { Cart, LineItem } from "@commercetools/platform-sdk";
 import {
   AddCouponCodeCartAction,
   CartAction,
@@ -20,7 +19,7 @@ import Decimal from "decimal.js";
 
 export default (
   dtResponse: DoveTechDiscountsResponse,
-  commerceToolsCart: CommerceToolsCart
+  commerceToolsCart: Cart
 ): CommerceToolsAction[] | ValidationFailure => {
   const currencyCode = commerceToolsCart.totalPrice.currencyCode;
   const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
@@ -104,7 +103,7 @@ export default (
 
 const buildSetLineItemTotalPriceAction = (
   dtLineItem: DoveTechDiscountsResponseLineItem,
-  ctLineItem: CommerceToolsLineItem,
+  ctLineItem: LineItem,
   currencyCode: string,
   fractionDigits: number
 ): SetLineItemTotalPriceAction => {

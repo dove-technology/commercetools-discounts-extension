@@ -1,10 +1,7 @@
 // map commerce tools cart to dovetech request
 
 import { CART_ACTION, COUPON_CODES } from "./cart-constants";
-import {
-  CommerceToolsCart,
-  CommerceToolsLineItem,
-} from "./commerce-tools-types";
+import type { Cart, LineItem } from "@commercetools/platform-sdk";
 import {
   AddCouponCodeCartAction,
   CartAction,
@@ -20,7 +17,7 @@ import {
 } from "./dovetech-types";
 
 export default (
-  commerceToolsCart: CommerceToolsCart,
+  commerceToolsCart: Cart,
   dataInstance: DoveTechDiscountsDataInstance,
   commit: boolean
 ): DoveTechDiscountsRequest => {
@@ -75,7 +72,7 @@ export default (
   };
 };
 
-const getLineItemPrice = (lineItem: CommerceToolsLineItem) => {
+const getLineItemPrice = (lineItem: LineItem) => {
   const centAmount =
     lineItem.price.discounted?.value?.centAmount !== undefined
       ? lineItem.price.discounted.value.centAmount
