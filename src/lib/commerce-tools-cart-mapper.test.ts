@@ -1,4 +1,4 @@
-import { test, expect } from "vitest";
+import { test, expect, it } from "vitest";
 import cartMapper from "./commerce-tools-cart-mapper";
 import { DoveTechDiscountsDataInstance } from "./dovetech-types";
 import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
@@ -113,24 +113,36 @@ test("existing coupon codes mapped correctly", async () => {
   );
 });
 
-test("line item with price with 0 fractional digits", async () => {
-  const currencyCode = "JPY";
-  const fractionDigits = 0;
-  const originalLineItemCentAmount = 500;
-
-  const lineItem = new CommerceToolsLineItemBuilder(
-    originalLineItemCentAmount,
+it.each([
+  ["USD", 2, 5097, 50.97],
+  ["JPY", 0, 5097, 5097],
+  ["KWD", 3, 5000, 5],
+])(
+  "line item with price with %s currency and %d fractional digits",
+  async (
     currencyCode,
-    fractionDigits
-  ).build();
+    fractionDigits,
+    originalLineItemCentAmount,
+    expectedPrice
+  ) => {
+    const lineItem = new CommerceToolsLineItemBuilder(
+      originalLineItemCentAmount,
+      currencyCode,
+      fractionDigits
+    ).build();
 
-  const ctCart = new CommerceToolsCartBuilder(currencyCode, fractionDigits)
-    .addLineItem(lineItem)
-    .build();
+    const ctCart = new CommerceToolsCartBuilder(currencyCode, fractionDigits)
+      .addLineItem(lineItem)
+      .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+    const result = cartMapper(
+      ctCart,
+      DoveTechDiscountsDataInstance.Live,
+      false
+    );
 
-  expect(result.basket.items).toHaveLength(1);
-  expect(result.basket.items[0].price).toBe(500);
-  expect(result.context?.currencyCode).toBe(currencyCode);
-});
+    expect(result.basket.items).toHaveLength(1);
+    expect(result.basket.items[0].price).toBe(expectedPrice);
+    expect(result.context?.currencyCode).toBe(currencyCode);
+  }
+);
