@@ -1,10 +1,12 @@
 import { CART_ACTION, CART_METADATA } from "./cart-constants";
-import {
-  CommerceToolsAction,
-  SetLineItemTotalPriceAction,
-  ValidationFailure,
-} from "./commerce-tools-types";
-import type { Cart, LineItem } from "@commercetools/platform-sdk";
+import type {
+  Cart,
+  LineItem,
+  CartSetLineItemTotalPriceAction,
+  CartUpdateAction,
+  CartSetCustomTypeAction,
+  ErrorResponse,
+} from "@commercetools/platform-sdk";
 import {
   AddCouponCodeCartAction,
   CartAction,
@@ -20,13 +22,13 @@ import Decimal from "decimal.js";
 export default (
   dtResponse: DoveTechDiscountsResponse,
   commerceToolsCart: Cart
-): CommerceToolsAction[] | ValidationFailure => {
+): CartUpdateAction[] | ErrorResponse => {
   const currencyCode = commerceToolsCart.totalPrice.currencyCode;
   const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
 
   const dtBasketItems = dtResponse.basket?.items ?? [];
 
-  let actions: CommerceToolsAction[] = dtBasketItems
+  let actions: CartUpdateAction[] = dtBasketItems
     .filter((item) => item.totalAmountOff)
     .map((item, index) => {
       const ctLineItem = commerceToolsCart.lineItems[index];
@@ -58,6 +60,8 @@ export default (
           )
         ) {
           return {
+            statusCode: 400,
+            message: "Discount code is not applicable",
             errors: [
               {
                 code: "InvalidInput",
@@ -83,7 +87,7 @@ export default (
     }));
     const serialisedCouponCodes = JSON.stringify(couponCodes);
 
-    const setCustomTypeAction = {
+    const setCustomTypeAction: CartSetCustomTypeAction = {
       action: "setCustomType",
       type: {
         key: CART_METADATA,
@@ -106,7 +110,7 @@ const buildSetLineItemTotalPriceAction = (
   ctLineItem: LineItem,
   currencyCode: string,
   fractionDigits: number
-): SetLineItemTotalPriceAction => {
+): CartSetLineItemTotalPriceAction => {
   const total = new Decimal(dtLineItem.total);
 
   return {

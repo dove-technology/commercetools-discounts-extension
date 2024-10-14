@@ -1,6 +1,5 @@
 import { it, expect } from "vitest";
 import map from "./dovetech-response-mapper";
-import type { SetLineItemTotalPriceAction } from "./commerce-tools-types";
 import type {
   DoveTechDiscountsResponse,
   DoveTechDiscountsResponseLineItem,
@@ -11,6 +10,7 @@ import {
   AddCouponCodeCartAction,
   CartActionType,
 } from "./custom-commerce-tools-types";
+import { CartSetLineItemTotalPriceAction } from "@commercetools/platform-sdk";
 
 it("should return an no actions if there are no items in the DoveTech response", () => {
   const ctCart = new CommerceToolsCartBuilder("USD").build();
@@ -58,7 +58,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
     costs: [],
   };
 
-  const expectedAction: SetLineItemTotalPriceAction = {
+  const expectedAction: CartSetLineItemTotalPriceAction = {
     action: "setLineItemTotalPrice",
     lineItemId: lineItem.id,
     externalTotalPrice: {
@@ -148,6 +148,8 @@ it("CouponCodeRejected action for new coupon code should return error", () => {
 
   const result = map(dtResponse, ctCart);
   expect(result).toEqual({
+    statusCode: 400,
+    message: "Discount code is not applicable",
     errors: [
       {
         code: "InvalidInput",
