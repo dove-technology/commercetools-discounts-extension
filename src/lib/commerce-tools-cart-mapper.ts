@@ -1,5 +1,3 @@
-// map commerce tools cart to dovetech request
-
 import { CART_ACTION, COUPON_CODES } from "./cart-constants";
 import type { Cart, LineItem } from "@commercetools/platform-sdk";
 import {
@@ -15,6 +13,7 @@ import {
   DoveTechDiscountsRequest,
   DoveTechDiscountsSettings,
 } from "./dovetech-types";
+import Decimal from "decimal.js";
 
 export default (
   commerceToolsCart: Cart,
@@ -24,7 +23,7 @@ export default (
   const basket: DoveTechDiscountsBasket = {
     items: commerceToolsCart.lineItems.map((lineItem) => ({
       quantity: lineItem.quantity,
-      price: getLineItemPrice(lineItem),
+      price: getLineItemPriceInCurrencyUnits(lineItem),
       productId: lineItem.productId,
       productKey: lineItem.productKey,
     })),
@@ -72,11 +71,18 @@ export default (
   };
 };
 
-const getLineItemPrice = (lineItem: LineItem) => {
-  const centAmount =
-    lineItem.price.discounted?.value?.centAmount !== undefined
-      ? lineItem.price.discounted.value.centAmount
-      : lineItem.price.value.centAmount;
+const getLineItemPriceInCurrencyUnits = (lineItem: LineItem) => {
+  const price = getLineItemPrice(lineItem);
 
-  return centAmount / 100;
+  const fractionDigits = price.fractionDigits;
+
+  return new Decimal(price.centAmount)
+    .div(new Decimal(10).pow(fractionDigits))
+    .toNumber();
+};
+
+const getLineItemPrice = (lineItem: LineItem) => {
+  return lineItem.price.discounted
+    ? lineItem.price.discounted.value
+    : lineItem.price.value;
 };

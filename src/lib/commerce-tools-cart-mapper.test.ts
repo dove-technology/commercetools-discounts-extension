@@ -112,3 +112,25 @@ test("existing coupon codes mapped correctly", async () => {
     ])
   );
 });
+
+test("line item with price with 0 fractional digits", async () => {
+  const currencyCode = "JPY";
+  const fractionDigits = 0;
+  const originalLineItemCentAmount = 500;
+
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    currencyCode,
+    fractionDigits
+  ).build();
+
+  const ctCart = new CommerceToolsCartBuilder(currencyCode, fractionDigits)
+    .addLineItem(lineItem)
+    .build();
+
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+
+  expect(result.basket.items).toHaveLength(1);
+  expect(result.basket.items[0].price).toBe(500);
+  expect(result.context?.currencyCode).toBe(currencyCode);
+});
