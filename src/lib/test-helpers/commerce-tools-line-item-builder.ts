@@ -18,7 +18,7 @@ export default class CommerceToolsLineItemBuilder {
   constructor(
     private readonly centAmount: number,
     private readonly currencyCode: string,
-    private readonly fractionDigits: number = 2
+    private readonly fractionDigits: number = 2,
   ) {}
 
   setId(id: string): this {

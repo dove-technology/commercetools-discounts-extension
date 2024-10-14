@@ -4,7 +4,7 @@ import {
 } from "./dovetech-types";
 
 export const evaluate = async (
-  request: DoveTechDiscountsRequest
+  request: DoveTechDiscountsRequest,
 ): Promise<DoveTechDiscountsResponse> => {
   const DOVETECH_API_HOST = process.env.DOVETECH_API_HOST;
 
@@ -29,7 +29,7 @@ export const evaluate = async (
 
   if (!response.ok) {
     throw new Error(
-      `Non ok response from dovetech service. status: ${response.status}`
+      `Non ok response from dovetech service. status: ${response.status}`,
     );
   }
 

@@ -14,7 +14,7 @@ test("single line item mapped correctly", async () => {
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode
+    currencyCode,
   )
     .setQuantity(2)
     .build();
@@ -42,7 +42,7 @@ test("line item with discounted price mapped correctly", async () => {
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode
+    currencyCode,
   )
     .setDiscountedPrice(4000)
     .setQuantity(2)
@@ -109,7 +109,7 @@ test("existing coupon codes mapped correctly", async () => {
     expect.arrayContaining([
       expect.objectContaining({ code: "NEW_COUPON" }),
       expect.objectContaining({ code: "EXISTING_COUPON" }),
-    ])
+    ]),
   );
 });
 
@@ -123,12 +123,12 @@ it.each([
     currencyCode,
     fractionDigits,
     originalLineItemCentAmount,
-    expectedPrice
+    expectedPrice,
   ) => {
     const lineItem = new CommerceToolsLineItemBuilder(
       originalLineItemCentAmount,
       currencyCode,
-      fractionDigits
+      fractionDigits,
     ).build();
 
     const ctCart = new CommerceToolsCartBuilder(currencyCode, fractionDigits)
@@ -138,11 +138,11 @@ it.each([
     const result = cartMapper(
       ctCart,
       DoveTechDiscountsDataInstance.Live,
-      false
+      false,
     );
 
     expect(result.basket.items).toHaveLength(1);
     expect(result.basket.items[0].price).toBe(expectedPrice);
     expect(result.context?.currencyCode).toBe(currencyCode);
-  }
+  },
 );

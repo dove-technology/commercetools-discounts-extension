@@ -37,14 +37,14 @@ const invalidCouponCodeResponse: ExtensionResponse = {
 
 export default (
   dtResponse: DoveTechDiscountsResponse,
-  commerceToolsCart: Cart
+  commerceToolsCart: Cart,
 ): ExtensionResponse => {
   const dtBasketItems = dtResponse.basket?.items ?? [];
 
   let actions = getLineItemTotalPriceActions(dtBasketItems, commerceToolsCart);
 
   const couponCodeRejectedActions = dtResponse.actions.filter(
-    (a) => a.type === DoveTechActionType.CouponCodeRejected
+    (a) => a.type === DoveTechActionType.CouponCodeRejected,
   ) as CouponCodeRejectedAction[];
 
   if (newCouponCodeInvalid(couponCodeRejectedActions, commerceToolsCart)) {
@@ -52,7 +52,7 @@ export default (
   }
 
   const couponCodeAcceptedActions = dtResponse.actions.filter(
-    (a) => a.type === DoveTechActionType.CouponCodeAccepted
+    (a) => a.type === DoveTechActionType.CouponCodeAccepted,
   ) as CouponCodeRejectedAction[];
 
   if (
@@ -87,7 +87,7 @@ export default (
 
 const getLineItemTotalPriceActions = (
   dtBasketItems: DoveTechDiscountsResponseLineItem[],
-  commerceToolsCart: Cart
+  commerceToolsCart: Cart,
 ): CartUpdateAction[] => {
   const currencyCode = commerceToolsCart.totalPrice.currencyCode;
   const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
@@ -99,7 +99,7 @@ const getLineItemTotalPriceActions = (
         item,
         ctLineItem,
         currencyCode,
-        fractionDigits
+        fractionDigits,
       );
     })
     .filter((a) => {
@@ -114,7 +114,7 @@ const buildSetLineItemTotalPriceAction = (
   dtLineItem: DoveTechDiscountsResponseLineItem,
   ctLineItem: LineItem,
   currencyCode: string,
-  fractionDigits: number
+  fractionDigits: number,
 ): CartSetLineItemTotalPriceAction => {
   const total = new Decimal(dtLineItem.total);
 
@@ -136,7 +136,7 @@ const buildSetLineItemTotalPriceAction = (
 
 const newCouponCodeInvalid = (
   couponCodeRejectedActions: CouponCodeRejectedAction[],
-  commerceToolsCart: Cart
+  commerceToolsCart: Cart,
 ) => {
   if (couponCodeRejectedActions.length === 0) {
     return false;
@@ -157,6 +157,6 @@ const newCouponCodeInvalid = (
   const addCouponCodeAction = cartAction as AddCouponCodeCartAction;
 
   return couponCodeRejectedActions.some(
-    (a) => a.code === addCouponCodeAction.code
+    (a) => a.code === addCouponCodeAction.code,
   );
 };

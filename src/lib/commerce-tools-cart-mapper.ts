@@ -18,7 +18,7 @@ import Decimal from "decimal.js";
 export default (
   commerceToolsCart: Cart,
   dataInstance: DoveTechDiscountsDataInstance,
-  commit: boolean
+  commit: boolean,
 ): DoveTechDiscountsRequest => {
   const basket: DoveTechDiscountsBasket = {
     items: commerceToolsCart.lineItems.map((lineItem) => ({

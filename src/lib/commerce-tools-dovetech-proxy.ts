@@ -6,7 +6,7 @@ import responseMapper from "./dovetech-response-mapper";
 import { ExtensionResponse } from "./types";
 
 export const proxy = async (
-  commerceToolsCart: Cart
+  commerceToolsCart: Cart,
 ): Promise<ExtensionResponse> => {
   console.log("######### commerceToolsCart:");
   console.log(JSON.stringify(commerceToolsCart));
@@ -14,7 +14,7 @@ export const proxy = async (
   const doveTechRequest = map(
     commerceToolsCart,
     DoveTechDiscountsDataInstance.Live,
-    false
+    false,
   );
 
   console.log("######### doveTechRequest:");

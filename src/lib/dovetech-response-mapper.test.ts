@@ -40,7 +40,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode
+    currencyCode,
   ).build();
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
@@ -100,12 +100,12 @@ it.each([
     originalLineItemCentAmount,
     discountedLineItemCentAmount,
     amountOff,
-    total
+    total,
   ) => {
     const lineItem = new CommerceToolsLineItemBuilder(
       originalLineItemCentAmount,
       currencyCode,
-      fractionDigits
+      fractionDigits,
     ).build();
 
     const ctCart = new CommerceToolsCartBuilder(currencyCode, fractionDigits)
@@ -150,7 +150,7 @@ it.each([
       success: true,
       actions: [expectedAction],
     });
-  }
+  },
 );
 
 it("setLineItemTotalPrice actions should be returned if price from Dovetech is different to commerce tools", () => {
@@ -159,7 +159,7 @@ it("setLineItemTotalPrice actions should be returned if price from Dovetech is d
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode
+    currencyCode,
   ).build();
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
@@ -202,7 +202,7 @@ it("no actions should be returned if price from Dovetech is the same as commerce
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode
+    currencyCode,
   ).build();
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
@@ -349,7 +349,7 @@ it("should handle line item with multiple quantity", () => {
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode
+    currencyCode,
   )
     .setQuantity(2)
     .build();
@@ -406,7 +406,7 @@ it("should handle line item with multiple quantity", () => {
 
 const buildAmountOffBasketAction = (
   amountOff: number,
-  value = amountOff
+  value = amountOff,
 ): AmountOffAction => {
   return {
     id: crypto.randomUUID(),
