@@ -1,12 +1,9 @@
-import {
-  CommerceToolsCart,
-  CommerceToolsLineItem,
-} from "../commerce-tools-types";
+import type { Cart, LineItem } from "@commercetools/platform-sdk";
 import crypto from "crypto";
 import type { CartAction, CouponCode } from "../custom-commerce-tools-types";
 
 export default class CommerceToolsCartBuilder {
-  private lineItems: CommerceToolsLineItem[] = [];
+  private lineItems: LineItem[] = [];
   private couponCodes: CouponCode[] = [];
   private cartAction?: CartAction;
 
@@ -15,7 +12,7 @@ export default class CommerceToolsCartBuilder {
     private readonly fractionDigits: number = 2
   ) {}
 
-  addLineItem(lineItem: CommerceToolsLineItem): this {
+  addLineItem(lineItem: LineItem): this {
     if (lineItem.price.value.currencyCode !== this.currencyCode) {
       throw new Error(
         `Currency code of line item price ${lineItem.price.value.currencyCode} does not match the currency code of the cart ${this.currencyCode}`
@@ -42,7 +39,7 @@ export default class CommerceToolsCartBuilder {
     return this;
   }
 
-  build(): CommerceToolsCart {
+  build(): Cart {
     return {
       id: crypto.randomUUID(),
       version: 1,
@@ -64,6 +61,22 @@ export default class CommerceToolsCartBuilder {
           "dovetech-cartAction": JSON.stringify(this.cartAction),
         },
       },
+      customLineItems: [],
+      cartState: "Active",
+      taxMode: "Platform",
+      taxRoundingMode: "HalfEven",
+      taxCalculationMode: "LineItemLevel",
+      inventoryMode: "None",
+      shippingMode: "Single",
+      shippingAddress: { country: "DE" },
+      shipping: [],
+      discountCodes: [],
+      directDiscounts: [],
+      itemShippingAddresses: [],
+      refusedGifts: [],
+      origin: "Customer",
+      createdAt: "2024-10-09T08:33:10.060Z",
+      lastModifiedAt: "2024-10-09T08:33:10.060Z",
     };
   }
 }

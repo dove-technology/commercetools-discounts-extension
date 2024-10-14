@@ -1,8 +1,8 @@
-import {
-  CommerceToolsLineItem,
-  DiscountedPrice,
+import type {
+  LineItem,
   LocalizedString,
-} from "../commerce-tools-types";
+  DiscountedPrice,
+} from "@commercetools/platform-sdk";
 import crypto from "crypto";
 
 export default class CommerceToolsLineItemBuilder {
@@ -64,11 +64,15 @@ export default class CommerceToolsLineItemBuilder {
         fractionDigits: this.fractionDigits,
         type: "centPrecision",
       },
+      discount: {
+        typeId: "product-discount",
+        id: "aa979407-045c-4ba1-8460-9e44c38d8d8d",
+      },
     };
     return this;
   }
 
-  build(): CommerceToolsLineItem {
+  build(): LineItem {
     return {
       id: this.id,
       productId: this.productId,
@@ -77,9 +81,15 @@ export default class CommerceToolsLineItemBuilder {
       name: this.name,
       productSlug: this.productSlug,
       variant: {
+        id: 1,
         sku: this.sku,
       },
+      productType: {
+        typeId: "product-type",
+        id: crypto.randomUUID(),
+      },
       price: {
+        id: crypto.randomUUID(),
         value: {
           centAmount: this.centAmount,
           currencyCode: this.currencyCode,
@@ -88,6 +98,26 @@ export default class CommerceToolsLineItemBuilder {
         },
         discounted: this.discountedPrice,
       },
+      totalPrice: {
+        centAmount: this.centAmount, // TODO: this needs to be based on the quantity
+        currencyCode: this.currencyCode,
+        fractionDigits: this.fractionDigits,
+        type: "centPrecision",
+      },
+      taxedPricePortions: [],
+      discountedPricePerQuantity: [],
+      state: [
+        {
+          quantity: 1,
+          state: {
+            typeId: "state",
+            id: "4dc9254c-63f1-438d-933a-3390f58e7451",
+          },
+        },
+      ],
+      perMethodTaxRate: [],
+      priceMode: "Platform",
+      lineItemMode: "Standard",
     };
   }
 }
