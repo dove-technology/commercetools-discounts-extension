@@ -21,67 +21,34 @@ import {
 import Decimal from "decimal.js";
 import { ExtensionResponse } from "./types";
 
+const invalidCouponCodeResponse: ExtensionResponse = {
+  success: false,
+  errorResponse: {
+    statusCode: 400,
+    message: "Discount code is not applicable",
+    errors: [
+      {
+        code: "InvalidInput",
+        message: "Discount code is not applicable",
+      },
+    ],
+  },
+};
+
 export default (
   dtResponse: DoveTechDiscountsResponse,
   commerceToolsCart: Cart
 ): ExtensionResponse => {
-  const currencyCode = commerceToolsCart.totalPrice.currencyCode;
-  const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
-
   const dtBasketItems = dtResponse.basket?.items ?? [];
 
-  let actions: CartUpdateAction[] = dtBasketItems
-    .map((item, index) => {
-      const ctLineItem = commerceToolsCart.lineItems[index];
-      return buildSetLineItemTotalPriceAction(
-        item,
-        ctLineItem,
-        currencyCode,
-        fractionDigits
-      );
-    })
-    .filter((a) => {
-      return (
-        a.externalTotalPrice!.price.centAmount !==
-        a.externalTotalPrice!.totalPrice.centAmount
-      );
-    });
+  let actions = getLineItemTotalPriceActions(dtBasketItems, commerceToolsCart);
 
   const couponCodeRejectedActions = dtResponse.actions.filter(
     (a) => a.type === DoveTechActionType.CouponCodeRejected
   ) as CouponCodeRejectedAction[];
 
-  if (couponCodeRejectedActions.length > 0) {
-    // TODO: this logic is duplicated in the commerce-tools-cart-mapper
-    const serialisedCartAction = commerceToolsCart.custom?.fields[CART_ACTION];
-
-    if (serialisedCartAction) {
-      const cartAction: CartAction = JSON.parse(serialisedCartAction);
-
-      if (cartAction.type === CartActionType.AddCouponCode) {
-        const addCouponCodeAction = cartAction as AddCouponCodeCartAction;
-
-        if (
-          couponCodeRejectedActions.some(
-            (a) => a.code === addCouponCodeAction.code
-          )
-        ) {
-          return {
-            success: false,
-            errorResponse: {
-              statusCode: 400,
-              message: "Discount code is not applicable",
-              errors: [
-                {
-                  code: "InvalidInput",
-                  message: "Discount code is not applicable",
-                },
-              ],
-            },
-          };
-        }
-      }
-    }
+  if (newCouponCodeInvalid(couponCodeRejectedActions, commerceToolsCart)) {
+    return invalidCouponCodeResponse;
   }
 
   const couponCodeAcceptedActions = dtResponse.actions.filter(
@@ -118,6 +85,31 @@ export default (
   };
 };
 
+const getLineItemTotalPriceActions = (
+  dtBasketItems: DoveTechDiscountsResponseLineItem[],
+  commerceToolsCart: Cart
+): CartUpdateAction[] => {
+  const currencyCode = commerceToolsCart.totalPrice.currencyCode;
+  const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
+
+  return dtBasketItems
+    .map((item, index) => {
+      const ctLineItem = commerceToolsCart.lineItems[index];
+      return buildSetLineItemTotalPriceAction(
+        item,
+        ctLineItem,
+        currencyCode,
+        fractionDigits
+      );
+    })
+    .filter((a) => {
+      return (
+        a.externalTotalPrice!.price.centAmount !==
+        a.externalTotalPrice!.totalPrice.centAmount
+      );
+    });
+};
+
 const buildSetLineItemTotalPriceAction = (
   dtLineItem: DoveTechDiscountsResponseLineItem,
   ctLineItem: LineItem,
@@ -140,4 +132,31 @@ const buildSetLineItemTotalPriceAction = (
       },
     },
   };
+};
+
+const newCouponCodeInvalid = (
+  couponCodeRejectedActions: CouponCodeRejectedAction[],
+  commerceToolsCart: Cart
+) => {
+  if (couponCodeRejectedActions.length === 0) {
+    return false;
+  }
+
+  const serialisedCartAction = commerceToolsCart.custom?.fields[CART_ACTION];
+
+  if (!serialisedCartAction) {
+    return false;
+  }
+
+  const cartAction: CartAction = JSON.parse(serialisedCartAction);
+
+  if (cartAction.type !== CartActionType.AddCouponCode) {
+    return false;
+  }
+
+  const addCouponCodeAction = cartAction as AddCouponCodeCartAction;
+
+  return couponCodeRejectedActions.some(
+    (a) => a.code === addCouponCodeAction.code
+  );
 };
