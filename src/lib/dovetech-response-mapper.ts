@@ -29,7 +29,6 @@ export default (
   const dtBasketItems = dtResponse.basket?.items ?? [];
 
   let actions: CartUpdateAction[] = dtBasketItems
-    .filter((item) => item.totalAmountOff)
     .map((item, index) => {
       const ctLineItem = commerceToolsCart.lineItems[index];
       return buildSetLineItemTotalPriceAction(
@@ -37,6 +36,12 @@ export default (
         ctLineItem,
         currencyCode,
         fractionDigits
+      );
+    })
+    .filter((a) => {
+      return (
+        a.externalTotalPrice!.price.centAmount !==
+        a.externalTotalPrice!.totalPrice.centAmount
       );
     });
 

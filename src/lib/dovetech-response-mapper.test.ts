@@ -148,6 +148,95 @@ it.each([
   }
 );
 
+it("setLineItemTotalPrice actions should be returned if price from Dovetech is different to commerce tools", () => {
+  const currencyCode = "USD";
+  const originalLineItemCentAmount = 40000;
+
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    currencyCode
+  ).build();
+
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addLineItem(lineItem)
+    .build();
+
+  const dtResponse: DoveTechDiscountsResponse = {
+    basket: {
+      totalAmountOff: 0,
+      total: 30,
+      items: [
+        {
+          totalAmountOff: 0,
+          total: 30,
+        } as DoveTechDiscountsResponseLineItem,
+      ],
+    },
+    actions: [], // TODO: should be set
+    commitId: null,
+    aggregates: { total: 30, totalAmountOff: 0 },
+    costs: [],
+  };
+
+  const expectedAction: CartSetLineItemTotalPriceAction = {
+    action: "setLineItemTotalPrice",
+    lineItemId: lineItem.id,
+    externalTotalPrice: {
+      price: {
+        currencyCode,
+        centAmount: originalLineItemCentAmount,
+      },
+      totalPrice: {
+        currencyCode,
+        centAmount: 3000,
+      },
+    },
+  };
+
+  const result = map(dtResponse, ctCart);
+  expect(result).toEqual({
+    success: true,
+    actions: [expectedAction],
+  });
+});
+
+it("no actions should be returned if price from Dovetech is the same as commerce tools", () => {
+  const currencyCode = "USD";
+  const originalLineItemCentAmount = 3000;
+
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    currencyCode
+  ).build();
+
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addLineItem(lineItem)
+    .build();
+
+  const dtResponse: DoveTechDiscountsResponse = {
+    basket: {
+      totalAmountOff: 0,
+      total: 30,
+      items: [
+        {
+          totalAmountOff: 0,
+          total: 30,
+        } as DoveTechDiscountsResponseLineItem,
+      ],
+    },
+    actions: [],
+    commitId: null,
+    aggregates: { total: 30, totalAmountOff: 0 },
+    costs: [],
+  };
+
+  const result = map(dtResponse, ctCart);
+  expect(result).toEqual({
+    success: true,
+    actions: [],
+  });
+});
+
 it("should map CouponCodeAccepted actions correctly", () => {
   const couponCode = "TEST_COUPON";
   const addCouponCodeAction: AddCouponCodeCartAction = {
