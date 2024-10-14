@@ -21,7 +21,7 @@ export const proxy = async (
   console.log(JSON.stringify(doveTechRequest));
 
   // need to handle non successful responses and map to errors
-  var dovetechResponse = await evaluate(doveTechRequest);
+  const dovetechResponse = await evaluate(doveTechRequest);
 
   console.log("######### dovetechResponse:");
   console.log(JSON.stringify(dovetechResponse));

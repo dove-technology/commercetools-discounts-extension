@@ -4,18 +4,18 @@ export interface DoveTechDiscountsRequest {
   couponCodes: DoveTechDiscountsCouponCode[] | undefined | null;
   context: DoveTechDiscountsContext | undefined | null;
   settings: DoveTechDiscountsSettings;
-  [key: string]: any;
+  [key: string]: any; //eslint-disable-line -- these are additional properties that can be passed through to the DoveTech API
 }
 
 export interface DoveTechDiscountsBasket {
   items: DoveTechDiscountsLineItem[];
-  [key: string]: any;
+  [key: string]: any; //eslint-disable-line -- these are additional properties that can be passed through to the DoveTech API
 }
 
 export interface DoveTechDiscountsLineItem {
   quantity: number;
   price: number;
-  [key: string]: any;
+  [key: string]: any; //eslint-disable-line -- these are additional properties that can be passed through to the DoveTech API
 }
 
 export interface DoveTechDiscountsCost {
@@ -29,7 +29,7 @@ export interface DoveTechDiscountsCouponCode {
 
 export interface DoveTechDiscountsContext {
   currencyCode: string;
-  [key: string]: any;
+  [key: string]: any; //eslint-disable-line -- these are additional properties that can be passed through to the DoveTech API
 }
 
 export interface DoveTechDiscountsSettings {

@@ -41,7 +41,10 @@ export default (
 ): ExtensionResponse => {
   const dtBasketItems = dtResponse.basket?.items ?? [];
 
-  let actions = getLineItemTotalPriceActions(dtBasketItems, commerceToolsCart);
+  const actions = getLineItemTotalPriceActions(
+    dtBasketItems,
+    commerceToolsCart,
+  );
 
   const couponCodeRejectedActions = dtResponse.actions.filter(
     (a) => a.type === DoveTechActionType.CouponCodeRejected,
