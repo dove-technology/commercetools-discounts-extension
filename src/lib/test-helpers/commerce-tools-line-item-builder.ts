@@ -99,7 +99,7 @@ export default class CommerceToolsLineItemBuilder {
         discounted: this.discountedPrice,
       },
       totalPrice: {
-        centAmount: this.centAmount, // TODO: this needs to be based on the quantity
+        centAmount: this.centAmount * this.quantity,
         currencyCode: this.currencyCode,
         fractionDigits: this.fractionDigits,
         type: "centPrecision",

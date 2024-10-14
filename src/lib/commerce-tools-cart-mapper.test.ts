@@ -118,7 +118,7 @@ it.each([
   ["JPY", 0, 5097, 5097],
   ["KWD", 3, 5000, 5],
 ])(
-  "line item with price with %s currency and %d fractional digits",
+  "line item with price with %s currency and %d fractional digits mapped correctly",
   async (
     currencyCode,
     fractionDigits,

@@ -1,27 +1,26 @@
 import { it, expect } from "vitest";
 import map from "./dovetech-response-mapper";
-import type {
-  DoveTechDiscountsResponse,
-  DoveTechDiscountsResponseLineItem,
+import {
+  AmountOffAction,
+  AmountOffType,
+  CouponCodeAcceptedAction,
+  CouponCodeRejectedAction,
+  CouponCodeValidationError,
+  DoveTechActionType,
 } from "./dovetech-types";
 import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
 import CommerceToolsLineItemBuilder from "./test-helpers/commerce-tools-line-item-builder";
+import DoveTechResponseBuilder from "./test-helpers/dovetech-response-builder";
 import {
   AddCouponCodeCartAction,
   CartActionType,
 } from "./custom-commerce-tools-types";
 import { CartSetLineItemTotalPriceAction } from "@commercetools/platform-sdk";
+import crypto from "crypto";
 
-it("should return an no actions if there are no items in the DoveTech response", () => {
+it("should return an no actions if there are no line items", () => {
   const ctCart = new CommerceToolsCartBuilder("USD").build();
-
-  const dtResponse: DoveTechDiscountsResponse = {
-    basket: { items: [], total: 0, totalAmountOff: 0 },
-    actions: [],
-    commitId: null,
-    aggregates: { total: 0, totalAmountOff: 0 },
-    costs: [],
-  };
+  const dtResponse = new DoveTechResponseBuilder().build();
 
   const result = map(dtResponse, ctCart);
 
@@ -33,7 +32,11 @@ it("should return an no actions if there are no items in the DoveTech response",
 
 it("should map DoveTech response items to CommerceTools actions", () => {
   const currencyCode = "USD";
-  const originalLineItemCentAmount = 40000;
+  const originalLineItemCentAmount = 4000;
+
+  // these amounts cause issues when multiplying in Vanilla JavaScript, so using them in the test here
+  const amountOff = 2.2;
+  const total = 37.8;
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
@@ -44,23 +47,23 @@ it("should map DoveTech response items to CommerceTools actions", () => {
     .addLineItem(lineItem)
     .build();
 
-  // these amounts cause issues when multiplying in Vanilla JavaScript, so using them in the test here
-  const dtResponse: DoveTechDiscountsResponse = {
-    basket: {
-      totalAmountOff: 2.2,
-      total: 37.8,
-      items: [
+  const amountOffBasketAction: AmountOffAction =
+    buildAmountOffBasketAction(amountOff);
+
+  const dtResponse = new DoveTechResponseBuilder()
+    .addAction(amountOffBasketAction)
+    .addLineItem({
+      totalAmountOff: amountOffBasketAction.amountOff,
+      total: total,
+      actions: [
         {
-          totalAmountOff: 2.2,
-          total: 37.8,
-        } as DoveTechDiscountsResponseLineItem,
+          id: amountOffBasketAction.id,
+          subItemId: 0,
+          amountOff: amountOffBasketAction.amountOff,
+        },
       ],
-    },
-    actions: [], // TODO: should be set
-    commitId: null,
-    aggregates: { total: 37.8, totalAmountOff: 2.2 },
-    costs: [],
-  };
+    })
+    .build();
 
   const expectedAction: CartSetLineItemTotalPriceAction = {
     action: "setLineItemTotalPrice",
@@ -78,6 +81,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
   };
 
   const result = map(dtResponse, ctCart);
+
   expect(result).toEqual({
     success: true,
     actions: [expectedAction],
@@ -85,7 +89,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
 });
 
 it.each([
-  ["USD", 2, 40000, 3780, 2.2, 37.8],
+  ["USD", 2, 4000, 3780, 2.2, 37.8],
   ["JPY", 0, 400, 380, 20, 380],
   ["KWD", 3, 40999, 30999, 1.0, 30.999],
 ])(
@@ -108,22 +112,23 @@ it.each([
       .addLineItem(lineItem)
       .build();
 
-    const dtResponse: DoveTechDiscountsResponse = {
-      basket: {
-        totalAmountOff: amountOff,
+    const amountOffBasketAction: AmountOffAction =
+      buildAmountOffBasketAction(amountOff);
+
+    const dtResponse = new DoveTechResponseBuilder()
+      .addAction(amountOffBasketAction)
+      .addLineItem({
+        totalAmountOff: amountOffBasketAction.amountOff,
         total: total,
-        items: [
+        actions: [
           {
-            totalAmountOff: amountOff,
-            total: total,
-          } as DoveTechDiscountsResponseLineItem,
+            id: amountOffBasketAction.id,
+            subItemId: 0,
+            amountOff: amountOffBasketAction.amountOff,
+          },
         ],
-      },
-      actions: [],
-      commitId: null,
-      aggregates: { total: total, totalAmountOff: amountOff },
-      costs: [],
-    };
+      })
+      .build();
 
     const expectedAction: CartSetLineItemTotalPriceAction = {
       action: "setLineItemTotalPrice",
@@ -161,22 +166,13 @@ it("setLineItemTotalPrice actions should be returned if price from Dovetech is d
     .addLineItem(lineItem)
     .build();
 
-  const dtResponse: DoveTechDiscountsResponse = {
-    basket: {
+  const dtResponse = new DoveTechResponseBuilder()
+    .addLineItem({
       totalAmountOff: 0,
       total: 30,
-      items: [
-        {
-          totalAmountOff: 0,
-          total: 30,
-        } as DoveTechDiscountsResponseLineItem,
-      ],
-    },
-    actions: [], // TODO: should be set
-    commitId: null,
-    aggregates: { total: 30, totalAmountOff: 0 },
-    costs: [],
-  };
+      actions: [],
+    })
+    .build();
 
   const expectedAction: CartSetLineItemTotalPriceAction = {
     action: "setLineItemTotalPrice",
@@ -213,22 +209,13 @@ it("no actions should be returned if price from Dovetech is the same as commerce
     .addLineItem(lineItem)
     .build();
 
-  const dtResponse: DoveTechDiscountsResponse = {
-    basket: {
+  const dtResponse = new DoveTechResponseBuilder()
+    .addLineItem({
       totalAmountOff: 0,
       total: 30,
-      items: [
-        {
-          totalAmountOff: 0,
-          total: 30,
-        } as DoveTechDiscountsResponseLineItem,
-      ],
-    },
-    actions: [],
-    commitId: null,
-    aggregates: { total: 30, totalAmountOff: 0 },
-    costs: [],
-  };
+      actions: [],
+    })
+    .build();
 
   const result = map(dtResponse, ctCart);
   expect(result).toEqual({
@@ -248,19 +235,15 @@ it("should map CouponCodeAccepted actions correctly", () => {
     .addCartAction(addCouponCodeAction)
     .build();
 
-  const dtResponse: DoveTechDiscountsResponse = {
-    basket: { items: [], total: 0, totalAmountOff: 0 },
-    actions: [
-      {
-        type: "CouponCodeAccepted",
-        id: "404bea14-94ca-401e-8958-bf9ce0b88748",
-        code: couponCode,
-      },
-    ],
-    commitId: null,
-    aggregates: { total: 0, totalAmountOff: 0 },
-    costs: [],
+  const couponCodeAcceptedAction: CouponCodeAcceptedAction = {
+    type: DoveTechActionType.CouponCodeAccepted,
+    id: crypto.randomUUID(),
+    code: couponCode,
   };
+
+  const dtResponse = new DoveTechResponseBuilder()
+    .addAction(couponCodeAcceptedAction)
+    .build();
 
   const result = map(dtResponse, ctCart);
 
@@ -292,20 +275,16 @@ it("CouponCodeRejected action for new coupon code should return error", () => {
     .addCartAction(addCouponCodeAction)
     .build();
 
-  const dtResponse: DoveTechDiscountsResponse = {
-    basket: { items: [], total: 0, totalAmountOff: 0 },
-    actions: [
-      {
-        type: "CouponCodeRejected",
-        id: "404bea14-94ca-401e-8958-bf9ce0b88748",
-        code: couponCode,
-        reason: "Coupon code not valid",
-      },
-    ],
-    commitId: null,
-    aggregates: { total: 0, totalAmountOff: 0 },
-    costs: [],
+  const couponCodeRejectedAction: CouponCodeRejectedAction = {
+    type: DoveTechActionType.CouponCodeRejected,
+    id: crypto.randomUUID(),
+    code: couponCode,
+    reason: CouponCodeValidationError.NotRecognised,
   };
+
+  const dtResponse = new DoveTechResponseBuilder()
+    .addAction(couponCodeRejectedAction)
+    .build();
 
   const result = map(dtResponse, ctCart);
 
@@ -331,20 +310,16 @@ it("CouponCodeRejected action for existing coupon code should remove coupon code
     .addCouponCode({ code: existingCouponCode })
     .build();
 
-  const dtResponse: DoveTechDiscountsResponse = {
-    basket: { items: [], total: 0, totalAmountOff: 0 },
-    actions: [
-      {
-        type: "CouponCodeRejected",
-        id: "404bea14-94ca-401e-8958-bf9ce0b88748",
-        code: existingCouponCode,
-        reason: "Coupon code not valid",
-      },
-    ],
-    commitId: null,
-    aggregates: { total: 0, totalAmountOff: 0 },
-    costs: [],
+  const couponCodeRejectedAction: CouponCodeRejectedAction = {
+    type: DoveTechActionType.CouponCodeRejected,
+    id: crypto.randomUUID(),
+    code: existingCouponCode,
+    reason: CouponCodeValidationError.NotRecognised,
   };
+
+  const dtResponse = new DoveTechResponseBuilder()
+    .addAction(couponCodeRejectedAction)
+    .build();
 
   const result = map(dtResponse, ctCart);
 
@@ -365,105 +340,80 @@ it("CouponCodeRejected action for existing coupon code should remove coupon code
   });
 });
 
-//   it("should filter out items with no totalAmountOff", () => {
-//     const dtResponse: DoveTechDiscountsResponse = {
-//       basket: {
-//         items: [
-//           { totalAmountOff: 0, total: 10 } as DoveTechDiscountsResponseLineItem,
-//           { totalAmountOff: 5, total: 20 } as DoveTechDiscountsResponseLineItem,
-//         ],
-//       },
-//     };
-//     const commerceToolsCart: CommerceToolsCart = {
-//       totalPrice: { currencyCode: "USD" },
-//       lineItems: [
-//         {
-//           id: "lineItem1",
-//           price: { value: { centAmount: 1000 } },
-//         } as CommerceToolsLineItem,
-//         {
-//           id: "lineItem2",
-//           price: { value: { centAmount: 2000 } },
-//         } as CommerceToolsLineItem,
-//       ],
-//     };
+it("should handle line item with multiple quantity", () => {
+  const currencyCode = "USD";
+  const originalLineItemCentAmount = 4000;
 
-//     const expectedAction: SetLineItemTotalPriceAction = {
-//       action: "setLineItemTotalPrice",
-//       lineItemId: "lineItem2",
-//       externalTotalPrice: {
-//         price: {
-//           currencyCode: "USD",
-//           centAmount: 2000,
-//         },
-//         totalPrice: {
-//           currencyCode: "USD",
-//           centAmount: 2000,
-//         },
-//       },
-//     };
+  const totalAmountOff = 10;
+  const total = 30;
 
-//     const result = map(dtResponse, commerceToolsCart);
-//     expect(result).toEqual([expectedAction]);
-//   });
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    currencyCode
+  )
+    .setQuantity(2)
+    .build();
 
-//   it("should handle multiple items correctly", () => {
-//     const dtResponse: DoveTechDiscountsResponse = {
-//       basket: {
-//         items: [
-//           { totalAmountOff: 5, total: 10 } as DoveTechDiscountsResponseLineItem,
-//           {
-//             totalAmountOff: 10,
-//             total: 20,
-//           } as DoveTechDiscountsResponseLineItem,
-//         ],
-//       },
-//     };
-//     const commerceToolsCart: CommerceToolsCart = {
-//       totalPrice: { currencyCode: "USD" },
-//       lineItems: [
-//         {
-//           id: "lineItem1",
-//           price: { value: { centAmount: 1000 } },
-//         } as CommerceToolsLineItem,
-//         {
-//           id: "lineItem2",
-//           price: { value: { centAmount: 2000 } },
-//         } as CommerceToolsLineItem,
-//       ],
-//     };
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addLineItem(lineItem)
+    .build();
 
-//     const expectedActions: SetLineItemTotalPriceAction[] = [
-//       {
-//         action: "setLineItemTotalPrice",
-//         lineItemId: "lineItem1",
-//         externalTotalPrice: {
-//           price: {
-//             currencyCode: "USD",
-//             centAmount: 1000,
-//           },
-//           totalPrice: {
-//             currencyCode: "USD",
-//             centAmount: 1000,
-//           },
-//         },
-//       },
-//       {
-//         action: "setLineItemTotalPrice",
-//         lineItemId: "lineItem2",
-//         externalTotalPrice: {
-//           price: {
-//             currencyCode: "USD",
-//             centAmount: 2000,
-//           },
-//           totalPrice: {
-//             currencyCode: "USD",
-//             centAmount: 2000,
-//           },
-//         },
-//       },
-//     ];
+  const amountOffBasketAction: AmountOffAction =
+    buildAmountOffBasketAction(totalAmountOff);
 
-//     const result = map(dtResponse, commerceToolsCart);
-//     expect(result).toEqual(expectedActions);
-//   });
+  const dtResponse = new DoveTechResponseBuilder()
+    .addAction(amountOffBasketAction)
+    .addLineItem({
+      totalAmountOff: amountOffBasketAction.amountOff,
+      total: total,
+      actions: [
+        {
+          id: amountOffBasketAction.id,
+          subItemId: 0,
+          amountOff: 5,
+        },
+        {
+          id: amountOffBasketAction.id,
+          subItemId: 1,
+          amountOff: 5,
+        },
+      ],
+    })
+    .build();
+
+  const expectedAction: CartSetLineItemTotalPriceAction = {
+    action: "setLineItemTotalPrice",
+    lineItemId: lineItem.id,
+    externalTotalPrice: {
+      price: {
+        currencyCode,
+        centAmount: originalLineItemCentAmount,
+      },
+      totalPrice: {
+        currencyCode,
+        centAmount: 3000,
+      },
+    },
+  };
+
+  const result = map(dtResponse, ctCart);
+
+  expect(result).toEqual({
+    success: true,
+    actions: [expectedAction],
+  });
+});
+
+const buildAmountOffBasketAction = (
+  amountOff: number,
+  value = amountOff
+): AmountOffAction => {
+  return {
+    id: crypto.randomUUID(),
+    amountOff: amountOff,
+    discountId: crypto.randomUUID(),
+    type: DoveTechActionType.AmountOffBasket,
+    amountOffType: AmountOffType.AmountOff,
+    value,
+  };
+};

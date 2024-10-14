@@ -13,6 +13,8 @@ import {
   CouponCode,
 } from "./custom-commerce-tools-types";
 import {
+  CouponCodeRejectedAction,
+  DoveTechActionType,
   DoveTechDiscountsResponse,
   DoveTechDiscountsResponseLineItem,
 } from "./dovetech-types";
@@ -46,8 +48,8 @@ export default (
     });
 
   const couponCodeRejectedActions = dtResponse.actions.filter(
-    (a) => a.type === "CouponCodeRejected"
-  );
+    (a) => a.type === DoveTechActionType.CouponCodeRejected
+  ) as CouponCodeRejectedAction[];
 
   if (couponCodeRejectedActions.length > 0) {
     // TODO: this logic is duplicated in the commerce-tools-cart-mapper
@@ -84,7 +86,7 @@ export default (
 
   const couponCodeAcceptedActions = dtResponse.actions.filter(
     (a) => a.type === "CouponCodeAccepted"
-  );
+  ) as CouponCodeRejectedAction[];
 
   if (
     couponCodeRejectedActions.length > 0 || // if an existing coupon code was rejected, we need to remove it from the cart
