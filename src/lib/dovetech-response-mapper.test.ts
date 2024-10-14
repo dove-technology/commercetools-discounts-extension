@@ -77,6 +77,67 @@ it("should map DoveTech response items to CommerceTools actions", () => {
   expect(result).toEqual([expectedAction]);
 });
 
+it.each([
+  ["USD", 2, 40000, 3780, 2.2, 37.8],
+  ["JPY", 0, 400, 380, 20, 380],
+  ["KWD", 3, 40999, 30999, 1.0, 30.999],
+])(
+  "currency amounts are mapped correctly for %s",
+  (
+    currencyCode,
+    fractionDigits,
+    originalLineItemCentAmount,
+    discountedLineItemCentAmount,
+    amountOff,
+    total
+  ) => {
+    const lineItem = new CommerceToolsLineItemBuilder(
+      originalLineItemCentAmount,
+      currencyCode,
+      fractionDigits
+    ).build();
+
+    const ctCart = new CommerceToolsCartBuilder(currencyCode, fractionDigits)
+      .addLineItem(lineItem)
+      .build();
+
+    const dtResponse: DoveTechDiscountsResponse = {
+      basket: {
+        totalAmountOff: amountOff,
+        total: total,
+        items: [
+          {
+            totalAmountOff: amountOff,
+            total: total,
+          } as DoveTechDiscountsResponseLineItem,
+        ],
+      },
+      actions: [],
+      commitId: null,
+      aggregates: { total: total, totalAmountOff: amountOff },
+      costs: [],
+    };
+
+    const expectedAction: CartSetLineItemTotalPriceAction = {
+      action: "setLineItemTotalPrice",
+      lineItemId: lineItem.id,
+      externalTotalPrice: {
+        price: {
+          currencyCode,
+          centAmount: originalLineItemCentAmount,
+        },
+        totalPrice: {
+          currencyCode,
+          centAmount: discountedLineItemCentAmount,
+        },
+      },
+    };
+
+    const result = map(dtResponse, ctCart);
+    expect(result).toEqual([expectedAction]);
+  }
+);
+
 it("should map CouponCodeAccepted actions correctly", () => {
   const couponCode = "TEST_COUPON";
   const addCouponCodeAction: AddCouponCodeCartAction = {
