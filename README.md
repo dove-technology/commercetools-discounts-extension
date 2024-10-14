@@ -14,7 +14,18 @@ curl -sH "Authorization: Bearer ACCESS_TOKEN" https://api.{region}.commercetools
       },
       "name": "dovetech-couponCodes",
       "label": {
-        "en": "Coupon Codes"
+        "en": "Dovetech Coupon Codes"
+      },
+      "required": false,
+      "inputHint": "SingleLine"
+    },
+    {
+      "type": {
+        "name": "String"
+      },
+      "name": "dovetech-cartAction",
+      "label": {
+        "en": "Dovetech Cart Action"
       },
       "required": false,
       "inputHint": "SingleLine"
