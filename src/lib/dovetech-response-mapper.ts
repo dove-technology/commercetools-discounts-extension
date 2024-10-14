@@ -5,7 +5,6 @@ import type {
   CartSetLineItemTotalPriceAction,
   CartUpdateAction,
   CartSetCustomTypeAction,
-  ErrorResponse,
 } from "@commercetools/platform-sdk";
 import {
   AddCouponCodeCartAction,
@@ -18,11 +17,12 @@ import {
   DoveTechDiscountsResponseLineItem,
 } from "./dovetech-types";
 import Decimal from "decimal.js";
+import { ExtensionResponse } from "./types";
 
 export default (
   dtResponse: DoveTechDiscountsResponse,
   commerceToolsCart: Cart
-): CartUpdateAction[] | ErrorResponse => {
+): ExtensionResponse => {
   const currencyCode = commerceToolsCart.totalPrice.currencyCode;
   const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
 
@@ -60,14 +60,17 @@ export default (
           )
         ) {
           return {
-            statusCode: 400,
-            message: "Discount code is not applicable",
-            errors: [
-              {
-                code: "InvalidInput",
-                message: "Discount code is not applicable",
-              },
-            ],
+            success: false,
+            errorResponse: {
+              statusCode: 400,
+              message: "Discount code is not applicable",
+              errors: [
+                {
+                  code: "InvalidInput",
+                  message: "Discount code is not applicable",
+                },
+              ],
+            },
           };
         }
       }
@@ -102,7 +105,10 @@ export default (
     actions.push(setCustomTypeAction);
   }
 
-  return actions;
+  return {
+    success: true,
+    actions,
+  };
 };
 
 const buildSetLineItemTotalPriceAction = (

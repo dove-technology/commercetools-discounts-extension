@@ -24,7 +24,11 @@ it("should return an no actions if there are no items in the DoveTech response",
   };
 
   const result = map(dtResponse, ctCart);
-  expect(result).toEqual([]);
+
+  expect(result).toEqual({
+    success: true,
+    actions: [],
+  });
 });
 
 it("should map DoveTech response items to CommerceTools actions", () => {
@@ -74,7 +78,10 @@ it("should map DoveTech response items to CommerceTools actions", () => {
   };
 
   const result = map(dtResponse, ctCart);
-  expect(result).toEqual([expectedAction]);
+  expect(result).toEqual({
+    success: true,
+    actions: [expectedAction],
+  });
 });
 
 it.each([
@@ -134,7 +141,10 @@ it.each([
     };
 
     const result = map(dtResponse, ctCart);
-    expect(result).toEqual([expectedAction]);
+    expect(result).toEqual({
+      success: true,
+      actions: [expectedAction],
+    });
   }
 );
 
@@ -165,9 +175,10 @@ it("should map CouponCodeAccepted actions correctly", () => {
 
   const result = map(dtResponse, ctCart);
 
-  expect(result).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
+  expect(result).toEqual({
+    success: true,
+    actions: [
+      {
         action: "setCustomType",
         type: {
           key: "dovetech-cartMetadata",
@@ -176,9 +187,9 @@ it("should map CouponCodeAccepted actions correctly", () => {
         fields: {
           "dovetech-couponCodes": '[{"code":"TEST_COUPON"}]',
         },
-      }),
-    ])
-  );
+      },
+    ],
+  });
 });
 
 it("CouponCodeRejected action for new coupon code should return error", () => {
@@ -208,15 +219,19 @@ it("CouponCodeRejected action for new coupon code should return error", () => {
   };
 
   const result = map(dtResponse, ctCart);
+
   expect(result).toEqual({
-    statusCode: 400,
-    message: "Discount code is not applicable",
-    errors: [
-      {
-        code: "InvalidInput",
-        message: "Discount code is not applicable",
-      },
-    ],
+    success: false,
+    errorResponse: {
+      statusCode: 400,
+      message: "Discount code is not applicable",
+      errors: [
+        {
+          code: "InvalidInput",
+          message: "Discount code is not applicable",
+        },
+      ],
+    },
   });
 });
 
@@ -244,9 +259,10 @@ it("CouponCodeRejected action for existing coupon code should remove coupon code
 
   const result = map(dtResponse, ctCart);
 
-  expect(result).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
+  expect(result).toEqual({
+    success: true,
+    actions: [
+      {
         action: "setCustomType",
         type: {
           key: "dovetech-cartMetadata",
@@ -255,9 +271,9 @@ it("CouponCodeRejected action for existing coupon code should remove coupon code
         fields: {
           "dovetech-couponCodes": "[]",
         },
-      }),
-    ])
-  );
+      },
+    ],
+  });
 });
 
 //   it("should filter out items with no totalAmountOff", () => {
