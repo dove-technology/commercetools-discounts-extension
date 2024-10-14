@@ -85,7 +85,7 @@ export default (
   }
 
   const couponCodeAcceptedActions = dtResponse.actions.filter(
-    (a) => a.type === "CouponCodeAccepted"
+    (a) => a.type === DoveTechActionType.CouponCodeAccepted
   ) as CouponCodeRejectedAction[];
 
   if (
