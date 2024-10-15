@@ -1,0 +1,14 @@
+deployAs:
+  - name: cart-service
+    applicationType: service
+    endpoint: /cart-service
+    configuration:
+      standardConfiguration:
+        - key: DOVETECH_API_HOST
+          description: Dovetech Processor API host
+          required: true
+          default: "https://eu-west-2-discounts.dovetech.com"
+      securedConfiguration:
+        - key: DOVETECH_API_KEY
+          description: Dovetech Processor API key
+          required: true
