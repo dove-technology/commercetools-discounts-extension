@@ -11,7 +11,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 18
       - name: Install Dependencies
         working-directory: ./cart-service
         run: yarn
@@ -33,4 +33,3 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         with:
           major-version: 1
-      
