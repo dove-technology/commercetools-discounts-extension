@@ -2,12 +2,14 @@
   "name": "commercetools-discounts-extension",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "build/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
     "test": "vitest",
     "gcp-build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node build/index.js",
+    "connector:post-deploy": "node build/connector/post-deploy.js",
+    "connector:pre-undeploy": "node build/connector/pre-undeploy.js"
   },
   "keywords": [],
   "author": "",
