@@ -4,11 +4,27 @@ deployAs:
     endpoint: /cart-service
     configuration:
       standardConfiguration:
+        - key: CTP_REGION
+          description: commercetools Composable Commerce API region
+          required: true
+          default: "europe-west1.gcp"
         - key: DOVETECH_API_HOST
           description: Dovetech Processor API host
           required: true
           default: "https://eu-west-2-discounts.dovetech.com"
       securedConfiguration:
+        - key: CTP_PROJECT_KEY
+          description: commercetools Composable Commerce project key
+          required: true
+        - key: CTP_CLIENT_ID
+          description: commercetools Composable Commerce client ID
+          required: true
+        - key: CTP_CLIENT_SECRET
+          description: commercetools Composable Commerce client secret
+          required: true
+        - key: CTP_SCOPE
+          description: commercetools Composable Commerce client scope
+          required: true
         - key: DOVETECH_API_KEY
           description: Dovetech Processor API key
           required: true
