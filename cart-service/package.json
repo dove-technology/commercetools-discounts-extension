@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "test:unit": "vitest",
+    "test": "vitest",
     "gcp-build": "tsc",
     "start": "node dist/index.js"
   },
