@@ -15,6 +15,8 @@ export const readConfiguration = () => {
     projectKey: process.env.CTP_PROJECT_KEY as string,
     scope: process.env.CTP_SCOPE,
     region: process.env.CTP_REGION as string,
+    dovetechApiHost: process.env.DOVETECH_API_HOST as string,
+    dovetechApiKey: process.env.DOVETECH_API_KEY as string,
   };
 
   const validationErrors = getValidateMessages(envValidators, envVars);
