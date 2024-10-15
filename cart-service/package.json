@@ -7,6 +7,7 @@
     "dev": "nodemon src/index.ts",
     "test": "vitest",
     "gcp-build": "tsc",
+    "build": "rimraf ./build && tsc",
     "start": "node build/index.js",
     "connector:post-deploy": "node build/connector/post-deploy.js",
     "connector:pre-undeploy": "node build/connector/pre-undeploy.js"
@@ -31,6 +32,7 @@
     "globals": "^15.11.0",
     "nodemon": "^3.1.7",
     "prettier": "3.3.3",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.8.1",

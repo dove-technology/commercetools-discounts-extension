@@ -2,6 +2,9 @@ deployAs:
   - name: cart-service
     applicationType: service
     endpoint: /cart-service
+    scripts:
+      postDeploy: yarn install && yarn build && yarn connector:post-deploy
+      preUndeploy: yarn install && yarn build && yarn connector:pre-undeploy
     configuration:
       standardConfiguration:
         - key: CTP_REGION
