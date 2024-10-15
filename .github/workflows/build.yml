@@ -17,7 +17,7 @@ jobs:
         run: yarn
       - name: Unit Test
         working-directory: ./cart-service
-        run: yarn test:unit
+        run: yarn test
       - name: Prettier
         working-directory: ./cart-service
         run: yarn prettier ./src --check
