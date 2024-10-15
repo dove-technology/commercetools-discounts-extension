@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
+import { logger } from "./utils/logger.utils";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ const port = 8080;
 
 app.post("/cart-service", (req: Request, res: Response) => {
   const cart = req.body.resource.obj;
-  console.log("Cart received", cart.id);
+  logger.info("Cart received", cart.id);
 
   res.status(200).json({
     actions: [],
@@ -29,5 +30,5 @@ app.use("*", (_: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
+  logger.info(`Listening on port ${port}`);
 });
