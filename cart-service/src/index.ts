@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-const port = 3000;
+const port = 8080;
 
 app.post("/", (req: Request, res: Response) => {
   const cart = req.body.resource.obj;
