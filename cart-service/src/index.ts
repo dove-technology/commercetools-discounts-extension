@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { errorMiddleware } from './middleware/error.middleware';
 import CustomError from './errors/custom.error';
 import { logger } from './utils/logger.utils';
+import { proxy } from './lib/commerce-tools-dovetech-proxy';
 
 dotenv.config();
 
@@ -15,12 +16,19 @@ const port = 8080;
 
 app.post('/cart-service', (req: Request, res: Response) => {
   const cart = req.body.resource.obj;
-  logger.info('Cart received', cart.id);
 
-  res.status(200).json({
-    actions: [],
+  // not sure about async in Express v4 at the moment
+  proxy(cart).then((extensionResponse) => {
+    if (extensionResponse.success) {
+      res.status(200).json({
+        actions: extensionResponse.actions,
+      });
+      return;
+    }
+    res
+      .status(extensionResponse.errorResponse.statusCode)
+      .json(extensionResponse.errorResponse);
   });
-  return;
 });
 
 app.use('*', () => {
