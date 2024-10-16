@@ -8,40 +8,30 @@ export async function createCartUpdateExtension(
 ): Promise<void> {
   const extension = await getExtension(apiRoot);
 
-  if (extension) {
+  if (!extension) {
     await apiRoot
       .extensions()
-      .withKey({ key: CART_EXTENSION_KEY })
-      .delete({
-        queryArgs: {
-          version: extension.version,
+      .post({
+        body: {
+          key: CART_EXTENSION_KEY,
+          destination: {
+            type: 'HTTP',
+            url: applicationUrl,
+          },
+          triggers: [
+            {
+              resourceTypeId: 'cart',
+              actions: ['Create', 'Update'],
+            },
+            {
+              resourceTypeId: 'order',
+              actions: ['Create'],
+            },
+          ],
         },
       })
       .execute();
   }
-
-  await apiRoot
-    .extensions()
-    .post({
-      body: {
-        key: CART_EXTENSION_KEY,
-        destination: {
-          type: 'HTTP',
-          url: applicationUrl,
-        },
-        triggers: [
-          {
-            resourceTypeId: 'cart',
-            actions: ['Create', 'Update'],
-          },
-          {
-            resourceTypeId: 'order',
-            actions: ['Create'],
-          },
-        ],
-      },
-    })
-    .execute();
 }
 
 export async function deleteCartUpdateExtension(
