@@ -5,6 +5,9 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./cart-service
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -13,19 +16,14 @@ jobs:
         with:
           node-version: 20
       - name: Install Dependencies
-        working-directory: ./cart-service
         run: yarn
       - name: Build
-        working-directory: ./cart-service
         run: yarn build
       - name: Unit Test
-        working-directory: ./cart-service
         run: yarn test
       - name: Prettier
-        working-directory: ./cart-service
         run: yarn prettier
       - name: Lint
-        working-directory: ./cart-service
         run: yarn lint
       - name: tag
         id: tag
