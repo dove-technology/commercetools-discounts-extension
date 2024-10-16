@@ -1,10 +1,10 @@
-import { CART_ACTION, COUPON_CODES } from "./cart-constants";
-import type { Cart, LineItem } from "@commercetools/platform-sdk";
+import { CART_ACTION, COUPON_CODES } from './cart-constants';
+import type { Cart, LineItem } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartAction,
   CartActionType,
-} from "./custom-commerce-tools-types";
+} from './custom-commerce-tools-types';
 import {
   DoveTechDiscountsBasket,
   DoveTechDiscountsCost,
@@ -12,13 +12,13 @@ import {
   DoveTechDiscountsDataInstance,
   DoveTechDiscountsRequest,
   DoveTechDiscountsSettings,
-} from "./dovetech-types";
-import Decimal from "decimal.js";
+} from './dovetech-types';
+import Decimal from 'decimal.js';
 
 export default (
   commerceToolsCart: Cart,
   dataInstance: DoveTechDiscountsDataInstance,
-  commit: boolean,
+  commit: boolean
 ): DoveTechDiscountsRequest => {
   const basket: DoveTechDiscountsBasket = {
     items: commerceToolsCart.lineItems.map((lineItem) => ({

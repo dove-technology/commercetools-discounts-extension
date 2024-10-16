@@ -1,4 +1,4 @@
-import { CartUpdateAction, ErrorResponse } from "@commercetools/platform-sdk";
+import { CartUpdateAction, ErrorResponse } from '@commercetools/platform-sdk';
 
 export type ExtensionResponse =
   | {

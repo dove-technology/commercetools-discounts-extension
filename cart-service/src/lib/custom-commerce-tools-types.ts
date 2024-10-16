@@ -3,7 +3,7 @@ export interface CouponCode {
 }
 
 export enum CartActionType {
-  AddCouponCode = "addCouponCode",
+  AddCouponCode = 'addCouponCode',
 }
 
 export interface CartAction {

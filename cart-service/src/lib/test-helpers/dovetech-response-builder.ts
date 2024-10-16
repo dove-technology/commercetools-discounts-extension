@@ -3,7 +3,7 @@ import {
   DoveTechDiscountsResponse,
   DoveTechDiscountsResponseBasket,
   DoveTechDiscountsResponseLineItem,
-} from "../dovetech-types";
+} from '../dovetech-types';
 
 export default class DoveTechResponseBuilder {
   private basket: DoveTechDiscountsResponseBasket | null = null;

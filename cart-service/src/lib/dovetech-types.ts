@@ -39,8 +39,8 @@ export interface DoveTechDiscountsSettings {
 }
 
 export enum DoveTechDiscountsDataInstance {
-  Live = "Live",
-  Staging = "Staging",
+  Live = 'Live',
+  Staging = 'Staging',
 }
 
 export type DoveTechAction =
@@ -115,27 +115,27 @@ export interface CouponCodeRejectedAction {
 }
 
 export enum DoveTechActionType {
-  CouponCodeAccepted = "CouponCodeAccepted",
-  CouponCodeRejected = "CouponCodeRejected",
-  AmountOffLineItem = "AmountOffLineItem",
-  AmountOffBasket = "AmountOffBasket",
-  AmountOffCost = "AmountOffCost",
-  Content = "Content",
-  AccrueLoyaltyPoints = "AccrueLoyaltyPoints",
-  RedeemLoyaltyPoints = "RedeemLoyaltyPoints",
+  CouponCodeAccepted = 'CouponCodeAccepted',
+  CouponCodeRejected = 'CouponCodeRejected',
+  AmountOffLineItem = 'AmountOffLineItem',
+  AmountOffBasket = 'AmountOffBasket',
+  AmountOffCost = 'AmountOffCost',
+  Content = 'Content',
+  AccrueLoyaltyPoints = 'AccrueLoyaltyPoints',
+  RedeemLoyaltyPoints = 'RedeemLoyaltyPoints',
 }
 
 export enum CouponCodeValidationError {
-  NotRecognised = "NotRecognised",
-  IncorrectUser = "IncorrectUser",
-  UserRequired = "UserRequired",
-  NotStarted = "NotStarted",
-  Expired = "Expired",
-  UsageLimitReached = "UsageLimitReached",
+  NotRecognised = 'NotRecognised',
+  IncorrectUser = 'IncorrectUser',
+  UserRequired = 'UserRequired',
+  NotStarted = 'NotStarted',
+  Expired = 'Expired',
+  UsageLimitReached = 'UsageLimitReached',
 }
 
 export enum AmountOffType {
-  PercentOff = "PercentOff",
-  AmountOff = "AmountOff",
-  FixedPrice = "FixedPrice",
+  PercentOff = 'PercentOff',
+  AmountOff = 'AmountOff',
+  FixedPrice = 'FixedPrice',
 }
