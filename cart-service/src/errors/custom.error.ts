@@ -12,7 +12,7 @@ class CustomError extends Error {
   constructor(
     statusCode: number | string,
     message: string,
-    errors?: ErrorItem[],
+    errors?: ErrorItem[]
   ) {
     super(message);
     this.statusCode = statusCode;

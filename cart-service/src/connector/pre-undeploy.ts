@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
-import { createApiRoot } from "../client/create.client";
-import { assertError } from "../utils/assert.utils";
-import { deleteCartUpdateExtension } from "./actions";
+import { createApiRoot } from '../client/create.client';
+import { assertError } from '../utils/assert.utils';
+import { deleteCartUpdateExtension } from './actions';
 
 async function preUndeploy(): Promise<void> {
   const apiRoot = createApiRoot();

@@ -6,14 +6,14 @@ export function assert(condition: unknown, message: string): asserts condition {
 
 export function assertError(
   value: unknown,
-  message?: string,
+  message?: string
 ): asserts value is Error {
-  assert(value instanceof Error, message ?? "Invalid error value");
+  assert(value instanceof Error, message ?? 'Invalid error value');
 }
 
 export function assertString(
   value: unknown,
-  message?: string,
+  message?: string
 ): asserts value is string {
-  assert(typeof value === "string", message ?? "Invalid string value");
+  assert(typeof value === 'string', message ?? 'Invalid string value');
 }

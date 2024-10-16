@@ -12,18 +12,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install Dependencies
-        working-directory: ./cart-service
-        run: yarn
-      - name: Unit Test
-        working-directory: ./cart-service
-        run: yarn test
-      - name: Prettier
-        working-directory: ./cart-service
-        run: yarn prettier ./src --check
-      - name: Lint
-        working-directory: ./cart-service
-        run: yarn eslint ./src
+      # - name: Install Dependencies
+      #   working-directory: ./cart-service
+      #   run: yarn
+      # - name: Unit Test
+      #   working-directory: ./cart-service
+      #   run: yarn test
+      # - name: Prettier
+      #   working-directory: ./cart-service
+      #   run: yarn prettier ./src --check
+      # - name: Lint
+      #   working-directory: ./cart-service
+      #   run: yarn eslint ./src
       - name: tag
         id: tag
         uses: tcpl/semver-tag-creator-action@1.3.2

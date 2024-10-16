@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
-import validator from "validator";
-import { ValidatorCreator, Wrapper } from "../types/index.types";
+import validator from 'validator';
+import { ValidatorCreator, Wrapper } from '../types/index.types';
 
 /**
  * File used to create helpers to validate the fields
@@ -16,7 +16,7 @@ const required: Wrapper =
 export const standardString: ValidatorCreator = (
   path,
   message,
-  overrideConfig = {},
+  overrideConfig = {}
 ) => [
   path,
   [
@@ -38,7 +38,7 @@ export const standardNaturalNumber = (path, message) => [
   [
     [
       required((value) =>
-        validator.isNumeric(String(value), { no_symbols: true }),
+        validator.isNumeric(String(value), { no_symbols: true })
       ),
       message,
     ],
@@ -52,7 +52,7 @@ export const standardKey = (path, message) => [
       required(
         (value) =>
           validator.isLength(String(value), { min: 2 }) &&
-          /^[a-zA-Z0-9-_]+$/.test(value),
+          /^[a-zA-Z0-9-_]+$/.test(value)
       ),
 
       message,
@@ -70,7 +70,7 @@ export const standardUrl = (path, message, overrideOptions = {}) => [
         {
           require_protocol: true,
           require_valid_protocol: true,
-          protocols: ["http", "https"],
+          protocols: ['http', 'https'],
           require_host: true,
           require_port: false,
           allow_protocol_relative_urls: false,
@@ -135,13 +135,13 @@ export const region: ValidatorCreator = (path, message) => [
       required(
         required((value) =>
           validator.isIn(value, [
-            "us-central1.gcp",
-            "us-east-2.aws",
-            "europe-west1.gcp",
-            "eu-central-1.aws",
-            "australia-southeast1.gcp",
-          ]),
-        ),
+            'us-central1.gcp',
+            'us-east-2.aws',
+            'europe-west1.gcp',
+            'eu-central-1.aws',
+            'australia-southeast1.gcp',
+          ])
+        )
       ),
       message,
     ],

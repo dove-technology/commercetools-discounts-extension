@@ -1,34 +1,16 @@
-import express, { Request, Response } from "express";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import { logger } from "./utils/logger.utils";
-
+import * as dotenv from 'dotenv';
 dotenv.config();
 
-const app = express();
-app.disable("x-powered-by");
+// Import logger
+import { logger } from './utils/logger.utils';
 
-app.use(bodyParser.json());
-const port = 8080;
+import app from './app';
 
-app.post("/cart-service", (req: Request, res: Response) => {
-  const cart = req.body.resource.obj;
-  logger.info("Cart received", cart.id);
+const PORT = 8080;
 
-  res.status(200).json({
-    actions: [],
-  });
-  return;
+// Listen the application
+const server = app.listen(PORT, () => {
+  logger.info(`⚡️ Service application listening on port ${PORT}`);
 });
 
-app.use("*", (_: Request, res: Response) => {
-  res.status(404).json({
-    message: "Not Found",
-  });
-
-  return;
-});
-
-app.listen(port, () => {
-  logger.info(`Listening on port ${port}`);
-});
+export default server;

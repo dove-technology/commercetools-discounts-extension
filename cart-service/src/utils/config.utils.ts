@@ -1,6 +1,6 @@
-import CustomError from "../errors/custom.error";
-import envValidators from "../validators/env.validators";
-import { getValidateMessages } from "../validators/helpers.validators";
+import CustomError from '../errors/custom.error';
+import envValidators from '../validators/env.validators';
+import { getValidateMessages } from '../validators/helpers.validators';
 
 /**
  * Read the configuration env vars
@@ -15,17 +15,15 @@ export const readConfiguration = () => {
     projectKey: process.env.CTP_PROJECT_KEY as string,
     scope: process.env.CTP_SCOPE,
     region: process.env.CTP_REGION as string,
-    dovetechApiHost: process.env.DOVETECH_API_HOST as string,
-    dovetechApiKey: process.env.DOVETECH_API_KEY as string,
   };
 
   const validationErrors = getValidateMessages(envValidators, envVars);
 
   if (validationErrors.length) {
     throw new CustomError(
-      "InvalidEnvironmentVariablesError",
-      "Invalid Environment Variables please check your .env file",
-      validationErrors,
+      'InvalidEnvironmentVariablesError',
+      'Invalid Environment Variables please check your .env file',
+      validationErrors
     );
   }
 

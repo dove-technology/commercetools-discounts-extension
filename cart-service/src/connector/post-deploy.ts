@@ -1,11 +1,14 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
-import { createApiRoot } from "../client/create.client";
-import { assertError, assertString } from "../utils/assert.utils";
-import { createCartUpdateExtension } from "./actions";
+import { createApiRoot } from '../client/create.client';
+import { assertError, assertString } from '../utils/assert.utils';
+import {
+  createCustomCartDiscountType,
+  createCartUpdateExtension,
+} from './actions';
 
-const CONNECT_APPLICATION_URL_KEY = "CONNECT_SERVICE_URL";
+const CONNECT_APPLICATION_URL_KEY = 'CONNECT_SERVICE_URL';
 
 async function postDeploy(properties: Map<string, unknown>): Promise<void> {
   const applicationUrl = properties.get(CONNECT_APPLICATION_URL_KEY);
@@ -14,6 +17,7 @@ async function postDeploy(properties: Map<string, unknown>): Promise<void> {
 
   const apiRoot = createApiRoot();
   await createCartUpdateExtension(apiRoot, applicationUrl);
+  await createCustomCartDiscountType(apiRoot);
 }
 
 async function run(): Promise<void> {
