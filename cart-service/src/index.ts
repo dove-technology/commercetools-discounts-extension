@@ -1,16 +1,26 @@
-import * as dotenv from 'dotenv';
+import express, { Request, Response } from 'express';
+import bodyParser from 'body-parser';
+import dotenv from 'dotenv';
+
 dotenv.config();
 
 // Import logger
 import { logger } from './utils/logger.utils';
 
-import app from './app';
+const app = express();
+app.use(bodyParser.json());
+const port = 8080;
 
-const PORT = 8080;
+app.post('/cart-service', (req: Request, res: Response) => {
+  const cart = req.body.resource.obj;
+  logger.info('Cart received', cart.id);
 
-// Listen the application
-const server = app.listen(PORT, () => {
-  logger.info(`⚡️ Service application listening on port ${PORT}`);
+  res.status(200).json({
+    actions: [],
+  });
+  return;
 });
 
-export default server;
+app.listen(port, () => {
+  logger.info(`⚡️ Service application listening on port ${port}`);
+});
