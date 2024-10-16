@@ -1,4 +1,4 @@
-import { test, expect, it } from 'vitest';
+import { test, expect } from '@jest/globals';
 import cartMapper from './commerce-tools-cart-mapper';
 import { DoveTechDiscountsDataInstance } from './dovetech-types';
 import CommerceToolsCartBuilder from './test-helpers/commerce-tools-cart-builder';
@@ -113,7 +113,7 @@ test('existing coupon codes mapped correctly', async () => {
   );
 });
 
-it.each([
+test.each([
   ['USD', 2, 5097, 50.97],
   ['JPY', 0, 5097, 5097],
   ['KWD', 3, 5000, 5],

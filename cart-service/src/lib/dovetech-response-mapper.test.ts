@@ -1,4 +1,4 @@
-import { it, expect } from 'vitest';
+import { it, expect } from '@jest/globals';
 import map from './dovetech-response-mapper';
 import {
   AmountOffAction,
@@ -18,7 +18,7 @@ import {
 import { CartSetLineItemTotalPriceAction } from '@commercetools/platform-sdk';
 import crypto from 'crypto';
 
-it('should return an no actions if there are no line items', () => {
+it('should return no actions if there are no line items', () => {
   const ctCart = new CommerceToolsCartBuilder('USD').build();
   const dtResponse = new DoveTechResponseBuilder().build();
 
