@@ -1,5 +1,5 @@
-import { it, expect } from "vitest";
-import map from "./dovetech-response-mapper";
+import { it, expect } from 'vitest';
+import map from './dovetech-response-mapper';
 import {
   AmountOffAction,
   AmountOffType,
@@ -7,19 +7,19 @@ import {
   CouponCodeRejectedAction,
   CouponCodeValidationError,
   DoveTechActionType,
-} from "./dovetech-types";
-import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
-import CommerceToolsLineItemBuilder from "./test-helpers/commerce-tools-line-item-builder";
-import DoveTechResponseBuilder from "./test-helpers/dovetech-response-builder";
+} from './dovetech-types';
+import CommerceToolsCartBuilder from './test-helpers/commerce-tools-cart-builder';
+import CommerceToolsLineItemBuilder from './test-helpers/commerce-tools-line-item-builder';
+import DoveTechResponseBuilder from './test-helpers/dovetech-response-builder';
 import {
   AddCouponCodeCartAction,
   CartActionType,
-} from "./custom-commerce-tools-types";
-import { CartSetLineItemTotalPriceAction } from "@commercetools/platform-sdk";
-import crypto from "crypto";
+} from './custom-commerce-tools-types';
+import { CartSetLineItemTotalPriceAction } from '@commercetools/platform-sdk';
+import crypto from 'crypto';
 
-it("should return an no actions if there are no line items", () => {
-  const ctCart = new CommerceToolsCartBuilder("USD").build();
+it('should return an no actions if there are no line items', () => {
+  const ctCart = new CommerceToolsCartBuilder('USD').build();
   const dtResponse = new DoveTechResponseBuilder().build();
 
   const result = map(dtResponse, ctCart);
@@ -30,8 +30,8 @@ it("should return an no actions if there are no line items", () => {
   });
 });
 
-it("should map DoveTech response items to CommerceTools actions", () => {
-  const currencyCode = "USD";
+it('should map DoveTech response items to CommerceTools actions', () => {
+  const currencyCode = 'USD';
   const originalLineItemCentAmount = 4000;
 
   // these amounts cause issues when multiplying in Vanilla JavaScript, so using them in the test here
@@ -40,7 +40,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode,
+    currencyCode
   ).build();
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
@@ -66,7 +66,7 @@ it("should map DoveTech response items to CommerceTools actions", () => {
     .build();
 
   const expectedAction: CartSetLineItemTotalPriceAction = {
-    action: "setLineItemTotalPrice",
+    action: 'setLineItemTotalPrice',
     lineItemId: lineItem.id,
     externalTotalPrice: {
       price: {
@@ -89,23 +89,23 @@ it("should map DoveTech response items to CommerceTools actions", () => {
 });
 
 it.each([
-  ["USD", 2, 4000, 3780, 2.2, 37.8],
-  ["JPY", 0, 400, 380, 20, 380],
-  ["KWD", 3, 40999, 30999, 1.0, 30.999],
+  ['USD', 2, 4000, 3780, 2.2, 37.8],
+  ['JPY', 0, 400, 380, 20, 380],
+  ['KWD', 3, 40999, 30999, 1.0, 30.999],
 ])(
-  "currency amounts are mapped correctly for %s",
+  'currency amounts are mapped correctly for %s',
   (
     currencyCode,
     fractionDigits,
     originalLineItemCentAmount,
     discountedLineItemCentAmount,
     amountOff,
-    total,
+    total
   ) => {
     const lineItem = new CommerceToolsLineItemBuilder(
       originalLineItemCentAmount,
       currencyCode,
-      fractionDigits,
+      fractionDigits
     ).build();
 
     const ctCart = new CommerceToolsCartBuilder(currencyCode, fractionDigits)
@@ -131,7 +131,7 @@ it.each([
       .build();
 
     const expectedAction: CartSetLineItemTotalPriceAction = {
-      action: "setLineItemTotalPrice",
+      action: 'setLineItemTotalPrice',
       lineItemId: lineItem.id,
       externalTotalPrice: {
         price: {
@@ -150,16 +150,16 @@ it.each([
       success: true,
       actions: [expectedAction],
     });
-  },
+  }
 );
 
-it("setLineItemTotalPrice actions should be returned if price from Dovetech is different to commerce tools", () => {
-  const currencyCode = "USD";
+it('setLineItemTotalPrice actions should be returned if price from Dovetech is different to commerce tools', () => {
+  const currencyCode = 'USD';
   const originalLineItemCentAmount = 40000;
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode,
+    currencyCode
   ).build();
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
@@ -175,7 +175,7 @@ it("setLineItemTotalPrice actions should be returned if price from Dovetech is d
     .build();
 
   const expectedAction: CartSetLineItemTotalPriceAction = {
-    action: "setLineItemTotalPrice",
+    action: 'setLineItemTotalPrice',
     lineItemId: lineItem.id,
     externalTotalPrice: {
       price: {
@@ -196,13 +196,13 @@ it("setLineItemTotalPrice actions should be returned if price from Dovetech is d
   });
 });
 
-it("no actions should be returned if price from Dovetech is the same as commerce tools", () => {
-  const currencyCode = "USD";
+it('no actions should be returned if price from Dovetech is the same as commerce tools', () => {
+  const currencyCode = 'USD';
   const originalLineItemCentAmount = 3000;
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode,
+    currencyCode
   ).build();
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
@@ -224,14 +224,14 @@ it("no actions should be returned if price from Dovetech is the same as commerce
   });
 });
 
-it("should map CouponCodeAccepted actions correctly", () => {
-  const couponCode = "TEST_COUPON";
+it('should map CouponCodeAccepted actions correctly', () => {
+  const couponCode = 'TEST_COUPON';
   const addCouponCodeAction: AddCouponCodeCartAction = {
     type: CartActionType.AddCouponCode,
     code: couponCode,
   };
 
-  const ctCart = new CommerceToolsCartBuilder("USD")
+  const ctCart = new CommerceToolsCartBuilder('USD')
     .addCartAction(addCouponCodeAction)
     .build();
 
@@ -251,27 +251,27 @@ it("should map CouponCodeAccepted actions correctly", () => {
     success: true,
     actions: [
       {
-        action: "setCustomType",
+        action: 'setCustomType',
         type: {
-          key: "dovetech-cartMetadata",
-          typeId: "type",
+          key: 'dovetech-cartMetadata',
+          typeId: 'type',
         },
         fields: {
-          "dovetech-couponCodes": '[{"code":"TEST_COUPON"}]',
+          'dovetech-couponCodes': '[{"code":"TEST_COUPON"}]',
         },
       },
     ],
   });
 });
 
-it("CouponCodeRejected action for new coupon code should return error", () => {
-  const couponCode = "INVALID_COUPON";
+it('CouponCodeRejected action for new coupon code should return error', () => {
+  const couponCode = 'INVALID_COUPON';
   const addCouponCodeAction: AddCouponCodeCartAction = {
     type: CartActionType.AddCouponCode,
     code: couponCode,
   };
 
-  const ctCart = new CommerceToolsCartBuilder("USD")
+  const ctCart = new CommerceToolsCartBuilder('USD')
     .addCartAction(addCouponCodeAction)
     .build();
 
@@ -292,21 +292,21 @@ it("CouponCodeRejected action for new coupon code should return error", () => {
     success: false,
     errorResponse: {
       statusCode: 400,
-      message: "Discount code is not applicable",
+      message: 'Discount code is not applicable',
       errors: [
         {
-          code: "InvalidInput",
-          message: "Discount code is not applicable",
+          code: 'InvalidInput',
+          message: 'Discount code is not applicable',
         },
       ],
     },
   });
 });
 
-it("CouponCodeRejected action for existing coupon code should remove coupon code", () => {
-  const existingCouponCode = "EXISTING_COUPON";
+it('CouponCodeRejected action for existing coupon code should remove coupon code', () => {
+  const existingCouponCode = 'EXISTING_COUPON';
 
-  const ctCart = new CommerceToolsCartBuilder("USD")
+  const ctCart = new CommerceToolsCartBuilder('USD')
     .addCouponCode({ code: existingCouponCode })
     .build();
 
@@ -327,21 +327,21 @@ it("CouponCodeRejected action for existing coupon code should remove coupon code
     success: true,
     actions: [
       {
-        action: "setCustomType",
+        action: 'setCustomType',
         type: {
-          key: "dovetech-cartMetadata",
-          typeId: "type",
+          key: 'dovetech-cartMetadata',
+          typeId: 'type',
         },
         fields: {
-          "dovetech-couponCodes": "[]",
+          'dovetech-couponCodes': '[]',
         },
       },
     ],
   });
 });
 
-it("should handle line item with multiple quantity", () => {
-  const currencyCode = "USD";
+it('should handle line item with multiple quantity', () => {
+  const currencyCode = 'USD';
   const originalLineItemCentAmount = 4000;
 
   const totalAmountOff = 10;
@@ -349,7 +349,7 @@ it("should handle line item with multiple quantity", () => {
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode,
+    currencyCode
   )
     .setQuantity(2)
     .build();
@@ -382,7 +382,7 @@ it("should handle line item with multiple quantity", () => {
     .build();
 
   const expectedAction: CartSetLineItemTotalPriceAction = {
-    action: "setLineItemTotalPrice",
+    action: 'setLineItemTotalPrice',
     lineItemId: lineItem.id,
     externalTotalPrice: {
       price: {
@@ -406,7 +406,7 @@ it("should handle line item with multiple quantity", () => {
 
 const buildAmountOffBasketAction = (
   amountOff: number,
-  value = amountOff,
+  value = amountOff
 ): AmountOffAction => {
   return {
     id: crypto.randomUUID(),

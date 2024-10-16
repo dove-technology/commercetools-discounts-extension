@@ -1,20 +1,20 @@
-import { test, expect, it } from "vitest";
-import cartMapper from "./commerce-tools-cart-mapper";
-import { DoveTechDiscountsDataInstance } from "./dovetech-types";
-import CommerceToolsCartBuilder from "./test-helpers/commerce-tools-cart-builder";
-import CommerceToolsLineItemBuilder from "./test-helpers/commerce-tools-line-item-builder";
+import { test, expect, it } from 'vitest';
+import cartMapper from './commerce-tools-cart-mapper';
+import { DoveTechDiscountsDataInstance } from './dovetech-types';
+import CommerceToolsCartBuilder from './test-helpers/commerce-tools-cart-builder';
+import CommerceToolsLineItemBuilder from './test-helpers/commerce-tools-line-item-builder';
 import {
   AddCouponCodeCartAction,
   CartActionType,
-} from "./custom-commerce-tools-types";
+} from './custom-commerce-tools-types';
 
-test("single line item mapped correctly", async () => {
-  const currencyCode = "USD";
+test('single line item mapped correctly', async () => {
+  const currencyCode = 'USD';
   const originalLineItemCentAmount = 5000;
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode,
+    currencyCode
   )
     .setQuantity(2)
     .build();
@@ -36,13 +36,13 @@ test("single line item mapped correctly", async () => {
   expect(result.settings.commit).toBe(false);
 });
 
-test("line item with discounted price mapped correctly", async () => {
-  const currencyCode = "USD";
+test('line item with discounted price mapped correctly', async () => {
+  const currencyCode = 'USD';
   const originalLineItemCentAmount = 5000;
 
   const lineItem = new CommerceToolsLineItemBuilder(
     originalLineItemCentAmount,
-    currencyCode,
+    currencyCode
   )
     .setDiscountedPrice(4000)
     .setQuantity(2)
@@ -61,8 +61,8 @@ test("line item with discounted price mapped correctly", async () => {
   expect(result.settings.commit).toBe(false);
 });
 
-test("empty cart mapped correctly", async () => {
-  const currencyCode = "USD";
+test('empty cart mapped correctly', async () => {
+  const currencyCode = 'USD';
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode).build();
 
@@ -73,12 +73,12 @@ test("empty cart mapped correctly", async () => {
   expect(result.settings.commit).toBe(false);
 });
 
-test("new coupon code mapped correctly", async () => {
-  const currencyCode = "USD";
+test('new coupon code mapped correctly', async () => {
+  const currencyCode = 'USD';
 
   const addCouponCodeAction: AddCouponCodeCartAction = {
     type: CartActionType.AddCouponCode,
-    code: "TEST_COUPON",
+    code: 'TEST_COUPON',
   };
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
     .addCartAction(addCouponCodeAction)
@@ -87,19 +87,19 @@ test("new coupon code mapped correctly", async () => {
   const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
 
   expect(result.couponCodes).toHaveLength(1);
-  expect(result.couponCodes![0].code).toBe("TEST_COUPON");
+  expect(result.couponCodes![0].code).toBe('TEST_COUPON');
 });
 
-test("existing coupon codes mapped correctly", async () => {
-  const currencyCode = "USD";
+test('existing coupon codes mapped correctly', async () => {
+  const currencyCode = 'USD';
 
   const addCouponCodeAction: AddCouponCodeCartAction = {
     type: CartActionType.AddCouponCode,
-    code: "NEW_COUPON",
+    code: 'NEW_COUPON',
   };
   const ctCart = new CommerceToolsCartBuilder(currencyCode)
     .addCartAction(addCouponCodeAction)
-    .addCouponCode({ code: "EXISTING_COUPON" })
+    .addCouponCode({ code: 'EXISTING_COUPON' })
     .build();
 
   const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
@@ -107,28 +107,28 @@ test("existing coupon codes mapped correctly", async () => {
   expect(result.couponCodes).toHaveLength(2);
   expect(result.couponCodes).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({ code: "NEW_COUPON" }),
-      expect.objectContaining({ code: "EXISTING_COUPON" }),
-    ]),
+      expect.objectContaining({ code: 'NEW_COUPON' }),
+      expect.objectContaining({ code: 'EXISTING_COUPON' }),
+    ])
   );
 });
 
 it.each([
-  ["USD", 2, 5097, 50.97],
-  ["JPY", 0, 5097, 5097],
-  ["KWD", 3, 5000, 5],
+  ['USD', 2, 5097, 50.97],
+  ['JPY', 0, 5097, 5097],
+  ['KWD', 3, 5000, 5],
 ])(
-  "line item with price with %s currency and %d fractional digits mapped correctly",
+  'line item with price with %s currency and %d fractional digits mapped correctly',
   async (
     currencyCode,
     fractionDigits,
     originalLineItemCentAmount,
-    expectedPrice,
+    expectedPrice
   ) => {
     const lineItem = new CommerceToolsLineItemBuilder(
       originalLineItemCentAmount,
       currencyCode,
-      fractionDigits,
+      fractionDigits
     ).build();
 
     const ctCart = new CommerceToolsCartBuilder(currencyCode, fractionDigits)
@@ -138,11 +138,11 @@ it.each([
     const result = cartMapper(
       ctCart,
       DoveTechDiscountsDataInstance.Live,
-      false,
+      false
     );
 
     expect(result.basket.items).toHaveLength(1);
     expect(result.basket.items[0].price).toBe(expectedPrice);
     expect(result.context?.currencyCode).toBe(currencyCode);
-  },
+  }
 );
