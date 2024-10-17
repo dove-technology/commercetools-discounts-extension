@@ -1,8 +1,9 @@
 import CustomError from '../errors/custom.error';
+import type { Configuration } from '../types/index.types';
 import envValidators from '../validators/env.validators';
 import { getValidateMessages } from '../validators/helpers.validators';
 
-export const readConfiguration = () => {
+export const readConfiguration = (): Configuration => {
   const envVars = {
     clientId: process.env.CTP_CLIENT_ID as string,
     clientSecret: process.env.CTP_CLIENT_SECRET as string,

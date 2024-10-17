@@ -5,8 +5,11 @@ import { errorMiddleware } from './middleware/error.middleware';
 import CustomError from './errors/custom.error';
 import { logger } from './utils/logger.utils';
 import { proxy } from './lib/commerce-tools-dovetech-proxy';
+import { readConfiguration } from './utils/config.utils';
 
 dotenv.config();
+
+const configuration = readConfiguration();
 
 const app = express();
 app.disable('x-powered-by');
@@ -18,7 +21,7 @@ app.post('/cart-service', (req: Request, res: Response) => {
   const cart = req.body.resource.obj;
 
   // not sure about async in Express v4 at the moment
-  proxy(cart).then((extensionResponse) => {
+  proxy(configuration, cart).then((extensionResponse) => {
     if (extensionResponse.success) {
       res.status(200).json({
         actions: extensionResponse.actions,

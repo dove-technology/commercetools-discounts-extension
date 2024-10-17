@@ -15,3 +15,13 @@ export type ValidatorFunction = (o: object) => boolean;
 export type Wrapper = (
   validator: ValidatorFunction
 ) => (value: object) => boolean;
+
+export interface Configuration {
+  clientId: string;
+  clientSecret: string;
+  projectKey: string;
+  scope?: string;
+  region: string;
+  dovetechApiHost: string;
+  dovetechApiKey: string;
+}
