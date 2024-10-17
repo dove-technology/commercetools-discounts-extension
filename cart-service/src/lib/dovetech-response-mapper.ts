@@ -11,13 +11,13 @@ import {
   CartAction,
   CartActionType,
   CouponCode,
-} from '../types/custom-commerce-tools-types';
+} from '../types/custom-commerce-tools.types';
 import {
   CouponCodeRejectedAction,
   DoveTechActionType,
   DoveTechDiscountsResponse,
   DoveTechDiscountsResponseLineItem,
-} from '../types/dovetech-types';
+} from '../types/dovetech.types';
 import Decimal from 'decimal.js';
 import { ExtensionResponse } from '../types/index.types';
 

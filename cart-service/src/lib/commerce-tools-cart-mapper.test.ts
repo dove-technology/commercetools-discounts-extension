@@ -1,12 +1,12 @@
 import { test, expect } from '@jest/globals';
 import cartMapper from './commerce-tools-cart-mapper';
-import { DoveTechDiscountsDataInstance } from '../types/dovetech-types';
+import { DoveTechDiscountsDataInstance } from '../types/dovetech.types';
 import CommerceToolsCartBuilder from './test-helpers/commerce-tools-cart-builder';
 import CommerceToolsLineItemBuilder from './test-helpers/commerce-tools-line-item-builder';
 import {
   AddCouponCodeCartAction,
   CartActionType,
-} from '../types/custom-commerce-tools-types';
+} from '../types/custom-commerce-tools.types';
 
 test('single line item mapped correctly', async () => {
   const currencyCode = 'USD';

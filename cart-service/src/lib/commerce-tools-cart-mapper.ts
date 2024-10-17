@@ -4,7 +4,7 @@ import {
   AddCouponCodeCartAction,
   CartAction,
   CartActionType,
-} from '../types/custom-commerce-tools-types';
+} from '../types/custom-commerce-tools.types';
 import {
   DoveTechDiscountsBasket,
   DoveTechDiscountsCost,
@@ -12,7 +12,7 @@ import {
   DoveTechDiscountsDataInstance,
   DoveTechDiscountsRequest,
   DoveTechDiscountsSettings,
-} from '../types/dovetech-types';
+} from '../types/dovetech.types';
 import Decimal from 'decimal.js';
 
 export default (

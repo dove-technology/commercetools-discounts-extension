@@ -7,14 +7,14 @@ import {
   CouponCodeRejectedAction,
   CouponCodeValidationError,
   DoveTechActionType,
-} from '../types/dovetech-types';
+} from '../types/dovetech.types';
 import CommerceToolsCartBuilder from './test-helpers/commerce-tools-cart-builder';
 import CommerceToolsLineItemBuilder from './test-helpers/commerce-tools-line-item-builder';
 import DoveTechResponseBuilder from './test-helpers/dovetech-response-builder';
 import {
   AddCouponCodeCartAction,
   CartActionType,
-} from '../types/custom-commerce-tools-types';
+} from '../types/custom-commerce-tools.types';
 import { CartSetLineItemTotalPriceAction } from '@commercetools/platform-sdk';
 import crypto from 'crypto';
 
