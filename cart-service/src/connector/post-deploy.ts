@@ -18,6 +18,9 @@ async function postDeploy(properties: Map<string, unknown>): Promise<void> {
 
 async function run(): Promise<void> {
   try {
+    process.stdout.write('Post-deploy started\n');
+    process.stdout.write(JSON.stringify(process.env));
+
     const properties = new Map(Object.entries(process.env));
     await postDeploy(properties);
   } catch (error) {
