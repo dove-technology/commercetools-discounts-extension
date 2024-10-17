@@ -32,16 +32,6 @@ const envValidators = [
     referencedBy: 'environmentVariables',
   }),
 
-  optional(standardString)(
-    ['scope'],
-    {
-      code: 'InvalidScope',
-      message: 'Scope should be at least 2 characters long.',
-      referencedBy: 'environmentVariables',
-    },
-    { min: 2, max: undefined }
-  ),
-
   standardUrl(['dovetechApiHost'], {
     code: 'InvalidDoveTechApiHost',
     message: 'Dovetech API Host is not a valid URL.',
