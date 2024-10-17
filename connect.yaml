@@ -8,7 +8,7 @@ deployAs:
     configuration:
       standardConfiguration:
         - key: CTP_REGION
-          description: commercetools Composable Commerce API region
+          description: commercetools API region
           required: true
           default: "europe-west1.gcp"
         - key: DOVETECH_API_HOST
@@ -20,14 +20,14 @@ deployAs:
           description: Dovetech Processor API key
           required: true
         - key: CTP_PROJECT_KEY
-          description: commercetools Composable Commerce project key
+          description: commercetools project key
           required: true
         - key: CTP_CLIENT_ID
-          description: commercetools Composable Commerce client ID
+          description: commercetools client ID
           required: true
         - key: CTP_CLIENT_SECRET
-          description: commercetools Composable Commerce client secret
+          description: commercetools client secret
           required: true
         - key: CTP_SCOPES
-          description: commercetools Composable Commerce client scopes
+          description: commercetools client scopes (e.g. manage_extensions:${project key} manage_types:${project key})
           required: true
