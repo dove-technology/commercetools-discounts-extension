@@ -5,14 +5,11 @@ import {
   region,
 } from './helpers.validators';
 
-/**
- * Create here your own validators
- */
 const envValidators = [
   standardString(
     ['clientId'],
     {
-      code: 'InValidClientId',
+      code: 'InvalidClientId',
       message: 'Client id should be 24 characters.',
       referencedBy: 'environmentVariables',
     },
