@@ -3,7 +3,7 @@ dotenv.config();
 
 import { createApiRoot } from '../client/create.client';
 import { assertError, assertString } from '../utils/assert.utils';
-import { createCartUpdateExtension } from './actions';
+import { createCartUpdateExtension, createCustomTypes } from './actions';
 
 const CONNECT_APPLICATION_URL_KEY = 'CONNECT_SERVICE_URL';
 
@@ -14,6 +14,7 @@ async function postDeploy(properties: Map<string, unknown>): Promise<void> {
 
   const apiRoot = createApiRoot();
   await createCartUpdateExtension(apiRoot, applicationUrl);
+  await createCustomTypes(apiRoot);
 }
 
 async function run(): Promise<void> {

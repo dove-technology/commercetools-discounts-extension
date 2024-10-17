@@ -1,4 +1,9 @@
 import { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk/dist/declarations/src/generated/client/by-project-key-request-builder';
+import {
+  CART_METADATA,
+  CART_ACTION,
+  COUPON_CODES,
+} from '../lib/cart-constants';
 
 const CART_EXTENSION_KEY = 'dovetech-discountsExtension';
 
@@ -46,6 +51,60 @@ export async function deleteCartUpdateExtension(
       .delete({
         queryArgs: {
           version: extension.version,
+        },
+      })
+      .execute();
+  }
+}
+
+export async function createCustomTypes(
+  apiRoot: ByProjectKeyRequestBuilder
+): Promise<void> {
+  const {
+    body: { results: types },
+  } = await apiRoot
+    .types()
+    .get({
+      queryArgs: {
+        where: `key = "${CART_METADATA}"`,
+      },
+    })
+    .execute();
+
+  if (types.length === 0) {
+    await apiRoot
+      .types()
+      .post({
+        body: {
+          key: CART_METADATA,
+          name: {
+            en: 'Dovetech Cart Metadata',
+          },
+          resourceTypeIds: ['order'],
+          fieldDefinitions: [
+            {
+              type: {
+                name: 'String',
+              },
+              name: COUPON_CODES,
+              label: {
+                en: 'Dovetech Coupon Codes',
+              },
+              required: false,
+              inputHint: 'SingleLine',
+            },
+            {
+              type: {
+                name: 'String',
+              },
+              name: CART_ACTION,
+              label: {
+                en: 'Dovetech Cart Action',
+              },
+              required: false,
+              inputHint: 'SingleLine',
+            },
+          ],
         },
       })
       .execute();
