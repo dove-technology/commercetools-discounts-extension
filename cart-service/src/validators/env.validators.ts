@@ -2,7 +2,6 @@ import {
   optional,
   standardString,
   standardKey,
-  region,
   standardUrl,
 } from './helpers.validators';
 
@@ -42,12 +41,6 @@ const envValidators = [
     },
     { min: 2, max: undefined }
   ),
-
-  region(['region'], {
-    code: 'InvalidRegion',
-    message: 'Not a valid region.',
-    referencedBy: 'environmentVariables',
-  }),
 
   standardUrl(['dovetechApiHost'], {
     code: 'InvalidDoveTechApiHost',

@@ -127,23 +127,3 @@ export const array =
       ]),
     ];
   };
-
-export const region: ValidatorCreator = (path, message) => [
-  path,
-  [
-    [
-      required(
-        required((value) =>
-          validator.isIn(value, [
-            'us-central1.gcp',
-            'us-east-2.aws',
-            'europe-west1.gcp',
-            'eu-central-1.aws',
-            'australia-southeast1.gcp',
-          ])
-        )
-      ),
-      message,
-    ],
-  ],
-];
