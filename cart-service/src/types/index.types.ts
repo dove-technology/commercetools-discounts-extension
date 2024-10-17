@@ -32,6 +32,7 @@ export interface Configuration {
   clientId: string;
   clientSecret: string;
   projectKey: string;
+  scope?: string;
   region: string;
   dovetechApiHost: string;
   dovetechApiKey: string;

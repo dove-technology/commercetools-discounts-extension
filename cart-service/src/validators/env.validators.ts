@@ -1,4 +1,9 @@
-import { standardString, standardKey, standardUrl } from './helpers.validators';
+import {
+  standardString,
+  standardKey,
+  standardUrl,
+  optional,
+} from './helpers.validators';
 
 const envValidators = [
   standardString(
@@ -26,6 +31,16 @@ const envValidators = [
     message: 'Project key should be a valid string.',
     referencedBy: 'environmentVariables',
   }),
+
+  optional(standardString)(
+    ['scope'],
+    {
+      code: 'InvalidScope',
+      message: 'Scope should be at least 2 characters long.',
+      referencedBy: 'environmentVariables',
+    },
+    { min: 2, max: undefined }
+  ),
 
   standardUrl(['dovetechApiHost'], {
     code: 'InvalidDoveTechApiHost',
