@@ -2,7 +2,7 @@ import { Configuration } from '../types/index.types';
 import {
   DoveTechDiscountsRequest,
   DoveTechDiscountsResponse,
-} from './dovetech-types';
+} from '../types/dovetech-types';
 
 export const evaluate = async (
   configuration: Configuration,

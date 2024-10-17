@@ -1,3 +1,15 @@
+import { CartUpdateAction, ErrorResponse } from '@commercetools/platform-sdk';
+
+export type ExtensionResponse =
+  | {
+      success: true;
+      actions: CartUpdateAction[];
+    }
+  | {
+      success: false;
+      errorResponse: ErrorResponse;
+    };
+
 export type Message = {
   code: string;
   message: string;
