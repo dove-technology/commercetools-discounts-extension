@@ -8,7 +8,7 @@ export const readConfiguration = (): Configuration => {
     clientId: process.env.CTP_CLIENT_ID as string,
     clientSecret: process.env.CTP_CLIENT_SECRET as string,
     projectKey: process.env.CTP_PROJECT_KEY as string,
-    scope: process.env.CTP_SCOPE,
+    scopes: process.env.CTP_SCOPES as string,
     region: process.env.CTP_REGION as string,
     dovetechApiHost: process.env.DOVETECH_API_HOST as string,
     dovetechApiKey: process.env.DOVETECH_API_KEY as string,

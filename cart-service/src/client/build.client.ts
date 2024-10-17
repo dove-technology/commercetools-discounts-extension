@@ -25,10 +25,5 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
     clientId: configuration.clientId,
     clientSecret: configuration.clientSecret,
   },
-  scopes: configuration.scope
-    ? [configuration.scope]
-    : [
-        `manage_extensions:${configuration.projectKey}`,
-        `manage_types:${configuration.projectKey}`,
-      ],
+  scopes: [configuration.scopes],
 };
