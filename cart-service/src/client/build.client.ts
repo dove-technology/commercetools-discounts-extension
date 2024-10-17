@@ -5,27 +5,28 @@ import type {
 } from '@commercetools/sdk-client-v2';
 import { readConfiguration } from '../utils/config.utils';
 
+const configuration = readConfiguration();
+
 export const createClient = () =>
   new ClientBuilder()
-    .withProjectKey(readConfiguration().projectKey)
+    .withProjectKey(configuration.projectKey)
     .withClientCredentialsFlow(authMiddlewareOptions)
     .withHttpMiddleware(httpMiddlewareOptions)
     .build();
 
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  host: `https://api.${readConfiguration().region}.commercetools.com`,
+  host: `https://api.${configuration.region}.commercetools.com`,
 };
 
 const authMiddlewareOptions: AuthMiddlewareOptions = {
-  host: `https://auth.${readConfiguration().region}.commercetools.com`,
-  projectKey: readConfiguration().projectKey,
+  host: `https://auth.${configuration.region}.commercetools.com`,
+  projectKey: configuration.projectKey,
   credentials: {
-    clientId: readConfiguration().clientId,
-    clientSecret: readConfiguration().clientSecret,
+    clientId: configuration.clientId,
+    clientSecret: configuration.clientSecret,
   },
   scopes: [
-    readConfiguration().scope
-      ? (readConfiguration().scope as string)
-      : 'default',
+    `manage_extensions:${configuration.projectKey}`,
+    `manage_types:${configuration.projectKey}`,
   ],
 };
