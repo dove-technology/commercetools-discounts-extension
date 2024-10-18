@@ -1,8 +1,8 @@
 import { test, expect } from '@jest/globals';
 import cartMapper from './commerce-tools-cart-mapper';
 import { DoveTechDiscountsDataInstance } from '../types/dovetech.types';
-import CommerceToolsCartBuilder from './test-helpers/commerce-tools-cart-builder';
-import CommerceToolsLineItemBuilder from './test-helpers/commerce-tools-line-item-builder';
+import CommerceToolsCartBuilder from '../test-helpers/commerce-tools-cart-builder';
+import CommerceToolsLineItemBuilder from '../test-helpers/commerce-tools-line-item-builder';
 import {
   AddCouponCodeCartAction,
   CartActionType,

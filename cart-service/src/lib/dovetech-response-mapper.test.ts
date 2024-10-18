@@ -2,21 +2,21 @@ import { it, expect } from '@jest/globals';
 import map from './dovetech-response-mapper';
 import {
   AmountOffAction,
-  AmountOffType,
   CouponCodeAcceptedAction,
   CouponCodeRejectedAction,
   CouponCodeValidationError,
   DoveTechActionType,
 } from '../types/dovetech.types';
-import CommerceToolsCartBuilder from './test-helpers/commerce-tools-cart-builder';
-import CommerceToolsLineItemBuilder from './test-helpers/commerce-tools-line-item-builder';
-import DoveTechResponseBuilder from './test-helpers/dovetech-response-builder';
+import CommerceToolsCartBuilder from '../test-helpers/commerce-tools-cart-builder';
+import CommerceToolsLineItemBuilder from '../test-helpers/commerce-tools-line-item-builder';
+import DoveTechResponseBuilder from '../test-helpers/dovetech-response-builder';
 import {
   AddCouponCodeCartAction,
   CartActionType,
 } from '../types/custom-commerce-tools.types';
 import { CartSetLineItemTotalPriceAction } from '@commercetools/platform-sdk';
 import crypto from 'crypto';
+import { buildAmountOffBasketAction } from '../test-helpers/dovetech-action-builders';
 
 it('should return no actions if there are no line items', () => {
   const ctCart = new CommerceToolsCartBuilder('USD').build();
@@ -403,17 +403,3 @@ it('should handle line item with multiple quantity', () => {
     actions: [expectedAction],
   });
 });
-
-const buildAmountOffBasketAction = (
-  amountOff: number,
-  value = amountOff
-): AmountOffAction => {
-  return {
-    id: crypto.randomUUID(),
-    amountOff: amountOff,
-    discountId: crypto.randomUUID(),
-    type: DoveTechActionType.AmountOffBasket,
-    amountOffType: AmountOffType.AmountOff,
-    value,
-  };
-};

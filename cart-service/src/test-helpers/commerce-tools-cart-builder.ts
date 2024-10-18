@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import type {
   CartAction,
   CouponCode,
-} from '../../types/custom-commerce-tools.types';
+} from '../types/custom-commerce-tools.types';
 
 export default class CommerceToolsCartBuilder {
   private lineItems: LineItem[] = [];

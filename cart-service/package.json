@@ -11,7 +11,7 @@
     "build": "rimraf ./build && tsc",
     "lint": "eslint .",
     "prettier": "prettier --write '**/*.{js,ts}'",
-    "test": "jest ./src --config jest.config.cjs",
+    "test": "jest ./src --config jest.config.mjs",
     "test:watch": "jest ./src --watch",
     "connector:post-deploy": "node build/connector/post-deploy.js",
     "connector:pre-undeploy": "node build/connector/pre-undeploy.js"
@@ -25,6 +25,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.0.3",
     "@types/node": "^22.7.5",
+    "@types/supertest": "^6.0.2",
     "@types/validator": "^13.7.10",
     "@typescript-eslint/eslint-plugin": "^8.9.0",
     "@typescript-eslint/parser": "^8.9.0",
@@ -35,6 +36,7 @@
     "nodemon": "^3.0.1",
     "prettier": "^3.0.1",
     "rimraf": "^6.0.1",
+    "supertest": "^7.0.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.6.3",
     "typescript-eslint": "^8.9.0"

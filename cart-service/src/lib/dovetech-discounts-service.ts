@@ -33,8 +33,5 @@ export const evaluate = async (
     );
   }
 
-  const jsonResponse = await response.json();
-  logger.info('DoveTech discounts service response', { meta: jsonResponse });
-
-  return jsonResponse;
+  return await response.json();
 };

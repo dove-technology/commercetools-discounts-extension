@@ -28,6 +28,7 @@ jobs:
       - name: tag
         id: tag
         uses: tcpl/semver-tag-creator-action@1.3.2
+        if: github.ref == 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ github.actor }}
