@@ -10,6 +10,7 @@ export default class CommerceToolsCartBuilder {
   private lineItems: LineItem[] = [];
   private couponCodes: CouponCode[] = [];
   private cartAction?: CartAction;
+  private type: 'Cart' | 'Order' = 'Cart';
 
   constructor(
     private readonly currencyCode: string,
@@ -43,9 +44,14 @@ export default class CommerceToolsCartBuilder {
     return this;
   }
 
+  setType(type: 'Cart' | 'Order'): this {
+    this.type = type;
+    return this;
+  }
+
   build(): CartOrOrder {
     return {
-      type: 'Cart',
+      type: this.type,
       id: crypto.randomUUID(),
       version: 1,
       totalPrice: {
@@ -82,6 +88,6 @@ export default class CommerceToolsCartBuilder {
       origin: 'Customer',
       createdAt: '2024-10-09T08:33:10.060Z',
       lastModifiedAt: '2024-10-09T08:33:10.060Z',
-    };
+    } as CartOrOrder;
   }
 }

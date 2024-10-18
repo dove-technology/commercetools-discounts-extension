@@ -142,3 +142,15 @@ test.each([
     expect(result.context?.currencyCode).toBe(currencyCode);
   }
 );
+
+test('should set commit to true when type is Order', async () => {
+  const currencyCode = 'USD';
+
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .setType('Order')
+    .build();
+
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+
+  expect(result.settings.commit).toBe(true);
+});
