@@ -1,4 +1,4 @@
-import type { Cart } from '@commercetools/platform-sdk';
+import type { Cart, Order } from '@commercetools/platform-sdk';
 import map from './commerce-tools-cart-mapper';
 import { DoveTechDiscountsDataInstance } from '../types/dovetech.types';
 import { evaluate } from './dovetech-discounts-service';
@@ -8,12 +8,11 @@ import { Configuration } from '../types/index.types';
 
 export const proxy = async (
   configuration: Configuration,
-  commerceToolsCart: Cart
+  commerceToolsCart: Cart | Order
 ): Promise<ExtensionResponse> => {
   const doveTechRequest = map(
     commerceToolsCart,
-    DoveTechDiscountsDataInstance.Live,
-    false
+    DoveTechDiscountsDataInstance.Live
   );
 
   // need to handle non successful responses and map to errors

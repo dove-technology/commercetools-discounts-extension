@@ -5,6 +5,7 @@ import type {
   CartSetLineItemTotalPriceAction,
   CartUpdateAction,
   CartSetCustomTypeAction,
+  Order,
 } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
@@ -37,8 +38,18 @@ const invalidCouponCodeResponse: ExtensionResponse = {
 
 export default (
   dtResponse: DoveTechDiscountsResponse,
-  commerceToolsCart: Cart
+  commerceToolsCart: Cart | Order
 ): ExtensionResponse => {
+  const isOrder =
+    'type' in commerceToolsCart && commerceToolsCart.type === 'Order';
+
+  if (isOrder) {
+    return {
+      success: true,
+      actions: [],
+    };
+  }
+
   const dtBasketItems = dtResponse.basket?.items ?? [];
 
   const actions = getLineItemTotalPriceActions(
@@ -90,7 +101,7 @@ export default (
 
 const getLineItemTotalPriceActions = (
   dtBasketItems: DoveTechDiscountsResponseLineItem[],
-  commerceToolsCart: Cart
+  commerceToolsCart: Cart | Order
 ): CartUpdateAction[] => {
   const currencyCode = commerceToolsCart.totalPrice.currencyCode;
   const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
@@ -139,7 +150,7 @@ const buildSetLineItemTotalPriceAction = (
 
 const newCouponCodeInvalid = (
   couponCodeRejectedActions: CouponCodeRejectedAction[],
-  commerceToolsCart: Cart
+  commerceToolsCart: Cart | Order
 ) => {
   if (couponCodeRejectedActions.length === 0) {
     return false;
