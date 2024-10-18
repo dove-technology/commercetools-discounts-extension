@@ -3,4 +3,6 @@ export const readConfiguration = jest.fn(() => ({
   clientSecret: 'mockedClientSecret',
   projectKey: 'mockedProjectKey',
   region: 'mockedRegion',
+  dovetechApiHost: 'https://example.com',
+  dovetechApiKey: 'API-KEY',
 }));
