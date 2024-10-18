@@ -3,6 +3,8 @@ import {
   DoveTechDiscountsRequest,
   DoveTechDiscountsResponse,
 } from '../types/dovetech.types';
+import CustomError from '../errors/custom.error';
+import { logger } from '../utils/logger.utils';
 
 export const evaluate = async (
   configuration: Configuration,
@@ -18,11 +20,21 @@ export const evaluate = async (
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Non ok response from dovetech service. status: ${response.status}`
+    if (response.status === 400) {
+      const problemDetails = await response.json();
+      logger.error('Bad request returned from DoveTech discounts service', {
+        meta: problemDetails,
+      });
+    }
+
+    throw new CustomError(
+      response.status,
+      'Error while calling DoveTech discounts service.'
     );
   }
 
-  const data: DoveTechDiscountsResponse = await response.json();
-  return data;
+  const jsonResponse = await response.json();
+  logger.info('DoveTech discounts service response', { meta: jsonResponse });
+
+  return jsonResponse;
 };
