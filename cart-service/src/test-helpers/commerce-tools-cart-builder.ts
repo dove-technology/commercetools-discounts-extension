@@ -1,7 +1,8 @@
-import type { Cart, LineItem } from '@commercetools/platform-sdk';
+import type { LineItem } from '@commercetools/platform-sdk';
 import crypto from 'crypto';
 import type {
   CartAction,
+  CartOrOrder,
   CouponCode,
 } from '../types/custom-commerce-tools.types';
 
@@ -42,8 +43,9 @@ export default class CommerceToolsCartBuilder {
     return this;
   }
 
-  build(): Cart {
+  build(): CartOrOrder {
     return {
+      type: 'Cart',
       id: crypto.randomUUID(),
       version: 1,
       totalPrice: {

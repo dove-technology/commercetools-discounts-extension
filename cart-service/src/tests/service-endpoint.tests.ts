@@ -14,11 +14,11 @@ import CommerceToolsLineItemBuilder from '../test-helpers/commerce-tools-line-it
 import {
   CartSetLineItemTotalPriceAction,
   CartSetCustomTypeAction,
-  Cart,
 } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartActionType,
+  CartOrOrder,
 } from '../types/custom-commerce-tools.types';
 import { buildAmountOffBasketAction } from '../test-helpers/dovetech-action-builders';
 jest.mock('../../src/utils/config.utils');
@@ -196,12 +196,12 @@ test('should return empty actions when Dovetech service returns 500', async () =
   });
 });
 
-const postCart = async (ctCart: Cart) => {
+const postCart = async (cartOrOrder: CartOrOrder) => {
   return await request(app)
     .post('/cart-service')
     .send({
       resource: {
-        obj: ctCart,
+        obj: cartOrOrder,
       },
     });
 };

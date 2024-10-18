@@ -1,16 +1,15 @@
 import { CART_ACTION, CART_METADATA } from './cart-constants';
 import type {
-  Cart,
   LineItem,
   CartSetLineItemTotalPriceAction,
   CartUpdateAction,
   CartSetCustomTypeAction,
-  Order,
 } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartAction,
   CartActionType,
+  CartOrOrder,
   CouponCode,
 } from '../types/custom-commerce-tools.types';
 import {
@@ -38,12 +37,9 @@ const invalidCouponCodeResponse: ExtensionResponse = {
 
 export default (
   dtResponse: DoveTechDiscountsResponse,
-  commerceToolsCart: Cart | Order
+  commerceToolsCart: CartOrOrder
 ): ExtensionResponse => {
-  const isOrder =
-    'type' in commerceToolsCart && commerceToolsCart.type === 'Order';
-
-  if (isOrder) {
+  if (commerceToolsCart.type === 'Order') {
     return {
       success: true,
       actions: [],
@@ -101,7 +97,7 @@ export default (
 
 const getLineItemTotalPriceActions = (
   dtBasketItems: DoveTechDiscountsResponseLineItem[],
-  commerceToolsCart: Cart | Order
+  commerceToolsCart: CartOrOrder
 ): CartUpdateAction[] => {
   const currencyCode = commerceToolsCart.totalPrice.currencyCode;
   const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
@@ -150,7 +146,7 @@ const buildSetLineItemTotalPriceAction = (
 
 const newCouponCodeInvalid = (
   couponCodeRejectedActions: CouponCodeRejectedAction[],
-  commerceToolsCart: Cart | Order
+  commerceToolsCart: CartOrOrder
 ) => {
   if (couponCodeRejectedActions.length === 0) {
     return false;
