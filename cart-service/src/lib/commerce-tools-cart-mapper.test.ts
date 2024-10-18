@@ -23,7 +23,7 @@ test('single line item mapped correctly', async () => {
     .addLineItem(lineItem)
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
 
   expect(result.basket.items).toHaveLength(1);
   const mappedLineItem = result.basket.items[0];
@@ -52,7 +52,7 @@ test('line item with discounted price mapped correctly', async () => {
     .addLineItem(lineItem)
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
 
   expect(result.basket.items).toHaveLength(1);
   expect(result.basket.items[0].quantity).toBe(2);
@@ -66,7 +66,7 @@ test('empty cart mapped correctly', async () => {
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode).build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
 
   expect(result.basket.items).toHaveLength(0);
   expect(result.context?.currencyCode).toBe(currencyCode);
@@ -84,7 +84,7 @@ test('new coupon code mapped correctly', async () => {
     .addCartAction(addCouponCodeAction)
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
 
   expect(result.couponCodes).toHaveLength(1);
   expect(result.couponCodes![0].code).toBe('TEST_COUPON');
@@ -102,7 +102,7 @@ test('existing coupon codes mapped correctly', async () => {
     .addCouponCode({ code: 'EXISTING_COUPON' })
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live, false);
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
 
   expect(result.couponCodes).toHaveLength(2);
   expect(result.couponCodes).toEqual(
@@ -135,14 +135,22 @@ test.each([
       .addLineItem(lineItem)
       .build();
 
-    const result = cartMapper(
-      ctCart,
-      DoveTechDiscountsDataInstance.Live,
-      false
-    );
+    const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
 
     expect(result.basket.items).toHaveLength(1);
     expect(result.basket.items[0].price).toBe(expectedPrice);
     expect(result.context?.currencyCode).toBe(currencyCode);
   }
 );
+
+test('should set commit to true when type is Order', async () => {
+  const currencyCode = 'USD';
+
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .setType('Order')
+    .build();
+
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+
+  expect(result.settings.commit).toBe(true);
+});

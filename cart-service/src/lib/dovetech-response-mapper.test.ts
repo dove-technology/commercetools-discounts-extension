@@ -403,3 +403,33 @@ it('should handle line item with multiple quantity', () => {
     actions: [expectedAction],
   });
 });
+
+it('no actions should be returned if type is Order', () => {
+  const currencyCode = 'USD';
+  const originalLineItemCentAmount = 40000;
+
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    currencyCode
+  ).build();
+
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addLineItem(lineItem)
+    .setType('Order')
+    .build();
+
+  const dtResponse = new DoveTechResponseBuilder()
+    .addLineItem({
+      totalAmountOff: 0,
+      total: 30,
+      actions: [],
+    })
+    .build();
+
+  const result = map(dtResponse, ctCart);
+
+  expect(result).toEqual({
+    success: true,
+    actions: [],
+  });
+});

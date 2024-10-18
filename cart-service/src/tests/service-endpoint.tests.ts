@@ -14,11 +14,11 @@ import CommerceToolsLineItemBuilder from '../test-helpers/commerce-tools-line-it
 import {
   CartSetLineItemTotalPriceAction,
   CartSetCustomTypeAction,
-  Cart,
 } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartActionType,
+  CartOrOrder,
 } from '../types/custom-commerce-tools.types';
 import { buildAmountOffBasketAction } from '../test-helpers/dovetech-action-builders';
 jest.mock('../../src/utils/config.utils');
@@ -196,12 +196,58 @@ test('should return empty actions when Dovetech service returns 500', async () =
   });
 });
 
-const postCart = async (ctCart: Cart) => {
+test('should return no actions when type is Order', async () => {
+  const currencyCode = 'USD';
+  const originalLineItemCentAmount = 4000;
+
+  const amountOff = 2;
+  const total = 38;
+
+  const lineItem = new CommerceToolsLineItemBuilder(
+    originalLineItemCentAmount,
+    currencyCode
+  ).build();
+
+  const ctCart = new CommerceToolsCartBuilder(currencyCode)
+    .addLineItem(lineItem)
+    .setType('Order')
+    .build();
+
+  const amountOffBasketAction: AmountOffAction =
+    buildAmountOffBasketAction(amountOff);
+
+  const dtResponse = new DoveTechResponseBuilder()
+    .addAction(amountOffBasketAction)
+    .addLineItem({
+      totalAmountOff: amountOffBasketAction.amountOff,
+      total: total,
+      actions: [
+        {
+          id: amountOffBasketAction.id,
+          subItemId: 0,
+          amountOff: amountOffBasketAction.amountOff,
+        },
+      ],
+    })
+    .build();
+
+  fetchMock.mockResponseOnce(JSON.stringify(dtResponse));
+
+  const response = await postCart(ctCart);
+
+  expect(response.status).toBe(200);
+
+  expect(response.body).toEqual({
+    actions: [],
+  });
+});
+
+const postCart = async (cartOrOrder: CartOrOrder) => {
   return await request(app)
     .post('/cart-service')
     .send({
       resource: {
-        obj: ctCart,
+        obj: cartOrOrder,
       },
     });
 };

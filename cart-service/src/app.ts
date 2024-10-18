@@ -22,10 +22,10 @@ app.post('/cart-service', (req: Request, res: Response) => {
     throw new CustomError(400, 'Bad request - Missing resource object.');
   }
 
-  const cart = resource.obj;
+  const resourceObject = resource.obj;
 
   // not sure about async in Express v4 at the moment
-  proxy(configuration, cart)
+  proxy(configuration, resourceObject)
     .then((extensionResponse) => {
       if (extensionResponse.success) {
         res.status(200).json({
@@ -39,7 +39,7 @@ app.post('/cart-service', (req: Request, res: Response) => {
     })
     .catch((error) => {
       if (error instanceof CustomError) {
-        logger.error(error.message);
+        logger.error(error.statusCode + ' ' + error.message);
       } else {
         logger.error(error);
       }

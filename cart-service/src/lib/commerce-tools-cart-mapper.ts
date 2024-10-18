@@ -1,9 +1,10 @@
 import { CART_ACTION, COUPON_CODES } from './cart-constants';
-import type { Cart, LineItem } from '@commercetools/platform-sdk';
+import type { LineItem } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartAction,
   CartActionType,
+  CartOrOrder,
 } from '../types/custom-commerce-tools.types';
 import {
   DoveTechDiscountsBasket,
@@ -16,9 +17,8 @@ import {
 import Decimal from 'decimal.js';
 
 export default (
-  commerceToolsCart: Cart,
-  dataInstance: DoveTechDiscountsDataInstance,
-  commit: boolean
+  commerceToolsCart: CartOrOrder,
+  dataInstance: DoveTechDiscountsDataInstance
 ): DoveTechDiscountsRequest => {
   const basket: DoveTechDiscountsBasket = {
     items: commerceToolsCart.lineItems.map((lineItem) => ({
@@ -58,7 +58,7 @@ export default (
 
   const settings: DoveTechDiscountsSettings = {
     dataInstance,
-    commit,
+    commit: commerceToolsCart.type === 'Order',
     explain: false,
   };
 
