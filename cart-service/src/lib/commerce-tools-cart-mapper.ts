@@ -1,5 +1,5 @@
 import { CART_ACTION, COUPON_CODES } from './cart-constants';
-import type { LineItem } from '@commercetools/platform-sdk';
+import type { LineItem, ShippingInfo } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartAction,
@@ -15,6 +15,7 @@ import {
   DoveTechDiscountsSettings,
 } from '../types/dovetech.types';
 import Decimal from 'decimal.js';
+import { ShippingCostName } from './dovetech-property-constants';
 
 export default (
   commerceToolsCart: CartOrOrder,
@@ -56,6 +57,13 @@ export default (
     couponCodes.push(...couponCodesFromCart);
   }
 
+  if (commerceToolsCart.shippingInfo) {
+    costs.push({
+      name: ShippingCostName,
+      value: getShippingCostInCurrencyUnits(commerceToolsCart.shippingInfo),
+    });
+  }
+
   const settings: DoveTechDiscountsSettings = {
     dataInstance,
     commit: commerceToolsCart.type === 'Order',
@@ -85,4 +93,20 @@ const getLineItemPrice = (lineItem: LineItem) => {
   return lineItem.price.discounted
     ? lineItem.price.discounted.value
     : lineItem.price.value;
+};
+
+const getShippingCostInCurrencyUnits = (shippingInfo: ShippingInfo) => {
+  const price = getShippingCost(shippingInfo);
+
+  const fractionDigits = price.fractionDigits;
+
+  return new Decimal(price.centAmount)
+    .div(new Decimal(10).pow(fractionDigits))
+    .toNumber();
+};
+
+const getShippingCost = (shippingInfo: ShippingInfo) => {
+  return shippingInfo.discountedPrice
+    ? shippingInfo.discountedPrice.value
+    : shippingInfo.price;
 };
