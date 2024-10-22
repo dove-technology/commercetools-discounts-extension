@@ -175,5 +175,5 @@ test('should map shipping info when cart shipping mode is multiple', async () =>
 
   expect(result.costs).toHaveLength(1);
   expect(result.costs![0].name).toBe('Shipping');
-  expect(result.costs![0].value).toBe(300);
+  expect(result.costs![0].value).toBe(600);
 });

@@ -1,11 +1,11 @@
 {
   "type": "Cart",
-  "id": "2a845a61-2698-4093-aea3-61bbc7967e97",
-  "version": 15,
-  "versionModifiedAt": "2024-10-22T07:55:34.180Z",
+  "id": "ad794ae3-f94c-494b-8af9-ad4c87331822",
+  "version": 11,
+  "versionModifiedAt": "2024-10-22T14:19:43.670Z",
   "lastMessageSequenceNumber": 1,
-  "createdAt": "2024-10-22T07:50:43.840Z",
-  "lastModifiedAt": "2024-10-22T07:55:34.180Z",
+  "createdAt": "2024-10-22T14:17:28.889Z",
+  "lastModifiedAt": "2024-10-22T14:19:43.670Z",
   "lastModifiedBy": {
     "clientId": "OqprkBtCJoY95-lXPbPfQmRQ",
     "isPlatformClient": false
@@ -16,7 +16,7 @@
   },
   "lineItems": [
     {
-      "id": "bae12c92-db10-4a47-ab19-9107639121c6",
+      "id": "da5a00b8-8e9b-492d-a86d-5f5690be1dd5",
       "productId": "373fd902-d016-4ac9-b5b0-0343086e3a59",
       "productKey": "modern-landscape-painting",
       "name": {
@@ -72,7 +72,10 @@
         "images": [
           {
             "url": "https://storage.googleapis.com/merchant-center-europe/sample-data/b2c-lifestyle/Modern_Landscape_Painting-1.1.jpeg",
-            "dimensions": { "w": 5313, "h": 5355 }
+            "dimensions": {
+              "w": 5313,
+              "h": 5355
+            }
           }
         ],
         "attributes": [
@@ -127,8 +130,8 @@
           }
         }
       ],
-      "addedAt": "2024-10-22T07:50:43.669Z",
-      "lastModifiedAt": "2024-10-22T07:55:34.021Z",
+      "addedAt": "2024-10-22T14:17:28.690Z",
+      "lastModifiedAt": "2024-10-22T14:19:43.462Z",
       "state": [
         {
           "quantity": 1,
@@ -227,7 +230,7 @@
       }
     },
     {
-      "id": "decabecf-4c10-441a-ba2c-786131b84f3a",
+      "id": "3882ba7f-bc0d-4e7c-a4a6-845926d08490",
       "productId": "22127372-277b-4ff6-9dcf-dd4f956c6700",
       "productKey": "patterned-pillow-cover",
       "name": {
@@ -283,7 +286,10 @@
         "images": [
           {
             "url": "https://storage.googleapis.com/merchant-center-europe/sample-data/b2c-lifestyle/Patterned_Pillow_Cover-1.1.jpeg",
-            "dimensions": { "w": 6240, "h": 4160 }
+            "dimensions": {
+              "w": 6240,
+              "h": 4160
+            }
           }
         ],
         "attributes": [
@@ -338,8 +344,8 @@
           }
         }
       ],
-      "addedAt": "2024-10-22T07:50:43.669Z",
-      "lastModifiedAt": "2024-10-22T07:55:34.022Z",
+      "addedAt": "2024-10-22T14:17:28.690Z",
+      "lastModifiedAt": "2024-10-22T14:19:43.463Z",
       "state": [
         {
           "quantity": 1,
@@ -442,20 +448,20 @@
   "totalPrice": {
     "type": "centPrecision",
     "currencyCode": "EUR",
-    "centAmount": 36798,
+    "centAmount": 66798,
     "fractionDigits": 2
   },
   "taxedPrice": {
     "totalNet": {
       "type": "centPrecision",
       "currencyCode": "EUR",
-      "centAmount": 30923,
+      "centAmount": 56133,
       "fractionDigits": 2
     },
     "totalGross": {
       "type": "centPrecision",
       "currencyCode": "EUR",
-      "centAmount": 36798,
+      "centAmount": 66798,
       "fractionDigits": 2
     },
     "taxPortions": [
@@ -464,7 +470,7 @@
         "amount": {
           "type": "centPrecision",
           "currencyCode": "EUR",
-          "centAmount": 5875,
+          "centAmount": 10665,
           "fractionDigits": 2
         },
         "name": "Standard VAT for Germany"
@@ -473,7 +479,7 @@
     "totalTax": {
       "type": "centPrecision",
       "currencyCode": "EUR",
-      "centAmount": 5875,
+      "centAmount": 10665,
       "fractionDigits": 2
     }
   },
@@ -482,13 +488,13 @@
     "totalNet": {
       "type": "centPrecision",
       "currencyCode": "EUR",
-      "centAmount": 25210,
+      "centAmount": 50420,
       "fractionDigits": 2
     },
     "totalGross": {
       "type": "centPrecision",
       "currencyCode": "EUR",
-      "centAmount": 30000,
+      "centAmount": 60000,
       "fractionDigits": 2
     },
     "taxPortions": [
@@ -497,7 +503,7 @@
         "amount": {
           "type": "centPrecision",
           "currencyCode": "EUR",
-          "centAmount": 4790,
+          "centAmount": 9580,
           "fractionDigits": 2
         },
         "name": "Standard VAT for Germany"
@@ -506,7 +512,7 @@
     "totalTax": {
       "type": "centPrecision",
       "currencyCode": "EUR",
-      "centAmount": 4790,
+      "centAmount": 9580,
       "fractionDigits": 2
     }
   },
@@ -549,39 +555,17 @@
           "typeId": "shipping-method",
           "id": "8338a0d4-c7fd-4747-b3cf-a885c9d26503"
         },
-        "discountedPrice": {
-          "value": {
-            "type": "centPrecision",
-            "currencyCode": "EUR",
-            "centAmount": 5000,
-            "fractionDigits": 2
-          },
-          "includedDiscounts": [
-            {
-              "discount": {
-                "typeId": "cart-discount",
-                "id": "56cebcd7-2b2d-4574-9666-4d8c777ff797"
-              },
-              "discountedAmount": {
-                "type": "centPrecision",
-                "currencyCode": "EUR",
-                "centAmount": 5000,
-                "fractionDigits": 2
-              }
-            }
-          ]
-        },
         "taxedPrice": {
           "totalNet": {
             "type": "centPrecision",
             "currencyCode": "EUR",
-            "centAmount": 4202,
+            "centAmount": 8403,
             "fractionDigits": 2
           },
           "totalGross": {
             "type": "centPrecision",
             "currencyCode": "EUR",
-            "centAmount": 5000,
+            "centAmount": 10000,
             "fractionDigits": 2
           },
           "taxPortions": [
@@ -590,7 +574,7 @@
               "amount": {
                 "type": "centPrecision",
                 "currencyCode": "EUR",
-                "centAmount": 798,
+                "centAmount": 1597,
                 "fractionDigits": 2
               },
               "name": "Standard VAT for Germany"
@@ -599,7 +583,7 @@
           "totalTax": {
             "type": "centPrecision",
             "currencyCode": "EUR",
-            "centAmount": 798,
+            "centAmount": 1597,
             "fractionDigits": 2
           }
         },
@@ -649,39 +633,17 @@
           "typeId": "shipping-method",
           "id": "49a15b9e-194c-40c2-bf2f-367f1a3903af"
         },
-        "discountedPrice": {
-          "value": {
-            "type": "centPrecision",
-            "currencyCode": "EUR",
-            "centAmount": 25000,
-            "fractionDigits": 2
-          },
-          "includedDiscounts": [
-            {
-              "discount": {
-                "typeId": "cart-discount",
-                "id": "56cebcd7-2b2d-4574-9666-4d8c777ff797"
-              },
-              "discountedAmount": {
-                "type": "centPrecision",
-                "currencyCode": "EUR",
-                "centAmount": 25000,
-                "fractionDigits": 2
-              }
-            }
-          ]
-        },
         "taxedPrice": {
           "totalNet": {
             "type": "centPrecision",
             "currencyCode": "EUR",
-            "centAmount": 21008,
+            "centAmount": 42017,
             "fractionDigits": 2
           },
           "totalGross": {
             "type": "centPrecision",
             "currencyCode": "EUR",
-            "centAmount": 25000,
+            "centAmount": 50000,
             "fractionDigits": 2
           },
           "taxPortions": [
@@ -690,7 +652,7 @@
               "amount": {
                 "type": "centPrecision",
                 "currencyCode": "EUR",
-                "centAmount": 3992,
+                "centAmount": 7983,
                 "fractionDigits": 2
               },
               "name": "Standard VAT for Germany"
@@ -699,7 +661,7 @@
           "totalTax": {
             "type": "centPrecision",
             "currencyCode": "EUR",
-            "centAmount": 3992,
+            "centAmount": 7983,
             "fractionDigits": 2
           }
         },
