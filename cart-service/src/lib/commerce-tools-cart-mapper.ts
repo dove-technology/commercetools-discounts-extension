@@ -13,6 +13,7 @@ import {
   DoveTechDiscountsDataInstance,
   DoveTechDiscountsRequest,
   DoveTechDiscountsSettings,
+  ShippingObject,
 } from '../types/dovetech.types';
 import Decimal from 'decimal.js';
 import { ShippingCostName } from './dovetech-property-constants';
@@ -74,13 +75,21 @@ export default (
     explain: false,
   };
 
-  return {
+  const dtRequest: DoveTechDiscountsRequest = {
     basket,
     costs,
     couponCodes,
     context,
     settings,
   };
+
+  const shippingObject = buildShippingObject(commerceToolsCart);
+
+  if (shippingObject) {
+    dtRequest.shipping = shippingObject;
+  }
+
+  return dtRequest;
 };
 
 const getLineItemPriceInCurrencyUnits = (lineItem: LineItem) => {
@@ -107,4 +116,35 @@ const getShippingCostInCurrencyUnits = (taxedShippingPrice: TaxedPrice) => {
   return new Decimal(price.centAmount)
     .div(new Decimal(10).pow(fractionDigits))
     .toNumber();
+};
+
+const buildShippingObject = (
+  commerceToolsCart: CartOrOrder
+): ShippingObject | undefined => {
+  if (commerceToolsCart.shippingMode === 'Single') {
+    if (!commerceToolsCart.shippingInfo?.shippingMethod?.id) {
+      return undefined;
+    }
+
+    return {
+      methodId: commerceToolsCart.shippingInfo.shippingMethod?.id,
+    };
+  }
+
+  if (commerceToolsCart.shipping.length === 0) {
+    return undefined;
+  }
+
+  const multipleMethodIds = commerceToolsCart.shipping
+    .map((shipping) => shipping.shippingInfo.shippingMethod?.id)
+    .filter((id) => id !== undefined);
+
+  const multipleShippingKeys = commerceToolsCart.shipping.map(
+    (shipping) => shipping.shippingKey
+  );
+
+  return {
+    multipleMethodIds,
+    multipleShippingKeys,
+  };
 };

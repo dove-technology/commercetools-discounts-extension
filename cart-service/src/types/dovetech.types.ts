@@ -139,3 +139,12 @@ export enum AmountOffType {
   AmountOff = 'AmountOff',
   FixedPrice = 'FixedPrice',
 }
+
+export interface ShippingObject {
+  // when single shipping mode this is populated
+  methodId?: string;
+
+  // when multiple shipping mode these are populated
+  multipleMethodIds?: string[];
+  multipleShippingKeys?: string[];
+}

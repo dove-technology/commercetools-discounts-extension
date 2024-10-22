@@ -166,6 +166,13 @@ test('should map shipping info when cart shipping mode is single', async () => {
   expect(result.costs).toHaveLength(1);
   expect(result.costs![0].name).toBe('Shipping');
   expect(result.costs![0].value).toBe(100);
+
+  expect(result.shipping).toBeDefined();
+  expect(result.shipping).toEqual(
+    expect.objectContaining({
+      methodId: '30a8abf8-4124-42f7-b26a-1b9e565d7078',
+    })
+  );
 });
 
 test('should map shipping info when cart shipping mode is multiple', async () => {
@@ -176,4 +183,14 @@ test('should map shipping info when cart shipping mode is multiple', async () =>
   expect(result.costs).toHaveLength(1);
   expect(result.costs![0].name).toBe('Shipping');
   expect(result.costs![0].value).toBe(600);
+
+  expect(result.shipping).toEqual(
+    expect.objectContaining({
+      multipleMethodIds: [
+        '8338a0d4-c7fd-4747-b3cf-a885c9d26503',
+        '49a15b9e-194c-40c2-bf2f-367f1a3903af',
+      ],
+      multipleShippingKeys: ['standard-delivery', 'express-delivery'],
+    })
+  );
 });
