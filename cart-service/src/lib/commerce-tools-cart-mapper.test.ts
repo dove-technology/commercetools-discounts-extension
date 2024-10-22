@@ -6,7 +6,9 @@ import CommerceToolsLineItemBuilder from '../test-helpers/commerce-tools-line-it
 import {
   AddCouponCodeCartAction,
   CartActionType,
+  CartOrOrder,
 } from '../types/custom-commerce-tools.types';
+import * as cartWithSingleShippingMode from '../test-helpers/cart-with-single-shipping-mode.json';
 
 test('single line item mapped correctly', async () => {
   const currencyCode = 'USD';
@@ -153,4 +155,14 @@ test('should set commit to true when type is Order', async () => {
   const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
 
   expect(result.settings.commit).toBe(true);
+});
+
+test('should map shipping info when cart shipping mode is single', async () => {
+  const ctCart = cartWithSingleShippingMode as CartOrOrder;
+
+  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+
+  expect(result.costs).toHaveLength(1);
+  expect(result.costs![0].name).toBe('Shipping');
+  expect(result.costs![0].value).toBe(100);
 });
