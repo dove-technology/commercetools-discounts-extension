@@ -127,43 +127,44 @@ const getShippingCostInCurrencyUnits = (
     if (configuration.useDirectDiscountsForShipping) {
       // use non-discounted amount because direct discounts may have already applied
       // also, once direct discounts are applied any commerce tools discounts will be removed
-      return getCentsValueInCurrencyUnits(commerceToolsCart.shippingInfo.price);
+      return getMoneyInCurrencyUnits(commerceToolsCart.shippingInfo.price);
     }
 
     return commerceToolsCart.shippingInfo.discountedPrice
-      ? getCentsValueInCurrencyUnits(
+      ? getMoneyInCurrencyUnits(
           commerceToolsCart.shippingInfo.discountedPrice.value
         )
-      : getCentsValueInCurrencyUnits(commerceToolsCart.shippingInfo.price);
+      : getMoneyInCurrencyUnits(commerceToolsCart.shippingInfo.price);
   } else {
-    return getShippingCostInCurrencyUnitsForMultipleShippingMode(
-      commerceToolsCart.shipping
-    );
+    if (commerceToolsCart.shipping.length === 0) {
+      return undefined;
+    }
+
+    const totalCentAmount = commerceToolsCart.shipping
+      .map((s) => s.shippingInfo.price)
+      .reduce((acc, price) => {
+        return price.centAmount + acc;
+      }, 0);
+
+    const fractionDigits =
+      commerceToolsCart.shipping[0].shippingInfo.price.fractionDigits;
+
+    return getCentsValueInCurrencyUnits(totalCentAmount, fractionDigits);
   }
 };
 
-const getCentsValueInCurrencyUnits = (centPrecisionMoney: TypedMoney) => {
-  return new Decimal(centPrecisionMoney.centAmount)
-    .div(new Decimal(10).pow(centPrecisionMoney.fractionDigits))
-    .toNumber();
+const getMoneyInCurrencyUnits = (centPrecisionMoney: TypedMoney) => {
+  return getCentsValueInCurrencyUnits(
+    centPrecisionMoney.centAmount,
+    centPrecisionMoney.fractionDigits
+  );
 };
 
-const getShippingCostInCurrencyUnitsForMultipleShippingMode = (
-  shipping: Shipping[]
+const getCentsValueInCurrencyUnits = (
+  centAmount: number,
+  fractionDigits: number
 ) => {
-  if (shipping.length === 0) {
-    return 0;
-  }
-
-  const totalCentAmount = shipping
-    .map((s) => s.shippingInfo.price)
-    .reduce((acc, price) => {
-      return price.centAmount + acc;
-    }, 0);
-
-  const fractionDigits = shipping[0].shippingInfo.price.fractionDigits;
-
-  return new Decimal(totalCentAmount)
+  return new Decimal(centAmount)
     .div(new Decimal(10).pow(fractionDigits))
     .toNumber();
 };
