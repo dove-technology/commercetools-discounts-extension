@@ -12,6 +12,8 @@ export const readConfiguration = (): Configuration => {
     region: process.env.CTP_REGION as string,
     dovetechApiHost: process.env.DOVETECH_API_HOST as string,
     dovetechApiKey: process.env.DOVETECH_API_KEY as string,
+    useDirectDiscountsForShipping:
+      process.env.USE_DIRECT_DISCOUNTS_FOR_SHIPPING === 'true',
   };
 
   const validationErrors = getValidateMessages(envValidators, envVars);

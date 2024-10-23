@@ -1,8 +1,8 @@
 import { CART_ACTION, COUPON_CODES } from './cart-constants';
 import type {
   LineItem,
-  ShippingInfo,
-  TaxedPrice,
+  Shipping,
+  TypedMoney,
 } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
@@ -21,8 +21,10 @@ import {
 } from '../types/dovetech.types';
 import Decimal from 'decimal.js';
 import { ShippingCostName } from './dovetech-property-constants';
+import { Configuration } from '../types/index.types';
 
 export default (
+  configuration: Configuration,
   commerceToolsCart: CartOrOrder,
   dataInstance: DoveTechDiscountsDataInstance
 ): DoveTechDiscountsRequest => {
@@ -62,11 +64,12 @@ export default (
     couponCodes.push(...couponCodesFromCart);
   }
 
-  if (commerceToolsCart.shippingInfo) {
-    const shippingCostInCurrency = getShippingCostInCurrencyUnits(
-      commerceToolsCart.shippingInfo
-    );
+  const shippingCostInCurrency = getShippingCostInCurrencyUnits(
+    configuration,
+    commerceToolsCart
+  );
 
+  if (shippingCostInCurrency !== undefined) {
     costs.push({
       name: ShippingCostName,
       value: shippingCostInCurrency,
@@ -112,12 +115,55 @@ const getLineItemPrice = (lineItem: LineItem) => {
     : lineItem.price.value;
 };
 
-const getShippingCostInCurrencyUnits = (shippingInfo: ShippingInfo) => {
-  const price = shippingInfo.price;
+const getShippingCostInCurrencyUnits = (
+  configuration: Configuration,
+  commerceToolsCart: CartOrOrder
+) => {
+  if (commerceToolsCart.shippingMode === 'Single') {
+    if (!commerceToolsCart.shippingInfo) {
+      return undefined;
+    }
 
-  const fractionDigits = price.fractionDigits;
+    if (configuration.useDirectDiscountsForShipping) {
+      // use non-discounted amount because direct discounts may have already applied
+      // also, once direct discounts are applied any commerce tools discounts will be removed
+      return getCentsValueInCurrencyUnits(commerceToolsCart.shippingInfo.price);
+    }
 
-  return new Decimal(price.centAmount)
+    return commerceToolsCart.shippingInfo.discountedPrice
+      ? getCentsValueInCurrencyUnits(
+          commerceToolsCart.shippingInfo.discountedPrice.value
+        )
+      : getCentsValueInCurrencyUnits(commerceToolsCart.shippingInfo.price);
+  } else {
+    return getShippingCostInCurrencyUnitsForMultipleShippingMode(
+      commerceToolsCart.shipping
+    );
+  }
+};
+
+const getCentsValueInCurrencyUnits = (centPrecisionMoney: TypedMoney) => {
+  return new Decimal(centPrecisionMoney.centAmount)
+    .div(new Decimal(10).pow(centPrecisionMoney.fractionDigits))
+    .toNumber();
+};
+
+const getShippingCostInCurrencyUnitsForMultipleShippingMode = (
+  shipping: Shipping[]
+) => {
+  if (shipping.length === 0) {
+    return 0;
+  }
+
+  const totalCentAmount = shipping
+    .map((s) => s.shippingInfo.price)
+    .reduce((acc, price) => {
+      return price.centAmount + acc;
+    }, 0);
+
+  const fractionDigits = shipping[0].shippingInfo.price.fractionDigits;
+
+  return new Decimal(totalCentAmount)
     .div(new Decimal(10).pow(fractionDigits))
     .toNumber();
 };

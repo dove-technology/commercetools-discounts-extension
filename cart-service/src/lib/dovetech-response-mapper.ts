@@ -8,12 +8,8 @@ import type {
   CartSetLineItemTotalPriceAction,
   CartUpdateAction,
   CartSetCustomTypeAction,
-  CartAddCustomLineItemAction,
   CartSetDirectDiscountsAction,
-  CartDiscountValueDraft,
-  CartDiscountValueRelative,
   DirectDiscountDraft,
-  CentPrecisionMoneyDraft,
   Money,
 } from '@commercetools/platform-sdk';
 import {
@@ -208,7 +204,7 @@ const getShippingActions = (
     });
   }
 
-  let shippingDiscounts: DirectDiscountDraft[] = [];
+  const shippingDiscounts: DirectDiscountDraft[] = [];
 
   if (shippingCost?.totalAmountOff) {
     const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
