@@ -259,13 +259,21 @@ const getShippingActions = (
     //     typeId: 'tax-category',
     //   },
     // };
+    const addAction: CartSetDirectDiscountsAction = {
+      action: 'setDirectDiscounts',
+      discounts: shippingDiscounts,
+    };
+    actions.push(addAction);
+  } else if (
+    commerceToolsCart.directDiscounts &&
+    commerceToolsCart.directDiscounts.length > 0
+  ) {
+    const addAction: CartSetDirectDiscountsAction = {
+      action: 'setDirectDiscounts',
+      discounts: [],
+    };
+    actions.push(addAction);
   }
-
-  const addAction: CartSetDirectDiscountsAction = {
-    action: 'setDirectDiscounts',
-    discounts: shippingDiscounts,
-  };
-  actions.push(addAction);
 
   return actions;
 };
