@@ -1,5 +1,9 @@
 import { CART_ACTION, COUPON_CODES } from './cart-constants';
-import type { LineItem, TypedMoney } from '@commercetools/platform-sdk';
+import type {
+  LineItem,
+  ShippingInfo,
+  TypedMoney,
+} from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartAction,
@@ -126,27 +130,27 @@ const getShippingCostInCurrencyUnits = (
       return getMoneyInCurrencyUnits(commerceToolsCart.shippingInfo.price);
     }
 
-    return commerceToolsCart.shippingInfo.discountedPrice
-      ? getMoneyInCurrencyUnits(
-          commerceToolsCart.shippingInfo.discountedPrice.value
-        )
-      : getMoneyInCurrencyUnits(commerceToolsCart.shippingInfo.price);
+    return getShippingInfoPrice(commerceToolsCart.shippingInfo);
   } else {
     if (commerceToolsCart.shipping.length === 0) {
       return undefined;
     }
 
-    const totalCentAmount = commerceToolsCart.shipping
-      .map((s) => s.shippingInfo.price)
-      .reduce((acc, price) => {
-        return price.centAmount + acc;
-      }, 0);
+    const totalCentAmount = commerceToolsCart.shipping.reduce((acc, s) => {
+      return getShippingInfoPrice(s.shippingInfo) + acc;
+    }, 0);
 
     const fractionDigits =
       commerceToolsCart.shipping[0].shippingInfo.price.fractionDigits;
 
     return getCentsValueInCurrencyUnits(totalCentAmount, fractionDigits);
   }
+};
+
+const getShippingInfoPrice = (shippingInfo: ShippingInfo) => {
+  return shippingInfo.discountedPrice
+    ? getMoneyInCurrencyUnits(shippingInfo.discountedPrice.value)
+    : getMoneyInCurrencyUnits(shippingInfo.price);
 };
 
 const getMoneyInCurrencyUnits = (centPrecisionMoney: TypedMoney) => {
