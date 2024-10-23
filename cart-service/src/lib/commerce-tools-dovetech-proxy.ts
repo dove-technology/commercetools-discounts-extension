@@ -11,6 +11,7 @@ export const proxy = async (
   commerceToolsCart: CartOrOrder
 ): Promise<ExtensionResponse> => {
   const doveTechRequest = map(
+    configuration,
     commerceToolsCart,
     DoveTechDiscountsDataInstance.Live
   );
