@@ -1,9 +1,5 @@
 import { CART_ACTION, COUPON_CODES } from './cart-constants';
-import type {
-  LineItem,
-  Shipping,
-  TypedMoney,
-} from '@commercetools/platform-sdk';
+import type { LineItem, TypedMoney } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartAction,
