@@ -1,5 +1,9 @@
 import { CART_ACTION, COUPON_CODES } from './cart-constants';
-import type { LineItem, TaxedPrice } from '@commercetools/platform-sdk';
+import type {
+  LineItem,
+  ShippingInfo,
+  TaxedPrice,
+} from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartAction,
@@ -58,9 +62,9 @@ export default (
     couponCodes.push(...couponCodesFromCart);
   }
 
-  if (commerceToolsCart.taxedShippingPrice) {
+  if (commerceToolsCart.shippingInfo) {
     const shippingCostInCurrency = getShippingCostInCurrencyUnits(
-      commerceToolsCart.taxedShippingPrice
+      commerceToolsCart.shippingInfo
     );
 
     costs.push({
@@ -108,8 +112,8 @@ const getLineItemPrice = (lineItem: LineItem) => {
     : lineItem.price.value;
 };
 
-const getShippingCostInCurrencyUnits = (taxedShippingPrice: TaxedPrice) => {
-  const price = taxedShippingPrice.totalGross;
+const getShippingCostInCurrencyUnits = (shippingInfo: ShippingInfo) => {
+  const price = shippingInfo.price;
 
   const fractionDigits = price.fractionDigits;
 
