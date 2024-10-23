@@ -130,14 +130,15 @@ const getShippingCostInCurrencyUnits = (
       return getMoneyInCurrencyUnits(commerceToolsCart.shippingInfo.price);
     }
 
-    return getShippingInfoPrice(commerceToolsCart.shippingInfo);
+    const price = getShippingInfoPrice(commerceToolsCart.shippingInfo);
+    return getMoneyInCurrencyUnits(price);
   } else {
     if (commerceToolsCart.shipping.length === 0) {
       return undefined;
     }
 
     const totalCentAmount = commerceToolsCart.shipping.reduce((acc, s) => {
-      return getShippingInfoPrice(s.shippingInfo) + acc;
+      return getShippingInfoPrice(s.shippingInfo).centAmount + acc;
     }, 0);
 
     const fractionDigits =
@@ -149,8 +150,8 @@ const getShippingCostInCurrencyUnits = (
 
 const getShippingInfoPrice = (shippingInfo: ShippingInfo) => {
   return shippingInfo.discountedPrice
-    ? getMoneyInCurrencyUnits(shippingInfo.discountedPrice.value)
-    : getMoneyInCurrencyUnits(shippingInfo.price);
+    ? shippingInfo.discountedPrice.value
+    : shippingInfo.price;
 };
 
 const getMoneyInCurrencyUnits = (centPrecisionMoney: TypedMoney) => {
