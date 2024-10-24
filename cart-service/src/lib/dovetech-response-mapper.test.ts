@@ -25,6 +25,7 @@ import {
   buildAmountOffCostAction,
 } from '../test-helpers/dovetech-action-builders';
 import * as cartWithSingleShippingModeDiscounted from '../test-helpers/cart-with-single-shipping-mode-discounted.json';
+import * as cartWithSingleShippingModeDirectDiscounts from '../test-helpers/cart-with-single-shipping-mode-direct-discounts.json';
 
 it('should return no actions if there are no line items', () => {
   const ctCart = new CommerceToolsCartBuilder('USD').build();
@@ -454,6 +455,7 @@ describe('shipping costs - direct discounts enabled', () => {
       amountOffInCurrencyUnits
     );
 
+    // todo: should add line items to match JSON file
     const dtResponse = new DoveTechResponseBuilder()
       .addAction(amountOffCostAction)
       .addCost({
@@ -491,7 +493,34 @@ describe('shipping costs - direct discounts enabled', () => {
     });
   });
 
-  // should return empty discount discounts if cart has direct discounts and no shipping cost returned
+  it('should return empty direct discounts action if cart has direct discounts and no shipping cost returned', () => {
+    const ctCart = cartWithSingleShippingModeDirectDiscounts as CartOrOrder;
 
-  // should return no direct discounts if cart has no direct discounts and no shipping cost returned
+    const dtResponse = new DoveTechResponseBuilder().build();
+
+    const result = map(dtResponse, ctCart);
+
+    const expectedAction: CartSetDirectDiscountsAction = {
+      action: 'setDirectDiscounts',
+      discounts: [],
+    };
+
+    expect(result).toEqual({
+      success: true,
+      actions: [expectedAction],
+    });
+  });
+
+  it('should return no direct discounts action if cart has no direct discounts and no shipping cost returned', () => {
+    const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
+
+    const dtResponse = new DoveTechResponseBuilder().build();
+
+    const result = map(dtResponse, ctCart);
+
+    expect(result).toEqual({
+      success: true,
+      actions: [],
+    });
+  });
 });
