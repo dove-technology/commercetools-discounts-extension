@@ -167,30 +167,12 @@ const getCentsValueInCurrencyUnits = (
 const buildShippingObject = (
   commerceToolsCart: CartOrOrder
 ): ShippingObject | undefined => {
-  if (commerceToolsCart.shippingMode === 'Single') {
-    if (!commerceToolsCart.shippingInfo?.shippingMethod?.id) {
-      return undefined;
-    }
-
-    return {
-      methodId: commerceToolsCart.shippingInfo.shippingMethod?.id,
-    };
-  }
-
-  if (commerceToolsCart.shipping.length === 0) {
+  // note, shippingInfo will be undefined if shippingMode is Multiple (not mapped at present)
+  if (!commerceToolsCart.shippingInfo?.shippingMethod?.id) {
     return undefined;
   }
 
-  const multipleMethodIds = commerceToolsCart.shipping
-    .map((shipping) => shipping.shippingInfo.shippingMethod?.id)
-    .filter((id) => id !== undefined);
-
-  const multipleShippingKeys = commerceToolsCart.shipping.map(
-    (shipping) => shipping.shippingKey
-  );
-
   return {
-    multipleMethodIds,
-    multipleShippingKeys,
+    methodId: commerceToolsCart.shippingInfo.shippingMethod?.id,
   };
 };
