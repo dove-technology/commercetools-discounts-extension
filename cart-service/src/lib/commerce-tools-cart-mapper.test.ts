@@ -9,8 +9,10 @@ import {
   CartOrOrder,
 } from '../types/custom-commerce-tools.types';
 import * as cartWithSingleShippingMode from '../test-helpers/cart-with-single-shipping-mode.json';
+import * as cartWithSingleShippingModeDiscounted from '../test-helpers/cart-with-single-shipping-mode-discounted.json';
 import * as cartWithMultipleShippingMode from '../test-helpers/cart-with-multiple-shipping-mode.json';
 import { getConfig } from '../test-helpers/test-config-helper';
+import { Configuration } from '../types/index.types';
 
 test('single line item mapped correctly', async () => {
   const currencyCode = 'USD';
@@ -176,6 +178,26 @@ test('should map shipping info when cart shipping mode is single', async () => {
   );
 });
 
+test('should map non-discounted shipping price when direct discounts is enabled', async () => {
+  const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
+
+  const result = map(ctCart);
+
+  expect(result.costs).toHaveLength(1);
+  expect(result.costs![0].name).toBe('Shipping');
+  expect(result.costs![0].value).toBe(100);
+});
+
+test('should map discounted shipping price when direct discounts is not enabled', async () => {
+  const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
+
+  const result = map(ctCart, { useDirectDiscountsForShipping: false });
+
+  expect(result.costs).toHaveLength(1);
+  expect(result.costs![0].name).toBe('Shipping');
+  expect(result.costs![0].value).toBe(50);
+});
+
 test('should map shipping info when cart shipping mode is multiple', async () => {
   const ctCart = cartWithMultipleShippingMode as CartOrOrder;
 
@@ -196,6 +218,10 @@ test('should map shipping info when cart shipping mode is multiple', async () =>
   );
 });
 
-const map = (ctCart: CartOrOrder) => {
-  return cartMapper(getConfig(), ctCart, DoveTechDiscountsDataInstance.Live);
+const map = (ctCart: CartOrOrder, configOverrides?: Partial<Configuration>) => {
+  return cartMapper(
+    getConfig(configOverrides),
+    ctCart,
+    DoveTechDiscountsDataInstance.Live
+  );
 };

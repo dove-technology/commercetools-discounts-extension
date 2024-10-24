@@ -131,12 +131,14 @@ const getShippingCostInCurrencyUnits = (
     }
 
     const price = getShippingInfoPrice(commerceToolsCart.shippingInfo);
+
     return getMoneyInCurrencyUnits(price);
   } else {
     if (commerceToolsCart.shipping.length === 0) {
       return undefined;
     }
 
+    // TODO: don't use discount amount when useDirectDiscountsForShipping
     const totalCentAmount = commerceToolsCart.shipping.reduce((acc, s) => {
       return getShippingInfoPrice(s.shippingInfo).centAmount + acc;
     }, 0);
