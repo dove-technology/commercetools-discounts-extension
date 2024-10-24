@@ -15,4 +15,8 @@ If you're starting a new project we would recommend using Direct Discounts. Usin
 
 The `USE_DIRECT_DISCOUNTS_FOR_SHIPPING` environment variable can be used to change from using Direct Discounts to Custom Line Items by setting the value to `false`.
 
-Note, carts with multiple Shipping Methods (i.e. carts with a Shipping Mode of `Multiple`) do not have their shipping cost passed to Dovetech so no shipping discounts setup in Dovetech will apply.
+If you use a Custom Line Item for shipping discounts you need to specify the tax category for the Custom Line Item using the `CTP_TAX_CATEGORY_ID` environment variable.
+
+### Carts with Multiple Shipping Methods
+
+Carts with multiple Shipping Methods (i.e. carts with a Shipping Mode of `Multiple`) do not have their shipping cost passed to Dovetech so no shipping discounts setup in Dovetech will apply.
