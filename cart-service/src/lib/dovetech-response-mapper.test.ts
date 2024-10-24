@@ -18,6 +18,8 @@ import {
 import {
   CartSetLineItemTotalPriceAction,
   CartSetDirectDiscountsAction,
+  CartAddCustomLineItemAction,
+  CartChangeCustomLineItemMoneyAction,
 } from '@commercetools/platform-sdk';
 import crypto from 'crypto';
 import {
@@ -26,7 +28,9 @@ import {
 } from '../test-helpers/dovetech-action-builders';
 import * as cartWithSingleShippingModeDiscounted from '../test-helpers/cart-with-single-shipping-mode-discounted.json';
 import * as cartWithSingleShippingModeDirectDiscounts from '../test-helpers/cart-with-single-shipping-mode-direct-discounts.json';
+import * as cartWithSingleShippingModeCustomLineItemShippingDiscount from '../test-helpers/cart-with-single-shipping-mode-custom-line-item-shipping-discount.json';
 import { getConfig } from '../test-helpers/test-config-helper';
+import { SHIPPING_CUSTOM_LINE_ITEM_SLUG } from './cart-constants';
 
 it('should return no actions if there are no line items', () => {
   const ctCart = new CommerceToolsCartBuilder('USD').build();
@@ -543,9 +547,144 @@ describe('shipping costs - direct discounts enabled', () => {
 });
 
 describe('shipping costs - direct discounts not enabled', () => {
-  it('should return add custom line item action if shipping cost returned', () => {});
+  const customLineItemConfig = getConfig({
+    useDirectDiscountsForShipping: false,
+    taxCategoryId: '683b1494-4a49-4848-8897-24347b32127e',
+  });
 
-  it('should return change custom custom line item money if shipping cost returned and existing custom line item', () => {});
+  it('should return add custom line item action if shipping cost returned', () => {
+    const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
 
-  it('should return remove custom line item action if custom line item exists and no shipping cost returned', () => {});
+    const amountOffInCurrencyUnits = 2.2;
+
+    // original shipping amount is 10000
+
+    const amountOffCostAction: AmountOffAction = buildAmountOffCostAction(
+      amountOffInCurrencyUnits
+    );
+
+    const dtResponse = new DoveTechResponseBuilder()
+      .addAction(amountOffCostAction)
+      .addLineItem({
+        totalAmountOff: 0,
+        total: 52.99,
+        actions: [],
+      })
+      .addCost({
+        totalAmountOff: amountOffInCurrencyUnits,
+        name: 'Shipping',
+        value: 97.8,
+      })
+      .build();
+
+    const result = map(customLineItemConfig, dtResponse, ctCart);
+
+    const expectedAction: CartAddCustomLineItemAction = {
+      action: 'addCustomLineItem',
+      name: { en: 'Shipping Discount' },
+      quantity: 1,
+      money: {
+        currencyCode: 'EUR',
+        type: 'centPrecision',
+        centAmount: -220,
+      },
+      slug: SHIPPING_CUSTOM_LINE_ITEM_SLUG,
+      taxCategory: {
+        id: customLineItemConfig.taxCategoryId,
+        typeId: 'tax-category',
+      },
+    };
+
+    expect(result).toEqual({
+      success: true,
+      actions: [expectedAction],
+    });
+  });
+
+  it('should return change custom custom line item money if shipping cost returned and existing custom line item', () => {
+    const ctCart =
+      cartWithSingleShippingModeCustomLineItemShippingDiscount as CartOrOrder;
+
+    const amountOffInCurrencyUnits = 2.2;
+
+    // original shipping amount is 10000
+
+    const amountOffCostAction: AmountOffAction = buildAmountOffCostAction(
+      amountOffInCurrencyUnits
+    );
+
+    const dtResponse = new DoveTechResponseBuilder()
+      .addAction(amountOffCostAction)
+      .addLineItem({
+        totalAmountOff: 0,
+        total: 52.99,
+        actions: [],
+      })
+      .addCost({
+        totalAmountOff: amountOffInCurrencyUnits,
+        name: 'Shipping',
+        value: 97.8,
+      })
+      .build();
+
+    const result = map(customLineItemConfig, dtResponse, ctCart);
+
+    const expectedAction: CartChangeCustomLineItemMoneyAction = {
+      action: 'changeCustomLineItemMoney',
+      customLineItemId: '75ce6989-14c8-4329-b2b2-011c1776c851',
+      money: {
+        currencyCode: 'EUR',
+        centAmount: -220,
+      },
+    };
+
+    expect(result).toEqual({
+      success: true,
+      actions: [expectedAction],
+    });
+  });
+
+  it('should return remove custom line item action if custom line item exists and no shipping cost returned', () => {
+    const ctCart =
+      cartWithSingleShippingModeCustomLineItemShippingDiscount as CartOrOrder;
+
+    const dtResponse = new DoveTechResponseBuilder()
+      .addLineItem({
+        totalAmountOff: 0,
+        total: 52.99,
+        actions: [],
+      })
+      .build();
+
+    const result = map(customLineItemConfig, dtResponse, ctCart);
+
+    expect(result).toEqual({
+      success: true,
+      actions: [
+        {
+          action: 'removeCustomLineItem',
+          customLineItemId: '75ce6989-14c8-4329-b2b2-011c1776c851',
+        },
+      ],
+    });
+  });
+
+  it('should return no custom line item action if no custom line item exists and no shipping cost returned', () => {
+    const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
+
+    const dtResponse = new DoveTechResponseBuilder()
+      .addLineItem({
+        totalAmountOff: 0,
+        total: 52.99,
+        actions: [],
+      })
+      .build();
+
+    const result = map(customLineItemConfig, dtResponse, ctCart);
+
+    expect(result).toEqual({
+      success: true,
+      actions: [],
+    });
+  });
 });

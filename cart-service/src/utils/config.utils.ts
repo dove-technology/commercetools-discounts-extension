@@ -14,6 +14,7 @@ export const readConfiguration = (): Configuration => {
     dovetechApiKey: process.env.DOVETECH_API_KEY as string,
     useDirectDiscountsForShipping:
       process.env.USE_DIRECT_DISCOUNTS_FOR_SHIPPING !== 'false',
+    taxCategoryId: process.env.CTP_TAX_CATEGORY_ID as string,
   };
 
   const validationErrors = getValidateMessages(envValidators, envVars);
