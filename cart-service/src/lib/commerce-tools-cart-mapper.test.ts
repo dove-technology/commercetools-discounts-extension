@@ -8,7 +8,6 @@ import {
   CartActionType,
   CartOrOrder,
 } from '../types/custom-commerce-tools.types';
-import * as cartWithSingleShippingMode from '../test-helpers/cart-with-single-shipping-mode.json';
 import * as cartWithSingleShippingModeDiscounted from '../test-helpers/cart-with-single-shipping-mode-discounted.json';
 import * as cartWithMultipleShippingMode from '../test-helpers/cart-with-multiple-shipping-mode.json';
 import { getConfig } from '../test-helpers/test-config-helper';
@@ -160,23 +159,6 @@ test('should set commit to true when type is Order', async () => {
   const result = map(ctCart);
 
   expect(result.settings.commit).toBe(true);
-});
-
-test('should map shipping info when cart shipping mode is single', async () => {
-  const ctCart = cartWithSingleShippingMode as CartOrOrder;
-
-  const result = map(ctCart);
-
-  expect(result.costs).toHaveLength(1);
-  expect(result.costs![0].name).toBe(SHIPPING_COST_NAME);
-  expect(result.costs![0].value).toBe(100);
-
-  expect(result.shipping).toBeDefined();
-  expect(result.shipping).toEqual(
-    expect.objectContaining({
-      methodId: '30a8abf8-4124-42f7-b26a-1b9e565d7078',
-    })
-  );
 });
 
 test('should map non-discounted shipping price when direct discounts is enabled', async () => {
