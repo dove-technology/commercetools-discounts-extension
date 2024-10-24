@@ -13,7 +13,7 @@ import * as cartWithSingleShippingModeDiscounted from '../test-helpers/cart-with
 import * as cartWithMultipleShippingMode from '../test-helpers/cart-with-multiple-shipping-mode.json';
 import { getConfig } from '../test-helpers/test-config-helper';
 import { Configuration } from '../types/index.types';
-import { ShippingCostName } from './dovetech-property-constants';
+import { SHIPPING_COST_NAME } from './dovetech-property-constants';
 
 test('single line item mapped correctly', async () => {
   const currencyCode = 'USD';
@@ -168,7 +168,7 @@ test('should map shipping info when cart shipping mode is single', async () => {
   const result = map(ctCart);
 
   expect(result.costs).toHaveLength(1);
-  expect(result.costs![0].name).toBe(ShippingCostName);
+  expect(result.costs![0].name).toBe(SHIPPING_COST_NAME);
   expect(result.costs![0].value).toBe(100);
 
   expect(result.shipping).toBeDefined();
@@ -185,7 +185,7 @@ test('should map non-discounted shipping price when direct discounts is enabled'
   const result = map(ctCart);
 
   expect(result.costs).toHaveLength(1);
-  expect(result.costs![0].name).toBe(ShippingCostName);
+  expect(result.costs![0].name).toBe(SHIPPING_COST_NAME);
   expect(result.costs![0].value).toBe(100);
 });
 
@@ -195,7 +195,7 @@ test('should map discounted shipping price when direct discounts is not enabled'
   const result = map(ctCart, { useDirectDiscountsForShipping: false });
 
   expect(result.costs).toHaveLength(1);
-  expect(result.costs![0].name).toBe(ShippingCostName);
+  expect(result.costs![0].name).toBe(SHIPPING_COST_NAME);
   expect(result.costs![0].value).toBe(50);
 });
 

@@ -20,7 +20,7 @@ import {
   ShippingObject,
 } from '../types/dovetech.types';
 import Decimal from 'decimal.js';
-import { ShippingCostName } from './dovetech-property-constants';
+import { SHIPPING_COST_NAME } from './dovetech-property-constants';
 import { Configuration } from '../types/index.types';
 import { logger } from '../utils/logger.utils';
 
@@ -72,7 +72,7 @@ export default (
 
   if (shippingCostInCurrency !== undefined) {
     costs.push({
-      name: ShippingCostName,
+      name: SHIPPING_COST_NAME,
       value: shippingCostInCurrency,
     });
   }

@@ -30,7 +30,7 @@ import {
 } from '../types/dovetech.types';
 import Decimal from 'decimal.js';
 import { Configuration, ExtensionResponse } from '../types/index.types';
-import { ShippingCostName } from './dovetech-property-constants';
+import { SHIPPING_COST_NAME } from './dovetech-property-constants';
 
 const invalidCouponCodeResponse: ExtensionResponse = {
   success: false,
@@ -193,7 +193,7 @@ const getShippingActions = (
   commerceToolsCart: CartOrOrder
 ) => {
   const shippingCost = dtResponse.costs.find(
-    (cost) => cost.name === ShippingCostName
+    (cost) => cost.name === SHIPPING_COST_NAME
   );
 
   if (!configuration.useDirectDiscountsForShipping) {

@@ -1,1 +1,1 @@
-export const ShippingCostName = 'Shipping';
+export const SHIPPING_COST_NAME = 'Shipping';

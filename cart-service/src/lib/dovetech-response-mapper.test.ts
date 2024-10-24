@@ -31,7 +31,7 @@ import * as cartWithSingleShippingModeDirectDiscounts from '../test-helpers/cart
 import * as cartWithSingleShippingModeCustomLineItemShippingDiscount from '../test-helpers/cart-with-single-shipping-mode-custom-line-item-shipping-discount.json';
 import { getConfig } from '../test-helpers/test-config-helper';
 import { SHIPPING_CUSTOM_LINE_ITEM_SLUG } from './cart-constants';
-import { ShippingCostName } from './dovetech-property-constants';
+import { SHIPPING_COST_NAME } from './dovetech-property-constants';
 
 it('should return no actions if there are no line items', () => {
   const ctCart = new CommerceToolsCartBuilder('USD').build();
@@ -470,7 +470,7 @@ describe('shipping costs - direct discounts enabled', () => {
       })
       .addCost({
         totalAmountOff: amountOffInCurrencyUnits,
-        name: ShippingCostName,
+        name: SHIPPING_COST_NAME,
         value: 97.8,
       })
       .build();
@@ -573,7 +573,7 @@ describe('shipping costs - direct discounts not enabled', () => {
       })
       .addCost({
         totalAmountOff: amountOffInCurrencyUnits,
-        name: ShippingCostName,
+        name: SHIPPING_COST_NAME,
         value: 97.8,
       })
       .build();
@@ -623,7 +623,7 @@ describe('shipping costs - direct discounts not enabled', () => {
       })
       .addCost({
         totalAmountOff: amountOffInCurrencyUnits,
-        name: ShippingCostName,
+        name: SHIPPING_COST_NAME,
         value: 97.8,
       })
       .build();
