@@ -449,15 +449,19 @@ describe('shipping costs - direct discounts enabled', () => {
 
     const amountOffInCurrencyUnits = 10;
 
-    // original shipping amount was 10000
+    // original shipping amount is 10000
 
     const amountOffCostAction: AmountOffAction = buildAmountOffCostAction(
       amountOffInCurrencyUnits
     );
 
-    // todo: should add line items to match JSON file
     const dtResponse = new DoveTechResponseBuilder()
       .addAction(amountOffCostAction)
+      .addLineItem({
+        totalAmountOff: 0,
+        total: 52.99,
+        actions: [],
+      })
       .addCost({
         totalAmountOff: amountOffInCurrencyUnits,
         name: 'Shipping',
@@ -496,7 +500,13 @@ describe('shipping costs - direct discounts enabled', () => {
   it('should return empty direct discounts action if cart has direct discounts and no shipping cost returned', () => {
     const ctCart = cartWithSingleShippingModeDirectDiscounts as CartOrOrder;
 
-    const dtResponse = new DoveTechResponseBuilder().build();
+    const dtResponse = new DoveTechResponseBuilder()
+      .addLineItem({
+        totalAmountOff: 0,
+        total: 52.99,
+        actions: [],
+      })
+      .build();
 
     const result = map(dtResponse, ctCart);
 
@@ -514,7 +524,13 @@ describe('shipping costs - direct discounts enabled', () => {
   it('should return no direct discounts action if cart has no direct discounts and no shipping cost returned', () => {
     const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
 
-    const dtResponse = new DoveTechResponseBuilder().build();
+    const dtResponse = new DoveTechResponseBuilder()
+      .addLineItem({
+        totalAmountOff: 0,
+        total: 52.99,
+        actions: [],
+      })
+      .build();
 
     const result = map(dtResponse, ctCart);
 
