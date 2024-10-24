@@ -447,7 +447,7 @@ describe('shipping costs - direct discounts enabled', () => {
   it('should return set direct discounts action if shipping cost returned', () => {
     const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
 
-    const amountOffInCurrencyUnits = 10;
+    const amountOffInCurrencyUnits = 2.2;
 
     // original shipping amount is 10000
 
@@ -465,7 +465,7 @@ describe('shipping costs - direct discounts enabled', () => {
       .addCost({
         totalAmountOff: amountOffInCurrencyUnits,
         name: 'Shipping',
-        value: 90,
+        value: 97.8,
       })
       .build();
 
@@ -479,7 +479,7 @@ describe('shipping costs - direct discounts enabled', () => {
             type: 'absolute',
             money: [
               {
-                centAmount: 1000,
+                centAmount: 220,
                 currencyCode: 'EUR',
               },
             ],
