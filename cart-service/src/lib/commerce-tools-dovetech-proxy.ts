@@ -16,7 +16,6 @@ export const proxy = async (
     DoveTechDiscountsDataInstance.Live
   );
 
-  // need to handle non successful responses and map to errors
   const dovetechResponse = await evaluate(configuration, doveTechRequest);
 
   const response = responseMapper(
