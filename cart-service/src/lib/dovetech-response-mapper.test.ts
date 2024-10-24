@@ -26,12 +26,13 @@ import {
 } from '../test-helpers/dovetech-action-builders';
 import * as cartWithSingleShippingModeDiscounted from '../test-helpers/cart-with-single-shipping-mode-discounted.json';
 import * as cartWithSingleShippingModeDirectDiscounts from '../test-helpers/cart-with-single-shipping-mode-direct-discounts.json';
+import { getConfig } from '../test-helpers/test-config-helper';
 
 it('should return no actions if there are no line items', () => {
   const ctCart = new CommerceToolsCartBuilder('USD').build();
   const dtResponse = new DoveTechResponseBuilder().build();
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
 
   expect(result).toEqual({
     success: true,
@@ -89,7 +90,7 @@ it('should map DoveTech response items to CommerceTools actions', () => {
     },
   };
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
 
   expect(result).toEqual({
     success: true,
@@ -154,7 +155,7 @@ it.each([
       },
     };
 
-    const result = map(dtResponse, ctCart);
+    const result = map(getConfig(), dtResponse, ctCart);
     expect(result).toEqual({
       success: true,
       actions: [expectedAction],
@@ -198,7 +199,7 @@ it('setLineItemTotalPrice actions should be returned if price from Dovetech is d
     },
   };
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
   expect(result).toEqual({
     success: true,
     actions: [expectedAction],
@@ -226,7 +227,7 @@ it('no actions should be returned if price from Dovetech is the same as commerce
     })
     .build();
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
   expect(result).toEqual({
     success: true,
     actions: [],
@@ -254,7 +255,7 @@ it('should map CouponCodeAccepted actions correctly', () => {
     .addAction(couponCodeAcceptedAction)
     .build();
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
 
   expect(result).toEqual({
     success: true,
@@ -295,7 +296,7 @@ it('CouponCodeRejected action for new coupon code should return error', () => {
     .addAction(couponCodeRejectedAction)
     .build();
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
 
   expect(result).toEqual({
     success: false,
@@ -330,7 +331,7 @@ it('CouponCodeRejected action for existing coupon code should remove coupon code
     .addAction(couponCodeRejectedAction)
     .build();
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
 
   expect(result).toEqual({
     success: true,
@@ -405,7 +406,7 @@ it('should handle line item with multiple quantity', () => {
     },
   };
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
 
   expect(result).toEqual({
     success: true,
@@ -435,7 +436,7 @@ it('no actions should be returned if type is Order', () => {
     })
     .build();
 
-  const result = map(dtResponse, ctCart);
+  const result = map(getConfig(), dtResponse, ctCart);
 
   expect(result).toEqual({
     success: true,
@@ -469,7 +470,7 @@ describe('shipping costs - direct discounts enabled', () => {
       })
       .build();
 
-    const result = map(dtResponse, ctCart);
+    const result = map(getConfig(), dtResponse, ctCart);
 
     const expectedAction: CartSetDirectDiscountsAction = {
       action: 'setDirectDiscounts',
@@ -508,7 +509,7 @@ describe('shipping costs - direct discounts enabled', () => {
       })
       .build();
 
-    const result = map(dtResponse, ctCart);
+    const result = map(getConfig(), dtResponse, ctCart);
 
     const expectedAction: CartSetDirectDiscountsAction = {
       action: 'setDirectDiscounts',
@@ -532,11 +533,19 @@ describe('shipping costs - direct discounts enabled', () => {
       })
       .build();
 
-    const result = map(dtResponse, ctCart);
+    const result = map(getConfig(), dtResponse, ctCart);
 
     expect(result).toEqual({
       success: true,
       actions: [],
     });
   });
+});
+
+describe('shipping costs - direct discounts not enabled', () => {
+  it('should return add custom line item action if shipping cost returned', () => {});
+
+  it('should return change custom custom line item money if shipping cost returned and existing custom line item', () => {});
+
+  it('should return remove custom line item action if custom line item exists and no shipping cost returned', () => {});
 });

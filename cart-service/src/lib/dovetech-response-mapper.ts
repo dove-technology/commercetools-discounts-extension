@@ -26,7 +26,7 @@ import {
   DoveTechDiscountsResponseLineItem,
 } from '../types/dovetech.types';
 import Decimal from 'decimal.js';
-import { ExtensionResponse } from '../types/index.types';
+import { Configuration, ExtensionResponse } from '../types/index.types';
 import { ShippingCostName } from './dovetech-property-constants';
 
 const invalidCouponCodeResponse: ExtensionResponse = {
@@ -44,6 +44,7 @@ const invalidCouponCodeResponse: ExtensionResponse = {
 };
 
 export default (
+  configuration: Configuration,
   dtResponse: DoveTechDiscountsResponse,
   commerceToolsCart: CartOrOrder
 ): ExtensionResponse => {
