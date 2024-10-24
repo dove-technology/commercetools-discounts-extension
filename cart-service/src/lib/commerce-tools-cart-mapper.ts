@@ -22,6 +22,7 @@ import {
 import Decimal from 'decimal.js';
 import { ShippingCostName } from './dovetech-property-constants';
 import { Configuration } from '../types/index.types';
+import { logger } from '../utils/logger.utils';
 
 export default (
   configuration: Configuration,
@@ -119,35 +120,26 @@ const getShippingCostInCurrencyUnits = (
   configuration: Configuration,
   commerceToolsCart: CartOrOrder
 ) => {
-  if (commerceToolsCart.shippingMode === 'Single') {
-    if (!commerceToolsCart.shippingInfo) {
-      return undefined;
-    }
-
-    if (configuration.useDirectDiscountsForShipping) {
-      // use non-discounted amount because direct discounts may have already applied
-      // also, once direct discounts are applied any commerce tools discounts will be removed
-      return getMoneyInCurrencyUnits(commerceToolsCart.shippingInfo.price);
-    }
-
-    const price = getShippingInfoPrice(commerceToolsCart.shippingInfo);
-
-    return getMoneyInCurrencyUnits(price);
-  } else {
-    if (commerceToolsCart.shipping.length === 0) {
-      return undefined;
-    }
-
-    // TODO: don't use discount amount when useDirectDiscountsForShipping
-    const totalCentAmount = commerceToolsCart.shipping.reduce((acc, s) => {
-      return getShippingInfoPrice(s.shippingInfo).centAmount + acc;
-    }, 0);
-
-    const fractionDigits =
-      commerceToolsCart.shipping[0].shippingInfo.price.fractionDigits;
-
-    return getCentsValueInCurrencyUnits(totalCentAmount, fractionDigits);
+  if (commerceToolsCart.shippingMode === 'Multiple') {
+    logger.warn(
+      'Shipping cost for Multiple shipping methods are not mapped to Dovetech at present so shipping discounts will not apply'
+    );
+    return undefined;
   }
+
+  if (!commerceToolsCart.shippingInfo) {
+    return undefined;
+  }
+
+  if (configuration.useDirectDiscountsForShipping) {
+    // use non-discounted amount because direct discounts may have already applied
+    // also, once direct discounts are applied any commerce tools discounts will be removed
+    return getMoneyInCurrencyUnits(commerceToolsCart.shippingInfo.price);
+  }
+
+  const price = getShippingInfoPrice(commerceToolsCart.shippingInfo);
+
+  return getMoneyInCurrencyUnits(price);
 };
 
 const getShippingInfoPrice = (shippingInfo: ShippingInfo) => {
