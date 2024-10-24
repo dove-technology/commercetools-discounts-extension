@@ -13,10 +13,18 @@ import DoveTechResponseBuilder from '../test-helpers/dovetech-response-builder';
 import {
   AddCouponCodeCartAction,
   CartActionType,
+  CartOrOrder,
 } from '../types/custom-commerce-tools.types';
-import { CartSetLineItemTotalPriceAction } from '@commercetools/platform-sdk';
+import {
+  CartSetLineItemTotalPriceAction,
+  CartSetDirectDiscountsAction,
+} from '@commercetools/platform-sdk';
 import crypto from 'crypto';
-import { buildAmountOffBasketAction } from '../test-helpers/dovetech-action-builders';
+import {
+  buildAmountOffBasketAction,
+  buildAmountOffCostAction,
+} from '../test-helpers/dovetech-action-builders';
+import * as cartWithSingleShippingModeDiscounted from '../test-helpers/cart-with-single-shipping-mode-discounted.json';
 
 it('should return no actions if there are no line items', () => {
   const ctCart = new CommerceToolsCartBuilder('USD').build();
@@ -432,4 +440,58 @@ it('no actions should be returned if type is Order', () => {
     success: true,
     actions: [],
   });
+});
+
+describe('shipping costs - direct discounts enabled', () => {
+  it('should return set direct discounts action if shipping cost returned', () => {
+    const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
+
+    const amountOffInCurrencyUnits = 10;
+
+    // original shipping amount was 10000
+
+    const amountOffCostAction: AmountOffAction = buildAmountOffCostAction(
+      amountOffInCurrencyUnits
+    );
+
+    const dtResponse = new DoveTechResponseBuilder()
+      .addAction(amountOffCostAction)
+      .addCost({
+        totalAmountOff: amountOffInCurrencyUnits,
+        name: 'Shipping',
+        value: 90,
+      })
+      .build();
+
+    const result = map(dtResponse, ctCart);
+
+    const expectedAction: CartSetDirectDiscountsAction = {
+      action: 'setDirectDiscounts',
+      discounts: [
+        {
+          value: {
+            type: 'absolute',
+            money: [
+              {
+                centAmount: 1000,
+                currencyCode: 'EUR',
+              },
+            ],
+          },
+          target: {
+            type: 'shipping',
+          },
+        },
+      ],
+    };
+
+    expect(result).toEqual({
+      success: true,
+      actions: [expectedAction],
+    });
+  });
+
+  // should return empty discount discounts if cart has direct discounts and no shipping cost returned
+
+  // should return no direct discounts if cart has no direct discounts and no shipping cost returned
 });

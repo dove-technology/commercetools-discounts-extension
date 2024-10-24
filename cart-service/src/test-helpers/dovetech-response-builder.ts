@@ -2,12 +2,14 @@ import {
   DoveTechAction,
   DoveTechDiscountsResponse,
   DoveTechDiscountsResponseBasket,
+  DoveTechDiscountsResponseCost,
   DoveTechDiscountsResponseLineItem,
 } from '../types/dovetech.types';
 
 export default class DoveTechResponseBuilder {
   private basket: DoveTechDiscountsResponseBasket | null = null;
   private actions: DoveTechAction[] = [];
+  private costs: DoveTechDiscountsResponseCost[] = [];
 
   addAction(action: DoveTechAction) {
     this.actions.push(action);
@@ -30,6 +32,11 @@ export default class DoveTechResponseBuilder {
     return this;
   }
 
+  addCost(cost: DoveTechDiscountsResponseCost) {
+    this.costs.push(cost);
+    return this;
+  }
+
   build(): DoveTechDiscountsResponse {
     return {
       actions: this.actions,
@@ -39,7 +46,7 @@ export default class DoveTechResponseBuilder {
         total: this.basket ? this.basket.total : 0,
         totalAmountOff: this.basket ? this.basket.totalAmountOff : 0,
       },
-      costs: [],
+      costs: this.costs,
     };
   }
 }
