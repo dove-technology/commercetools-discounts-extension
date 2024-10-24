@@ -6,7 +6,13 @@ import CommerceToolsLineItemBuilder from '../test-helpers/commerce-tools-line-it
 import {
   AddCouponCodeCartAction,
   CartActionType,
+  CartOrOrder,
 } from '../types/custom-commerce-tools.types';
+import * as cartWithSingleShippingModeDiscounted from '../test-helpers/cart-with-single-shipping-mode-discounted.json';
+import * as cartWithMultipleShippingMode from '../test-helpers/cart-with-multiple-shipping-mode.json';
+import { getConfig } from '../test-helpers/test-config-helper';
+import { Configuration } from '../types/index.types';
+import { SHIPPING_COST_NAME } from './dovetech-property-constants';
 
 test('single line item mapped correctly', async () => {
   const currencyCode = 'USD';
@@ -23,7 +29,7 @@ test('single line item mapped correctly', async () => {
     .addLineItem(lineItem)
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+  const result = map(ctCart);
 
   expect(result.basket.items).toHaveLength(1);
   const mappedLineItem = result.basket.items[0];
@@ -52,7 +58,7 @@ test('line item with discounted price mapped correctly', async () => {
     .addLineItem(lineItem)
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+  const result = map(ctCart);
 
   expect(result.basket.items).toHaveLength(1);
   expect(result.basket.items[0].quantity).toBe(2);
@@ -66,7 +72,7 @@ test('empty cart mapped correctly', async () => {
 
   const ctCart = new CommerceToolsCartBuilder(currencyCode).build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+  const result = map(ctCart);
 
   expect(result.basket.items).toHaveLength(0);
   expect(result.context?.currencyCode).toBe(currencyCode);
@@ -84,7 +90,7 @@ test('new coupon code mapped correctly', async () => {
     .addCartAction(addCouponCodeAction)
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+  const result = map(ctCart);
 
   expect(result.couponCodes).toHaveLength(1);
   expect(result.couponCodes![0].code).toBe('TEST_COUPON');
@@ -102,7 +108,7 @@ test('existing coupon codes mapped correctly', async () => {
     .addCouponCode({ code: 'EXISTING_COUPON' })
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+  const result = map(ctCart);
 
   expect(result.couponCodes).toHaveLength(2);
   expect(result.couponCodes).toEqual(
@@ -135,7 +141,7 @@ test.each([
       .addLineItem(lineItem)
       .build();
 
-    const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+    const result = map(ctCart);
 
     expect(result.basket.items).toHaveLength(1);
     expect(result.basket.items[0].price).toBe(expectedPrice);
@@ -150,7 +156,44 @@ test('should set commit to true when type is Order', async () => {
     .setType('Order')
     .build();
 
-  const result = cartMapper(ctCart, DoveTechDiscountsDataInstance.Live);
+  const result = map(ctCart);
 
   expect(result.settings.commit).toBe(true);
 });
+
+test('should map non-discounted shipping price when direct discounts is enabled', async () => {
+  const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
+
+  const result = map(ctCart);
+
+  expect(result.costs).toHaveLength(1);
+  expect(result.costs![0].name).toBe(SHIPPING_COST_NAME);
+  expect(result.costs![0].value).toBe(100);
+});
+
+test('should map discounted shipping price when direct discounts is not enabled', async () => {
+  const ctCart = cartWithSingleShippingModeDiscounted as CartOrOrder;
+
+  const result = map(ctCart, { useDirectDiscountsForShipping: false });
+
+  expect(result.costs).toHaveLength(1);
+  expect(result.costs![0].name).toBe(SHIPPING_COST_NAME);
+  expect(result.costs![0].value).toBe(50);
+});
+
+// multiple shipping mode not supported at present
+test('should not map shipping info when cart shipping mode is multiple', async () => {
+  const ctCart = cartWithMultipleShippingMode as CartOrOrder;
+
+  const result = map(ctCart);
+
+  expect(result.costs).toHaveLength(0);
+});
+
+const map = (ctCart: CartOrOrder, configOverrides?: Partial<Configuration>) => {
+  return cartMapper(
+    getConfig(configOverrides),
+    ctCart,
+    DoveTechDiscountsDataInstance.Live
+  );
+};

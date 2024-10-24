@@ -17,3 +17,17 @@ export const buildAmountOffBasketAction = (
     value,
   };
 };
+
+export const buildAmountOffCostAction = (
+  amountOff: number,
+  value = amountOff
+): AmountOffAction => {
+  return {
+    id: crypto.randomUUID(),
+    amountOff: amountOff,
+    discountId: crypto.randomUUID(),
+    type: DoveTechActionType.AmountOffCost,
+    amountOffType: AmountOffType.AmountOff,
+    value,
+  };
+};

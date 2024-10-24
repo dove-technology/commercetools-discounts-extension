@@ -139,3 +139,7 @@ export enum AmountOffType {
   AmountOff = 'AmountOff',
   FixedPrice = 'FixedPrice',
 }
+
+export interface ShippingObject {
+  methodId?: string;
+}

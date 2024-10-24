@@ -36,4 +36,6 @@ export interface Configuration {
   region: string;
   dovetechApiHost: string;
   dovetechApiKey: string;
+  useDirectDiscountsForShipping: boolean;
+  taxCategoryId?: string;
 }

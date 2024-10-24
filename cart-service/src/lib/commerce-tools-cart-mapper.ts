@@ -1,5 +1,9 @@
 import { CART_ACTION, COUPON_CODES } from './cart-constants';
-import type { LineItem } from '@commercetools/platform-sdk';
+import type {
+  LineItem,
+  ShippingInfo,
+  TypedMoney,
+} from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
   CartAction,
@@ -13,10 +17,15 @@ import {
   DoveTechDiscountsDataInstance,
   DoveTechDiscountsRequest,
   DoveTechDiscountsSettings,
+  ShippingObject,
 } from '../types/dovetech.types';
 import Decimal from 'decimal.js';
+import { SHIPPING_COST_NAME } from './dovetech-property-constants';
+import { Configuration } from '../types/index.types';
+import { logger } from '../utils/logger.utils';
 
 export default (
+  configuration: Configuration,
   commerceToolsCart: CartOrOrder,
   dataInstance: DoveTechDiscountsDataInstance
 ): DoveTechDiscountsRequest => {
@@ -56,19 +65,39 @@ export default (
     couponCodes.push(...couponCodesFromCart);
   }
 
+  const shippingCostInCurrency = getShippingCostInCurrencyUnits(
+    configuration,
+    commerceToolsCart
+  );
+
+  if (shippingCostInCurrency !== undefined) {
+    costs.push({
+      name: SHIPPING_COST_NAME,
+      value: shippingCostInCurrency,
+    });
+  }
+
   const settings: DoveTechDiscountsSettings = {
     dataInstance,
     commit: commerceToolsCart.type === 'Order',
     explain: false,
   };
 
-  return {
+  const dtRequest: DoveTechDiscountsRequest = {
     basket,
     costs,
     couponCodes,
     context,
     settings,
   };
+
+  const shippingObject = buildShippingObject(commerceToolsCart);
+
+  if (shippingObject) {
+    dtRequest.shipping = shippingObject;
+  }
+
+  return dtRequest;
 };
 
 const getLineItemPriceInCurrencyUnits = (lineItem: LineItem) => {
@@ -85,4 +114,65 @@ const getLineItemPrice = (lineItem: LineItem) => {
   return lineItem.price.discounted
     ? lineItem.price.discounted.value
     : lineItem.price.value;
+};
+
+const getShippingCostInCurrencyUnits = (
+  configuration: Configuration,
+  commerceToolsCart: CartOrOrder
+) => {
+  if (commerceToolsCart.shippingMode === 'Multiple') {
+    logger.warn(
+      'Shipping cost for Multiple shipping methods are not mapped to Dovetech at present so shipping discounts will not apply'
+    );
+    return undefined;
+  }
+
+  if (!commerceToolsCart.shippingInfo) {
+    return undefined;
+  }
+
+  if (configuration.useDirectDiscountsForShipping) {
+    // use non-discounted amount because direct discounts may have already applied
+    // also, once direct discounts are applied any commerce tools discounts will be removed
+    return getMoneyInCurrencyUnits(commerceToolsCart.shippingInfo.price);
+  }
+
+  const price = getShippingInfoPrice(commerceToolsCart.shippingInfo);
+
+  return getMoneyInCurrencyUnits(price);
+};
+
+const getShippingInfoPrice = (shippingInfo: ShippingInfo) => {
+  return shippingInfo.discountedPrice
+    ? shippingInfo.discountedPrice.value
+    : shippingInfo.price;
+};
+
+const getMoneyInCurrencyUnits = (centPrecisionMoney: TypedMoney) => {
+  return getCentsValueInCurrencyUnits(
+    centPrecisionMoney.centAmount,
+    centPrecisionMoney.fractionDigits
+  );
+};
+
+const getCentsValueInCurrencyUnits = (
+  centAmount: number,
+  fractionDigits: number
+) => {
+  return new Decimal(centAmount)
+    .div(new Decimal(10).pow(fractionDigits))
+    .toNumber();
+};
+
+const buildShippingObject = (
+  commerceToolsCart: CartOrOrder
+): ShippingObject | undefined => {
+  // note, shippingInfo will be undefined if shippingMode is Multiple (not mapped at present)
+  if (!commerceToolsCart.shippingInfo?.shippingMethod?.id) {
+    return undefined;
+  }
+
+  return {
+    methodId: commerceToolsCart.shippingInfo.shippingMethod?.id,
+  };
 };

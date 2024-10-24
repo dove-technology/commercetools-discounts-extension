@@ -1,9 +1,18 @@
-import { CART_ACTION, CART_METADATA } from './cart-constants';
+import {
+  CART_ACTION,
+  CART_METADATA,
+  SHIPPING_CUSTOM_LINE_ITEM_SLUG,
+} from './cart-constants';
 import type {
   LineItem,
   CartSetLineItemTotalPriceAction,
   CartUpdateAction,
   CartSetCustomTypeAction,
+  CartSetDirectDiscountsAction,
+  DirectDiscountDraft,
+  Money,
+  CartAddCustomLineItemAction,
+  CartChangeCustomLineItemMoneyAction,
 } from '@commercetools/platform-sdk';
 import {
   AddCouponCodeCartAction,
@@ -16,10 +25,12 @@ import {
   CouponCodeRejectedAction,
   DoveTechActionType,
   DoveTechDiscountsResponse,
+  DoveTechDiscountsResponseCost,
   DoveTechDiscountsResponseLineItem,
 } from '../types/dovetech.types';
 import Decimal from 'decimal.js';
-import { ExtensionResponse } from '../types/index.types';
+import { Configuration, ExtensionResponse } from '../types/index.types';
+import { SHIPPING_COST_NAME } from './dovetech-property-constants';
 
 const invalidCouponCodeResponse: ExtensionResponse = {
   success: false,
@@ -36,6 +47,7 @@ const invalidCouponCodeResponse: ExtensionResponse = {
 };
 
 export default (
+  configuration: Configuration,
   dtResponse: DoveTechDiscountsResponse,
   commerceToolsCart: CartOrOrder
 ): ExtensionResponse => {
@@ -88,6 +100,10 @@ export default (
 
     actions.push(setCustomTypeAction);
   }
+
+  actions.push(
+    ...getShippingActions(configuration, dtResponse, commerceToolsCart)
+  );
 
   return {
     success: true,
@@ -169,4 +185,142 @@ const newCouponCodeInvalid = (
   return couponCodeRejectedActions.some(
     (a) => a.code === addCouponCodeAction.code
   );
+};
+
+const getShippingActions = (
+  configuration: Configuration,
+  dtResponse: DoveTechDiscountsResponse,
+  commerceToolsCart: CartOrOrder
+) => {
+  const shippingCost = dtResponse.costs.find(
+    (cost) => cost.name === SHIPPING_COST_NAME
+  );
+
+  if (!configuration.useDirectDiscountsForShipping) {
+    return getCustomLineItemShippingActions(
+      configuration,
+      shippingCost,
+      commerceToolsCart
+    );
+  }
+
+  return getDirectDiscountShippingActions(shippingCost, commerceToolsCart);
+};
+
+const getDirectDiscountShippingActions = (
+  shippingCost: DoveTechDiscountsResponseCost | undefined,
+  commerceToolsCart: CartOrOrder
+) => {
+  const actions: CartUpdateAction[] = [];
+
+  const shippingDiscounts: DirectDiscountDraft[] = [];
+
+  if (shippingCost?.totalAmountOff) {
+    const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
+
+    const total = new Decimal(shippingCost.totalAmountOff);
+    const centAmount = total
+      .mul(new Decimal(10).pow(fractionDigits))
+      .toNumber();
+
+    const shippingDiscountMoney: Money = {
+      centAmount: centAmount,
+      currencyCode: commerceToolsCart.totalPrice.currencyCode,
+    };
+
+    const shippingDiscount: DirectDiscountDraft = {
+      value: {
+        type: 'absolute',
+        money: [shippingDiscountMoney],
+      },
+      target: {
+        type: 'shipping',
+      },
+    };
+    shippingDiscounts.push(shippingDiscount);
+
+    const addAction: CartSetDirectDiscountsAction = {
+      action: 'setDirectDiscounts',
+      discounts: shippingDiscounts,
+    };
+    actions.push(addAction);
+  } else if (
+    commerceToolsCart.directDiscounts &&
+    commerceToolsCart.directDiscounts.length > 0
+  ) {
+    const addAction: CartSetDirectDiscountsAction = {
+      action: 'setDirectDiscounts',
+      discounts: [],
+    };
+    actions.push(addAction);
+  }
+
+  return actions;
+};
+
+const getCustomLineItemShippingActions = (
+  configuration: Configuration,
+  shippingCost: DoveTechDiscountsResponseCost | undefined,
+  commerceToolsCart: CartOrOrder
+) => {
+  const actions: CartUpdateAction[] = [];
+
+  const customShippingLineItem = (commerceToolsCart.customLineItems || []).find(
+    (i) => {
+      return i.slug === SHIPPING_CUSTOM_LINE_ITEM_SLUG;
+    }
+  );
+
+  if (shippingCost?.totalAmountOff) {
+    const currencyCode = commerceToolsCart.totalPrice.currencyCode;
+    const fractionDigits = commerceToolsCart.totalPrice.fractionDigits;
+
+    const total = new Decimal(shippingCost.totalAmountOff);
+    const centAmount = total
+      .mul(new Decimal(10).pow(fractionDigits))
+      .toNumber();
+
+    if (customShippingLineItem) {
+      const changePriceAction: CartChangeCustomLineItemMoneyAction = {
+        action: 'changeCustomLineItemMoney',
+        customLineItemId: customShippingLineItem.id,
+        money: {
+          currencyCode: currencyCode,
+          centAmount: -centAmount,
+        },
+      };
+
+      actions.push(changePriceAction);
+    } else {
+      const taxCategoryId = configuration.taxCategoryId;
+
+      if (!taxCategoryId) {
+        throw new Error('Tax category ID is not set in the configuration');
+      }
+
+      const addAction: CartAddCustomLineItemAction = {
+        action: 'addCustomLineItem',
+        name: { en: 'Shipping Discount' },
+        quantity: 1,
+        money: {
+          currencyCode: currencyCode,
+          type: 'centPrecision',
+          centAmount: -centAmount,
+        },
+        slug: SHIPPING_CUSTOM_LINE_ITEM_SLUG,
+        taxCategory: {
+          id: taxCategoryId,
+          typeId: 'tax-category',
+        },
+      };
+      actions.push(addAction);
+    }
+  } else if (customShippingLineItem) {
+    actions.push({
+      action: 'removeCustomLineItem',
+      customLineItemId: customShippingLineItem.id,
+    });
+  }
+
+  return actions;
 };

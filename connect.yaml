@@ -15,6 +15,12 @@ deployAs:
           description: Dovetech Processor API host
           required: true
           default: "https://eu-west-2-discounts.dovetech.com"
+        - key: USE_DIRECT_DISCOUNTS_FOR_SHIPPING
+          description: Use direct discounts for shipping discounts
+          required: false
+        - key: CTP_TAX_CATEGORY_ID
+          description: Tax Category ID for custom line items (required if not using direct discounts for shipping)
+          required: false
       securedConfiguration:
         - key: DOVETECH_API_KEY
           description: Dovetech Processor API key

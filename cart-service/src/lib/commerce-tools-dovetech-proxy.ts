@@ -11,14 +11,18 @@ export const proxy = async (
   commerceToolsCart: CartOrOrder
 ): Promise<ExtensionResponse> => {
   const doveTechRequest = map(
+    configuration,
     commerceToolsCart,
     DoveTechDiscountsDataInstance.Live
   );
 
-  // need to handle non successful responses and map to errors
   const dovetechResponse = await evaluate(configuration, doveTechRequest);
 
-  const response = responseMapper(dovetechResponse, commerceToolsCart);
+  const response = responseMapper(
+    configuration,
+    dovetechResponse,
+    commerceToolsCart
+  );
 
   return response;
 };
