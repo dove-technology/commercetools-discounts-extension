@@ -13,7 +13,7 @@ export const readConfiguration = (): Configuration => {
     dovetechApiHost: process.env.DOVETECH_API_HOST as string,
     dovetechApiKey: process.env.DOVETECH_API_KEY as string,
     useDirectDiscountsForShipping:
-      process.env.USE_DIRECT_DISCOUNTS_FOR_SHIPPING !== 'false',
+      process.env.USE_DIRECT_DISCOUNTS_FOR_SHIPPING?.toLowerCase() !== 'false',
     taxCategoryId: process.env.CTP_TAX_CATEGORY_ID as string,
   };
 
